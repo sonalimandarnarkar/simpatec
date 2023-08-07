@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include simpatec *.css
+recursive-include simpatec *.csv
+recursive-include simpatec *.html
+recursive-include simpatec *.ico
+recursive-include simpatec *.js
+recursive-include simpatec *.json
+recursive-include simpatec *.md
+recursive-include simpatec *.png
+recursive-include simpatec *.py
+recursive-include simpatec *.svg
+recursive-include simpatec *.txt
+recursive-exclude simpatec *.pyc
