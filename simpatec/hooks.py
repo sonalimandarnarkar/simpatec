@@ -188,3 +188,6 @@ user_data_fields = [
 #	"simpatec.auth.validate"
 # ]
 
+standard_queries = {
+	"Contact": "simpatec.custom_queries.custom_contact_query"
+}
