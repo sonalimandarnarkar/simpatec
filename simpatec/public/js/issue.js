@@ -30,7 +30,7 @@ frappe.ui.form.on('Issue', {
 									<div class="col-xs-12">
 										<span class="indicator whitespace-nowrap ${color}">
 											<span class="hidden-xs">
-												<a style="text-decoration: underline;" onclick="frappe.set_route('Form', 'Software Maintenance', '${d.name}');">Click here to go Software Maintenance ${d.name}</a>
+												<a style="text-decoration: underline;" onclick="frappe.set_route('Form', 'Software Maintenance', '${d.name}');">The Software Maintenance ${d.name} is <b>${d.status}</b>. Expiry on: <b>${d.performance_period_end}</b>. Click to open</a>
 											</span>
 										</span>
 									</div>
