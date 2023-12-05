@@ -56,13 +56,13 @@ doctype_js = {"Issue" : "public/js/issue.js"}
 # Installation
 # ------------
 
-# before_install = "simpatec.install.before_install"
-# after_install = "simpatec.install.after_install"
+after_migrate = "simpatec.install.after_migrate"
+after_install = "simpatec.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "simpatec.uninstall.before_uninstall"
+before_uninstall = "simpatec.install.before_uninstall"
 # after_uninstall = "simpatec.uninstall.after_uninstall"
 
 # Desk Notifications
