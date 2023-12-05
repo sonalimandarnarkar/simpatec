@@ -1,0 +1,289 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{item_group} {customer_subsidiary}",
+ "creation": "2023-12-04 16:48:56.057355",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "performance_period_start",
+  "performance_period_end",
+  "vertriebs_partner",
+  "column_break_4",
+  "assign_to",
+  "notes",
+  "section_break_4",
+  "customer",
+  "customer_name",
+  "customer_subsidiary",
+  "item_group",
+  "sales_order",
+  "first_sale_on",
+  "cb_99",
+  "main_customer_contact",
+  "licence_renewal_via",
+  "lead_time",
+  "auto_repeat",
+  "auto_repeat_end_date",
+  "licence_section_section",
+  "software_maintenance_contacts",
+  "accounting_section",
+  "billing_user_simpatec",
+  "billing_type",
+  "column_break_8",
+  "billing_email_id",
+  "billing_address",
+  "supplier_portal"
+ ],
+ "fields": [
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nExpired",
+   "search_index": 1
+  },
+  {
+   "fetch_from": "sales_order.performance_period_start",
+   "fetch_if_empty": 1,
+   "fieldname": "performance_period_start",
+   "fieldtype": "Date",
+   "label": "Performance Period Start",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "sales_order.performance_period_end",
+   "fetch_if_empty": 1,
+   "fieldname": "performance_period_end",
+   "fieldtype": "Date",
+   "label": "Performance Period End"
+  },
+  {
+   "default": "0",
+   "fetch_from": "customer.vertriebs_partner",
+   "fieldname": "vertriebs_partner",
+   "fieldtype": "Data",
+   "label": "Vertriebspartner"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer_subsidiary.assigned_to",
+   "fetch_if_empty": 1,
+   "fieldname": "assign_to",
+   "fieldtype": "Link",
+   "label": "Assign To",
+   "options": "User"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Sales Section"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_subsidiary",
+   "fieldtype": "Link",
+   "label": "Customer Subsidiary",
+   "options": "Customer Subsidiary",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Group",
+   "options": "Item Group",
+   "reqd": 1
+  },
+  {
+   "description": "Link the Sales Order with which this Software Maintenance was sold",
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "description": "This date is fetched from the linked Sales Order that represents the first sale for this Item Group. In case the first sale was created prior to ERPNext you can just set the date.",
+   "fetch_from": "sales_order.transaction_date",
+   "fetch_if_empty": 1,
+   "fieldname": "first_sale_on",
+   "fieldtype": "Date",
+   "label": "First Sale On"
+  },
+  {
+   "fieldname": "cb_99",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer_subsidiary.main_customer_contact",
+   "fetch_if_empty": 1,
+   "fieldname": "main_customer_contact",
+   "fieldtype": "Link",
+   "label": "Main Customer Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "licence_renewal_via",
+   "fieldtype": "Select",
+   "label": "Licence Renewal via",
+   "options": "\nQuotation\nSales Order"
+  },
+  {
+   "description": "Lead time in days befor licence end date",
+   "fieldname": "lead_time",
+   "fieldtype": "Select",
+   "label": "Lead Time",
+   "options": "30\n60\n90\n120"
+  },
+  {
+   "description": "Link the Auto Repeat of mostly Quotation or Sales Order.",
+   "fieldname": "auto_repeat",
+   "fieldtype": "Link",
+   "label": "Auto Repeat",
+   "options": "Auto Repeat"
+  },
+  {
+   "fetch_from": "auto_repeat.end_date",
+   "fieldname": "auto_repeat_end_date",
+   "fieldtype": "Date",
+   "label": "Auto Repeat End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "licence_section_section",
+   "fieldtype": "Section Break",
+   "label": "Licence Section"
+  },
+  {
+   "fieldname": "software_maintenance_contacts",
+   "fieldtype": "Table",
+   "label": "Software Maintenance Contacts",
+   "options": "Software Maintenance Contacts"
+  },
+  {
+   "fieldname": "accounting_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting"
+  },
+  {
+   "fetch_from": "customer_subsidiary.billing_user_simpatec",
+   "fetch_if_empty": 1,
+   "fieldname": "billing_user_simpatec",
+   "fieldtype": "Link",
+   "label": "Billing User SimpaTec",
+   "options": "User"
+  },
+  {
+   "fetch_from": "customer_subsidiary.billing_type",
+   "fetch_if_empty": 1,
+   "fieldname": "billing_type",
+   "fieldtype": "Select",
+   "label": "Billing Type",
+   "options": "\nPaper Mail\nE-Mail\nSupplier Portal"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Works with comma seperated addresses. E.g. billing1@asdf.de,billing2@trgd.de",
+   "fetch_from": "customer_subsidiary.billing_email_id",
+   "fetch_if_empty": 1,
+   "fieldname": "billing_email_id",
+   "fieldtype": "Data",
+   "label": "Billing Email ID",
+   "mandatory_depends_on": "eval:doc.billing_type==\"E-Mail\"",
+   "options": "Email"
+  },
+  {
+   "fetch_from": "customer_subsidiary.billing_address",
+   "fetch_if_empty": 1,
+   "fieldname": "billing_address",
+   "fieldtype": "Link",
+   "label": "Billing Address",
+   "options": "Address"
+  },
+  {
+   "depends_on": "eval:doc.billing_type==\"Supplier Portal\"",
+   "fetch_from": "customer_subsidiary.supplier_portal",
+   "fieldname": "supplier_portal",
+   "fieldtype": "Data",
+   "label": "Supplier Portal",
+   "mandatory_depends_on": "eval:doc.billing_type==\"Supplier Portal\""
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "group": "Sales",
+   "link_doctype": "Sales Order",
+   "link_fieldname": "software_maintenance"
+  },
+  {
+   "group": "Sales",
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "software_maintenance"
+  },
+  {
+   "group": "Purchase",
+   "link_doctype": "Purchase Order",
+   "link_fieldname": "software_maintenance"
+  },
+  {
+   "group": "Purchase",
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "software_maintenance"
+  }
+ ],
+ "modified": "2023-12-04 16:48:56.057355",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Software Maintenance",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "customer,status,main_customer_contact",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
