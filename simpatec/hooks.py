@@ -31,7 +31,10 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Issue" : "public/js/issue.js"}
+doctype_js = {
+    "Issue" : "public/js/issue.js",
+    "Sales Order" : "public/js/sales_order.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -56,13 +59,13 @@ doctype_js = {"Issue" : "public/js/issue.js"}
 # Installation
 # ------------
 
-# before_install = "simpatec.install.before_install"
-# after_install = "simpatec.install.after_install"
+after_migrate = "simpatec.install.after_migrate"
+after_install = "simpatec.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "simpatec.uninstall.before_uninstall"
+before_uninstall = "simpatec.install.before_uninstall"
 # after_uninstall = "simpatec.uninstall.after_uninstall"
 
 # Desk Notifications
