@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 
 class SoftwareMaintenance(Document):
-	def validate(self):
+	def on_update(self):
 		self.update_sales_order()
 
 	def update_sales_order(self):
