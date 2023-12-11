@@ -97,7 +97,7 @@ def get_custom_fields():
 	]
 
 
-	custom_fields_si = [
+	custom_fields_so = [
 		{
 			"label": "SimpaTec",
 			"fieldname": "simpatec_section",
@@ -172,5 +172,5 @@ def get_custom_fields():
 
 	return {
 		"Customer": custom_fields_customer,
-		"Sales Order": custom_fields_si
+		"Sales Order": custom_fields_so
 	}
