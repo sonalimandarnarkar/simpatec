@@ -109,23 +109,11 @@ before_uninstall = "simpatec.install.before_uninstall"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"simpatec.tasks.all"
-#	],
-#	"daily": [
-#		"simpatec.tasks.daily"
-#	],
-#	"hourly": [
-#		"simpatec.tasks.hourly"
-#	],
-#	"weekly": [
-#		"simpatec.tasks.weekly"
-#	]
-#	"monthly": [
-#		"simpatec.tasks.monthly"
-#	]
-# }
+scheduler_events = {
+	"daily": [
+		"simpatec.events.sales_order.create_followup_software_maintenance_sales_order"
+	]
+}
 
 # Testing
 # -------
