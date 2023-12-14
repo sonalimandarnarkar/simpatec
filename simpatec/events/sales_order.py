@@ -32,7 +32,7 @@ def make_software_maintenance(source_name, target_doc=None):
 
 
 def update_software_maintenance(doc, method=None):
-	if doc.software_maintenance and doc.sales_order_type != 'First Sale':
+	if doc.software_maintenance:
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
 		software_maintenance.performance_period_start = doc.performance_period_start
 		software_maintenance.performance_period_end = doc.performance_period_end
