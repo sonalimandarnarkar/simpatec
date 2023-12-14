@@ -98,34 +98,20 @@ before_uninstall = "simpatec.install.before_uninstall"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Order": {
+		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"simpatec.tasks.all"
-#	],
-#	"daily": [
-#		"simpatec.tasks.daily"
-#	],
-#	"hourly": [
-#		"simpatec.tasks.hourly"
-#	],
-#	"weekly": [
-#		"simpatec.tasks.weekly"
-#	]
-#	"monthly": [
-#		"simpatec.tasks.monthly"
-#	]
-# }
+scheduler_events = {
+	"daily": [
+		"simpatec.events.sales_order.create_followup_software_maintenance_sales_order"
+	]
+}
 
 # Testing
 # -------
