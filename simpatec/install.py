@@ -170,7 +170,30 @@ def get_custom_fields():
 		},
 	]
 
+	custom_fields_soi = [
+		{
+			"label": "Item Language",
+			"fieldname": "item_language",
+			"fieldtype": "Link",
+			"options": "Language",
+			"insert_after": "col_break1",
+		},
+		{
+			"label": "Start Date",
+			"fieldname": "start_date",
+			"fieldtype": "Date",
+			"insert_after": "item_language",
+		},
+		{
+			"label": "End Date",
+			"fieldname": "end_date",
+			"fieldtype": "Date",
+			"insert_after": "start_date",
+		}
+	]
+
 	return {
 		"Customer": custom_fields_customer,
-		"Sales Order": custom_fields_so
+		"Sales Order": custom_fields_so,
+		"Sales Order Item": custom_fields_soi
 	}
