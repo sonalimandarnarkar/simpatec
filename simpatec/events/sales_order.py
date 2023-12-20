@@ -37,12 +37,14 @@ def update_software_maintenance(doc, method=None):
 		software_maintenance.performance_period_start = doc.performance_period_start
 		software_maintenance.performance_period_end = doc.performance_period_end
 		software_maintenance.sale_order = doc.name
-		software_maintenance.set("items", [])
 		for item in doc.items:
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
 				"description": item.description,
+				"start_date": item.start_date,
+				"end_date": item.end_date,
+				"price_list_rate": item.price_list_rate,
 				"conversion_factor": item.conversion_factor,
 				"rate": item.rate,
 				"qty": item.qty,
