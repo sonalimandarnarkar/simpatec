@@ -74,7 +74,7 @@ def make_sales_order(software_maintenance):
 	sales_order = frappe.new_doc("Sales Order")
 	sales_order.customer_subsidiary = software_maintenance.customer_subsidiary
 	sales_order.performance_period_start = add_days(software_maintenance.performance_period_end, software_maintenance.start_after_days)
-	sales_order.performance_period_end = add_years(software_maintenance.performance_period_end, software_maintenance.maintenance_duration)
+	sales_order.performance_period_end = add_years(sales_order.performance_period_start, software_maintenance.maintenance_duration)
 	sales_order.software_maintenance = software_maintenance.name
 	sales_order.item_group = software_maintenance.item_group
 	sales_order.customer = software_maintenance.customer
