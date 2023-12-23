@@ -13,6 +13,7 @@
   "performance_period_end",
   "vertriebs_partner",
   "column_break_4",
+  "ihr_ansprechpartner",
   "assign_to",
   "notes",
   "section_break_4",
@@ -25,6 +26,8 @@
   "cb_99",
   "main_customer_contact",
   "licence_renewal_via",
+  "start_after_days",
+  "maintenance_duration",
   "lead_time",
   "auto_repeat",
   "auto_repeat_end_date",
@@ -248,6 +251,29 @@
    "fieldtype": "Table",
    "label": "Items",
    "options": "Software Maintenance Item"
+  },
+  {
+   "fieldname": "ihr_ansprechpartner",
+   "fieldtype": "Link",
+   "label": "Ihr Ansprechpartner",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "start_after_days",
+   "fieldtype": "Int",
+   "label": "Start after (x) days",
+   "non_negative": 1
+  },
+  {
+   "default": "1",
+   "description": "In years",
+   "fieldname": "maintenance_duration",
+   "fieldtype": "Int",
+   "label": "Maintenance Duration",
+   "non_negative": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -273,7 +299,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2023-12-12 15:49:01.479737",
+ "modified": "2023-12-23 17:04:08.840239",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
