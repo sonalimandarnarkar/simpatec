@@ -13,7 +13,6 @@
   "performance_period_end",
   "vertriebs_partner",
   "column_break_4",
-  "ihr_ansprechpartner",
   "assign_to",
   "notes",
   "section_break_4",
@@ -252,13 +251,6 @@
    "options": "Software Maintenance Item"
   },
   {
-   "fieldname": "ihr_ansprechpartner",
-   "fieldtype": "Link",
-   "label": "Ihr Ansprechpartner",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
    "default": "1",
    "description": "In years",
    "fieldname": "maintenance_duration",
@@ -291,7 +283,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2023-12-24 07:29:56.787778",
+ "modified": "2023-12-24 07:34:22.984194",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
