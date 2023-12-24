@@ -31,7 +31,10 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Issue" : "public/js/issue.js",
+    "Sales Order" : "public/js/sales_order.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -56,13 +59,13 @@ app_license = "MIT"
 # Installation
 # ------------
 
-# before_install = "simpatec.install.before_install"
-# after_install = "simpatec.install.after_install"
+after_migrate = "simpatec.install.after_migrate"
+after_install = "simpatec.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "simpatec.uninstall.before_uninstall"
+before_uninstall = "simpatec.install.before_uninstall"
 # after_uninstall = "simpatec.uninstall.after_uninstall"
 
 # Desk Notifications
@@ -95,34 +98,20 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Order": {
+		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"simpatec.tasks.all"
-#	],
-#	"daily": [
-#		"simpatec.tasks.daily"
-#	],
-#	"hourly": [
-#		"simpatec.tasks.hourly"
-#	],
-#	"weekly": [
-#		"simpatec.tasks.weekly"
-#	]
-#	"monthly": [
-#		"simpatec.tasks.monthly"
-#	]
-# }
+scheduler_events = {
+	"daily": [
+		"simpatec.events.sales_order.create_followup_software_maintenance_sales_order"
+	]
+}
 
 # Testing
 # -------
@@ -188,3 +177,6 @@ user_data_fields = [
 #	"simpatec.auth.validate"
 # ]
 
+standard_queries = {
+	"Contact": "simpatec.custom_queries.custom_contact_query"
+}
