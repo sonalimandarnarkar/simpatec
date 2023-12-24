@@ -158,11 +158,12 @@
    "options": "\nQuotation\nSales Order"
   },
   {
+   "default": "45",
    "description": "Lead time in days befor licence end date",
    "fieldname": "lead_time",
    "fieldtype": "Select",
    "label": "Lead Time",
-   "options": "30\n60\n90\n120"
+   "options": "30\n45\n60\n90\n120"
   },
   {
    "description": "Link the Auto Repeat of mostly Quotation or Sales Order.",
@@ -283,7 +284,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2023-12-24 07:34:22.984194",
+ "modified": "2023-12-24 10:55:22.882599",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
