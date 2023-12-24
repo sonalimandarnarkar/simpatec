@@ -26,7 +26,6 @@
   "cb_99",
   "main_customer_contact",
   "licence_renewal_via",
-  "start_after_days",
   "maintenance_duration",
   "lead_time",
   "auto_repeat",
@@ -261,13 +260,6 @@
   },
   {
    "default": "1",
-   "fieldname": "start_after_days",
-   "fieldtype": "Int",
-   "label": "Start after (x) days",
-   "non_negative": 1
-  },
-  {
-   "default": "1",
    "description": "In years",
    "fieldname": "maintenance_duration",
    "fieldtype": "Int",
@@ -299,7 +291,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2023-12-23 17:04:08.840239",
+ "modified": "2023-12-24 07:29:56.787778",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
