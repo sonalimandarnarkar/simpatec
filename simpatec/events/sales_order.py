@@ -1,5 +1,6 @@
 import frappe
-from frappe.utils import cint, cint, flt, add_days, today
+from frappe import _
+from frappe.utils import cint, cint, flt, add_days, add_years, today
 from frappe.model.mapper import get_mapped_doc
 
 
@@ -59,23 +60,34 @@ def create_followup_software_maintenance_sales_order(date=None):
 		date = today()
 	software_maintenance_list = frappe.get_all('Software Maintenance', filters={'performance_period_end': ("=", date)})
 	for software_maintenance in software_maintenance_list:
-		make_sales_order(software_maintenance)
-		frappe.db.commit()
+		try:
+			make_sales_order(software_maintenance)
+		except Exception as e:
+			error_message = frappe.get_traceback()+"{0}\n".format(str(e))
+			frappe.log_error(error_message, 'Error occured While automatically Software Maintenance Sales Order for {0}'.format(software_maintenance))
+		finally:
+			frappe.db.commit()
 
 
 def make_sales_order(software_maintenance):
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance.name)
+	if not software_maintenance.assign_to:
+		frappe.throw(_("Please set 'Assign to' in Software maintenance '{0}'").format(software_maintenance.name))
+
+	employee =  frappe.get_cached_value('Employee', {'user_id': software_maintenance.assign_to}, 'name')
+	if not employee:
+		frappe.throw(_("User {0} not set in Employee").format(software_maintenance.assign_to))
 
 	sales_order = frappe.new_doc("Sales Order")
 	sales_order.customer_subsidiary = software_maintenance.customer_subsidiary
-	sales_order.performance_period_start = add_days(software_maintenance.performance_period_end, -cint(software_maintenance.lead_time)) 
-	sales_order.performance_period_end =  add_days(software_maintenance.performance_period_end, 365)
+	sales_order.performance_period_start = add_days(software_maintenance.performance_period_end, 1)
+	sales_order.performance_period_end = add_years(sales_order.performance_period_start, software_maintenance.maintenance_duration)
 	sales_order.software_maintenance = software_maintenance.name
 	sales_order.item_group = software_maintenance.item_group
 	sales_order.customer = software_maintenance.customer
 	sales_order.sales_order_type = "Follow Up Maintenance"
-	sales_order.ihr_ansprechpartner = "HR-EMP-00001"
-	sales_order.transaction_date = today()
+	sales_order.ihr_ansprechpartner = employee
+	sales_order.transaction_date = add_days(software_maintenance.performance_period_end, -cint(software_maintenance.lead_time))
 	sales_order.order_type = "Sales"
 
 	for item in software_maintenance.items:

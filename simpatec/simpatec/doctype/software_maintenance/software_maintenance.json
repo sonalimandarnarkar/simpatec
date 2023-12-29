@@ -25,6 +25,7 @@
   "cb_99",
   "main_customer_contact",
   "licence_renewal_via",
+  "maintenance_duration",
   "lead_time",
   "auto_repeat",
   "auto_repeat_end_date",
@@ -157,11 +158,12 @@
    "options": "\nQuotation\nSales Order"
   },
   {
+   "default": "45",
    "description": "Lead time in days befor licence end date",
    "fieldname": "lead_time",
    "fieldtype": "Select",
    "label": "Lead Time",
-   "options": "30\n60\n90\n120"
+   "options": "30\n45\n60\n90\n120"
   },
   {
    "description": "Link the Auto Repeat of mostly Quotation or Sales Order.",
@@ -248,6 +250,15 @@
    "fieldtype": "Table",
    "label": "Items",
    "options": "Software Maintenance Item"
+  },
+  {
+   "default": "1",
+   "description": "In years",
+   "fieldname": "maintenance_duration",
+   "fieldtype": "Int",
+   "label": "Maintenance Duration",
+   "non_negative": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -273,7 +284,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2023-12-12 15:49:01.479737",
+ "modified": "2023-12-24 10:55:22.882599",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
