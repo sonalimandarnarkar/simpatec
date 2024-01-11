@@ -12,6 +12,7 @@
   "item_name",
   "description",
   "item_group",
+  "item_language",
   "start_date",
   "end_date",
   "column_break_wxxmm",
@@ -132,13 +133,20 @@
    "fieldtype": "Currency",
    "label": "Price List Rate",
    "options": "currency"
+  },
+  {
+   "fieldname": "item_language",
+   "fieldtype": "Link",
+   "label": "Item Language",
+   "options": "Language",
+   "reqd": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-12-20 17:05:24.611545",
+ "modified": "2024-01-11 10:12:18.794450",
  "modified_by": "Administrator",
- "module": "Simpatec",
+ "module": "SimpaTec",
  "name": "Software Maintenance Item",
  "naming_rule": "Random",
  "owner": "Administrator",
