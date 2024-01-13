@@ -24,12 +24,12 @@
    "fieldname": "contact_set_contacts",
    "fieldtype": "Table",
    "label": "Contact Set Contacts",
-   "options": "Contact Set List"
+   "options": "Contact Set Contacts"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-13 11:38:41.299256",
+ "modified": "2024-01-13 12:00:17.584114",
  "modified_by": "Administrator",
  "module": "SimpaTec",
  "name": "Contact Set",
