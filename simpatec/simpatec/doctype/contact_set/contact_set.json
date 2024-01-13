@@ -9,15 +9,9 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "contacts"
+  "contact_set_contacts"
  ],
  "fields": [
-  {
-   "fieldname": "contacts",
-   "fieldtype": "Table",
-   "label": "Contacts",
-   "options": "Contact Set List"
-  },
   {
    "fieldname": "title",
    "fieldtype": "Data",
@@ -25,11 +19,17 @@
    "label": "Title",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "contact_set_contacts",
+   "fieldtype": "Table",
+   "label": "Contact Set Contacts",
+   "options": "Contact Set Contacts"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-13 05:37:34.101379",
+ "modified": "2024-01-13 12:00:17.584114",
  "modified_by": "Administrator",
  "module": "SimpaTec",
  "name": "Contact Set",
