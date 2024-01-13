@@ -23,7 +23,7 @@ def get_data(filters):
 	)
 
 	for d in data:
-		d['contact_reference'] = frappe.get_desk_link(d.get('ref_type'), d.get('ref_name'))
+		d['contact_reference'] = '<a href="/app/Form/{0}/{1}" >Customer {1}</a>'.format(d.get('ref_type'), d.get('ref_name'))
 		d['add_to_contact_group'] ='<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>'.format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
 	
 	return data
