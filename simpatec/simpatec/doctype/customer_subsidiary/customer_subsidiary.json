@@ -167,9 +167,9 @@
    "link_fieldname": "customer_subsidiary"
   }
  ],
- "modified": "2023-12-05 14:30:59.858902",
+ "modified": "2024-01-11 10:31:43.627509",
  "modified_by": "Administrator",
- "module": "Simpatec",
+ "module": "SimpaTec",
  "name": "Customer Subsidiary",
  "naming_rule": "Set by user",
  "owner": "Administrator",
