@@ -100,4 +100,4 @@ def update_row_in_contact_set(contact, contact_row, contact_set):
 	})
 	
 	contact_set.save()
-	frappe.msgprint(_("Contact updated in {0}").format(frappe.get_desk_link("Contact Set", contact_set.name)))
+	frappe.msgprint(_("Added Contact to {0} ✅").format(frappe.get_desk_link("Contact Set", contact_set.name)))
