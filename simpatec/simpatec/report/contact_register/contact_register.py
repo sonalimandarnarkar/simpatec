@@ -89,7 +89,7 @@ def update_row_in_contact_set(contact, contact_row, contact_set):
 
 	contact_set = frappe.get_doc("Contact Set", contact_set)
 
-	contact_set.append("contacts", {
+	contact_set.append("contact_set_contacts", {
 		"contact": contact,
 		"contact_row": contact_row,
 		"first_name": contact_detail.get("first_name"),
