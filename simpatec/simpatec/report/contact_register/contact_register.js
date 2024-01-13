@@ -11,7 +11,7 @@ frappe.query_reports["Contact Register"] = {
 	onload: async function (report) {
 		$(".custom-actions").hide();
 		$(".standard-actions").hide();
-		$(".page-actions").append('<button class="btn btn-default btn-sm ellipsis" ><a href="/app/contact-set" target="_blank">Goto Contact Set</button>')
+		// $(".page-actions").append('<button class="btn btn-default btn-sm ellipsis" ><a href="/app/contact-set" target="_blank">Goto Contact Set</button>')
 
 		contact_register.open_dialog = function (contact, contact_row) {
 			let d = new frappe.ui.Dialog({
