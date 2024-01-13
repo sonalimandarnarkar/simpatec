@@ -16,5 +16,5 @@ class ContactSet(Document):
 			if contact.contact and contact.contact_row:
 				combination = (contact.contact, contact.contact_row)
 				if combination in contact_combinations:
-					frappe.throw(_("This row already exist in {0}").format(frappe.get_desk_link("Contact Set", self.name)))
+					frappe.throw(_("This Contact is already in {0}").format(frappe.get_desk_link("Contact Set", self.name)))
 				contact_combinations.add(combination)
