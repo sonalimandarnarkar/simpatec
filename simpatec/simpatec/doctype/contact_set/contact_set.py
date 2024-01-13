@@ -12,7 +12,7 @@ class ContactSet(Document):
 	def validate_unique_item_code_and_group(self):
 		contact_combinations = set()
 
-		for contact in self.contacts:
+		for contact in self.contact_set_contacts:
 			if contact.contact and contact.contact_row:
 				combination = (contact.contact, contact.contact_row)
 				if combination in contact_combinations:
