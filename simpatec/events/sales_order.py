@@ -39,7 +39,6 @@ def update_software_maintenance(doc, method=None):
 		software_maintenance.performance_period_end = doc.performance_period_end
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
-			frappe.msgprint(frappe.utils.cstr(item.as_dict()))
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
