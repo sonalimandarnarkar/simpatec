@@ -17,4 +17,4 @@ class SoftwareMaintenance(Document):
 			
 			if not software_maintenance:
 				frappe.db.set_value('Sales Order', self.sales_order, 'software_maintenance', self.name)
-				frappe.msgprint(_('"Software Maintenance" field updated in {0}').format(frappe.get_desk_link("Sales Order", self.sales_order)))
+				frappe.msgprint(_("This Software Maintenance has been updated in the respective link field in Sales Order {0} ℹ️".format(frappe.get_desk_link("Sales Order", self.sales_order))))
