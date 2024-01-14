@@ -39,6 +39,7 @@ def update_software_maintenance(doc, method=None):
 		software_maintenance.performance_period_end = doc.performance_period_end
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
+			frappe.msgprint(frappe.utils.cstr(item.as_dict()))
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
@@ -47,6 +48,7 @@ def update_software_maintenance(doc, method=None):
 				"end_date": item.end_date,
 				"price_list_rate": item.price_list_rate,
 				"conversion_factor": item.conversion_factor,
+				"item_language": item.item_language,
 				"rate": item.rate,
 				"qty": item.qty,
 				"uom": item.uom
@@ -99,6 +101,7 @@ def make_sales_order(software_maintenance):
 			"qty": item.qty,
 			"rate": item.rate,
 			"uom": item.uom,
+			"item_language": item.item_language,
 			"delivery_date": sales_order.transaction_date
 		})
 

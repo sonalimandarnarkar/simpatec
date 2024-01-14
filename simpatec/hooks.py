@@ -59,7 +59,7 @@ doctype_js = {
 # Installation
 # ------------
 
-after_migrate = "simpatec.install.after_migrate"
+# after_migrate = "simpatec.install.after_migrate"
 after_install = "simpatec.install.after_migrate"
 
 # Uninstallation
