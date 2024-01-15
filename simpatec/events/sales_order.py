@@ -59,7 +59,13 @@ def update_software_maintenance(doc, method=None):
 def create_followup_software_maintenance_sales_order(date=None):
 	if not date:
 		date = today()
-	software_maintenance_list = frappe.get_all('Software Maintenance', filters={'performance_period_end': ("=", date)})
+
+	software_maintenance_list = frappe.db.sql("""
+		SELECT name 
+		FROM `tabSoftware Maintenance`
+		WHERE DATE_SUB(performance_period_end, INTERVAL lead_time DAY) = %s
+	""", date, as_dict=1)
+
 	for software_maintenance in software_maintenance_list:
 		try:
 			make_sales_order(software_maintenance)
