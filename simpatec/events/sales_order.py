@@ -126,4 +126,4 @@ def make_sales_order(software_maintenance, is_background_job=True):
 	if not cint(is_background_job):
 		frappe.msgprint("Maintenance Duration (Years): {}".format(software_maintenance.maintenance_duration))
 		frappe.msgprint("Maintenance Duration (Days): {}".format(total_days.days))
-		frappe.msgprint(_("Sales Order Created"))
+		frappe.msgprint(_("New {} Created").format(frappe.get_desk_link("Sales Order", sales_order.name)))
