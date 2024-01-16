@@ -5,7 +5,7 @@ frappe.ui.form.on('Software Maintenance', {
                 method: "simpatec.events.sales_order.make_sales_order",
                 args: {
                     software_maintenance: frm.doc.name,
-                    debug: 1
+                    background_job: false
                 },
                 callback: function (r) {
                     frm.set_value("total_subscribers", r.message);
