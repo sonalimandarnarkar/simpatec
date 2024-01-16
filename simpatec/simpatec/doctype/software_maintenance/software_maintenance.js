@@ -13,6 +13,6 @@ frappe.ui.form.on('Software Maintenance', {
                 callback: function (r) {
                 },
             });
-        }, __("Create Sales Order"));
+        }, __("Renew Sales Order"));
     }
 });
