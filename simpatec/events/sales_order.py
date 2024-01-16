@@ -68,7 +68,7 @@ def create_followup_software_maintenance_sales_order(date=None):
 
 	for software_maintenance in software_maintenance_list:
 		try:
-			make_sales_order(software_maintenance)
+			make_sales_order(software_maintenance.name)
 		except Exception as e:
 			error_message = frappe.get_traceback()+"{0}\n".format(str(e))
 			frappe.log_error(error_message, 'Error occured While automatically Software Maintenance Sales Order for {0}'.format(software_maintenance))
@@ -76,8 +76,8 @@ def create_followup_software_maintenance_sales_order(date=None):
 			frappe.db.commit()
 
 
-def make_sales_order(software_maintenance):
-	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance.name)
+def make_sales_order(software_maintenance, debug=False):
+	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
 	if not software_maintenance.assign_to:
 		frappe.throw(_("Please set 'Assign to' in Software maintenance '{0}'").format(software_maintenance.name))
 
@@ -111,3 +111,8 @@ def make_sales_order(software_maintenance):
 		})
 
 	sales_order.insert()
+
+	if debug:
+		frappe.msgprint("Maintenance Duration (Years): {}".format(software_maintenance.maintenance_duration))
+		frappe.msgprint("Maintenance Duration (Days): {}".format(total_days.days))
+		frappe.msgprint(_("Sales Order Created"))
