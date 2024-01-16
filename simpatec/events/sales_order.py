@@ -77,7 +77,7 @@ def create_followup_software_maintenance_sales_order(date=None):
 
 
 @frappe.whitelist()
-def make_sales_order(software_maintenance, background_job=True):
+def make_sales_order(software_maintenance, is_background_job=True):
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
 	if not software_maintenance.assign_to:
 		frappe.throw(_("Please set 'Assign to' in Software maintenance '{0}'").format(software_maintenance.name))
@@ -123,7 +123,7 @@ def make_sales_order(software_maintenance, background_job=True):
 
 	sales_order.insert()
 
-	if not background_job:
+	if not cint(is_background_job):
 		frappe.msgprint("Maintenance Duration (Years): {}".format(software_maintenance.maintenance_duration))
 		frappe.msgprint("Maintenance Duration (Days): {}".format(total_days.days))
 		frappe.msgprint(_("Sales Order Created"))
