@@ -29,7 +29,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-13 12:00:17.584114",
+ "modified": "2024-01-17 13:05:43.097667",
  "modified_by": "Administrator",
  "module": "SimpaTec",
  "name": "Contact Set",
@@ -52,5 +52,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "title"
+ "title_field": "title",
+ "track_changes": 1
 }
