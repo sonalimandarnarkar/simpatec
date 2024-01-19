@@ -5,7 +5,7 @@ import json
 import frappe
 from frappe import _
 from frappe.utils import cstr
-
+import copy
 
 def execute(filters=None):
 	data = get_data(filters)
@@ -31,18 +31,20 @@ def get_data(filters):
 	)
 
 	for row in data:
-		row['action'] ='<button class="btn btn-sm" onclick="contact_set_control_panel.open_dialog({0}, {1}, {2}, {3}, {4}, {5}, {6})">{7}</button>'.format(
-			"'" + row.contact_set + "'",
-			"'" + row.contact_set_row + "'",
-			"'" + f"{row.first_name} {row.last_name}" + "'",
-			"'" + row.notes + "'" if row.notes else '',
-			"'" + row.status + "'" if row.status else '',
-			get_contact_info(row.contact, 'email'),
-			get_contact_info(row.contact, 'phone'),
-			_("Action"))
+		row_for_ui = get_row_for_ui(copy.copy(row))
+		row_for_ui['emails'] = get_contact_info(row_for_ui.contact, 'email')
+		row_for_ui['phone_nos'] = get_contact_info(row_for_ui.contact, 'phone')
+		row['action'] ='<button class="btn btn-sm" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action"))
 	
 	return data
 
+
+def get_row_for_ui(row):
+	for key, value in row.items():
+		if value is None:
+			row[key] = 'null'
+
+	return row
 
 def get_contact_info(contact, info_type):
 	if info_type not in ('email', 'phone'):

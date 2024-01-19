@@ -18,7 +18,19 @@ frappe.query_reports["Contact Set Action Panel"] = {
 		$(".custom-actions").hide();
 		$(".standard-actions").hide();
 
-		contact_set_control_panel.open_dialog = function (contact_set, contact_set_row, contact_name, notes, status, emails, phone_nos) {
+		contact_set_control_panel.open_dialog = function (row) {
+
+
+			let contact_set = (row["contact_set"] === 'null') ? null : row["contact_set"];
+			let contact_set_row = (row["contact_set_row"] === 'null') ? null : row["contact_set_row"];
+			let notes = (row["notes"] === 'null') ? null : row["notes"];
+			let status = (row["status"] === 'null') ? null : row["status"];
+			let emails = (row["emails"] === 'null') ? null : row["emails"];
+			let phone_nos = (row["phone_nos"] === 'null') ? null : row["phone_nos"];
+			let first_name = (row["first_name"] === 'null') ? null : row["first_name"];
+			let last_name = (row["last_name"] === 'null') ? null : row["last_name"];
+			let contact_name = (first_name && last_name) ? `${first_name} ${last_name}` : first_name;
+
 			var getContactInfoHtml = function (contactInfo, field, linkType, label) {
 				let contactInfoHtmlOutput = '';
 				let html_segment = "<span></span>"
