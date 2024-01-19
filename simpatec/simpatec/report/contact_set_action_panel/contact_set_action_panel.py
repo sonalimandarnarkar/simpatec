@@ -4,7 +4,7 @@
 import json
 import frappe
 from frappe import _
-from frappe.utils import cstr
+from frappe.utils import cstr, now, now_datetime, format_datetime
 import copy
 
 def execute(filters=None):
@@ -22,7 +22,7 @@ def get_data(filters):
 		"""
 		SELECT 
 			cs.title, csc.first_name, csc.last_name, csc.status, csc.last_action_on,
-			cs.name as contact_set, csc.name as contact_set_row, csc.contact, csc.notes
+			cs.name as contact_set, csc.name as contact_set_row, csc.contact
 		FROM `tabContact Set` cs
 		LEFT JOIN `tabContact Set Contacts` csc
 		ON csc.parent = cs.name 
@@ -34,6 +34,7 @@ def get_data(filters):
 		row_for_ui = get_row_for_ui(copy.copy(row))
 		row_for_ui['emails'] = get_contact_info(row_for_ui.contact, 'email')
 		row_for_ui['phone_nos'] = get_contact_info(row_for_ui.contact, 'phone')
+		row_for_ui['last_action_on'] = cstr(row_for_ui['last_action_on'])
 		row['action'] ='<button class="btn btn-sm" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action"))
 	
 	return data
@@ -115,15 +116,61 @@ def update_row_in_contact_set(contact_set, contact_set_row, data={}):
 
 	contact_set = frappe.get_doc("Contact Set", contact_set)
 	dirty = False
-	row_idx = None
 	for contact in contact_set.contact_set_contacts:
 		if contact.name == contact_set_row:
-			row_idx = contact.idx
-			if data.get("status") != contact.status:
+			if data.get("status") and data.get("status") != contact.status:
 				contact.status = data.get("status")
 				dirty = True
-			if data.get("notes") != contact.notes:
+			if data.get("notes") and data.get("notes") != contact.notes:
 				contact.notes = data.get("notes")
 				dirty = True
 	if dirty:
+		for contact in contact_set.contact_set_contacts:
+			if contact.name == contact_set_row:
+				contact.last_action_on = now()
+
 		contact_set.save()
+
+
+@frappe.whitelist()
+def get_row_log(contact_set, contact_set_row):
+	row_log = []
+	fields_for_log = ["status", "notes"]
+	data_format = "{} HH:mm:ss".format(frappe.db.get_single_value("System Settings", "date_format"))
+	versions = frappe.get_all("Version", filters={"ref_doctype": "Contact Set", "docname": contact_set}, fields=["data", "creation"], order_by="creation asc")
+	for version in versions:
+		data = json.loads(version.data)
+		added = data["added"]
+		row_changed = data["row_changed"]
+
+		for row_ad in added:
+			row_ad_table_fieldname = row_ad[0]
+			row_ad_table_fielddata = (row_ad[1])
+			if row_ad_table_fieldname == 'contact_set_contacts' and row_ad_table_fielddata.get("name") == contact_set_row:
+				log_dict = {
+					"event": "Created On",
+					"status": row_ad_table_fielddata.get("status"),
+					"date": format_datetime(row_ad_table_fielddata.get("creation"), format_string=data_format)
+				}
+				row_log.append(log_dict)
+
+		for row_ch in row_changed:
+			if row_ch[2] == contact_set_row:
+				row_change = row_ch[3]
+				log_dict = {}
+				fields_for_log_exist = False
+				for d in row_change:
+					log_field = d[0]
+					old_data = d[1]
+					new_data = d[2]
+
+					if log_field in fields_for_log:
+						fields_for_log_exist = True
+						log_dict[log_field] = new_data
+
+				if fields_for_log_exist:
+					log_dict["event"] = "Updated On"
+					log_dict["date"] = format_datetime(version.creation, format_string=data_format)
+					row_log.append(log_dict)
+
+	return row_log
