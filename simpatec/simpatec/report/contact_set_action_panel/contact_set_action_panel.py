@@ -32,10 +32,11 @@ def get_data(filters):
 
 	for row in data:
 		row_for_ui = get_row_for_ui(copy.copy(row))
-		row_for_ui['emails'] = get_contact_info(row_for_ui.contact, 'email')
-		row_for_ui['phone_nos'] = get_contact_info(row_for_ui.contact, 'phone')
-		row_for_ui['last_action_on'] = cstr(row_for_ui['last_action_on'])
+		row_for_ui["emails"] = get_contact_info(row_for_ui.contact, "email")
+		row_for_ui["phone_nos"] = get_contact_info(row_for_ui.contact, "phone")
+		row_for_ui["last_action_on"] = cstr(row_for_ui["last_action_on"])
 		row['action'] ='<button class="btn btn-sm" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action"))
+
 	
 	return data
 
@@ -43,20 +44,17 @@ def get_data(filters):
 def get_row_for_ui(row):
 	for key, value in row.items():
 		if value is None:
-			row[key] = 'null'
+			row[key] = "null"
 
 	return row
 
 def get_contact_info(contact, info_type):
-	if info_type not in ('email', 'phone'):
-		raise frappe.throw("Invalid info_type. Use 'email' or 'phone'.")
-
-	field_name = 'email_id' if info_type == 'email' else 'phone'
-	parentfield = 'email_ids' if info_type == 'email' else 'phone_nos'
+	field_name = "email_id" if info_type == "email" else "phone"
+	parentfield = "email_ids" if info_type == "email" else "phone_nos"
 	data = frappe.db.sql(
 		"""
 		SELECT {field} FROM `tabContact {Type}`
-		WHERE parent = %s and parenttype = 'Contact' and parentfield = '{parentfield}' ORDER BY creation ASC""".format(field=field_name, parentfield=parentfield, Type=info_type.capitalize()),
+		WHERE parent = %s and parenttype = "Contact" and parentfield = "{parentfield}" ORDER BY creation ASC""".format(field=field_name, parentfield=parentfield, Type=info_type.capitalize()),
 		(contact,),
 		as_dict=1
 	)
@@ -146,7 +144,7 @@ def get_row_log(contact_set, contact_set_row):
 		for row_ad in added:
 			row_ad_table_fieldname = row_ad[0]
 			row_ad_table_fielddata = (row_ad[1])
-			if row_ad_table_fieldname == 'contact_set_contacts' and row_ad_table_fielddata.get("name") == contact_set_row:
+			if row_ad_table_fieldname == "contact_set_contacts" and row_ad_table_fielddata.get("name") == contact_set_row:
 				log_dict = {
 					"event": "Created On",
 					"status": row_ad_table_fielddata.get("status"),
