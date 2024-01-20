@@ -3,12 +3,12 @@
 
 import frappe
 from frappe import _
+from frappe.utils import now
 
 def execute(filters=None):
 	data = get_data(filters)
 	columns = get_columns()
 	return columns, data
-
 
 
 def get_data(filters):
@@ -96,7 +96,9 @@ def update_row_in_contact_set(contact, contact_row, contact_set):
 		"last_name": contact_detail.get("last_name"),
 		"email_id": contact_detail.get("email_id"),
 		"link_doctype": contact_row_detail.get("link_doctype"),
-		"link_name": contact_row_detail.get("link_name")
+		"link_name": contact_row_detail.get("link_name"),
+		"status": "New",
+		"last_action_on": now()
 	})
 	
 	contact_set.save()
