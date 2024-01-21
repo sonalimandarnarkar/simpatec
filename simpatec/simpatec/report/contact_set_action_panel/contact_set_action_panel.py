@@ -35,7 +35,7 @@ def get_data(filters):
 		row_for_ui["emails"] = get_contact_info(row_for_ui.contact, "email")
 		row_for_ui["phone_nos"] = get_contact_info(row_for_ui.contact, "phone")
 		row_for_ui["last_action_on"] = cstr(row_for_ui["last_action_on"])
-		row['action'] ='<button class="btn btn-primary btn-sm primary-action" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action 📝"))
+		row["action"] ='<button class="btn btn-primary btn-sm primary-action" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action 📝"))
 		if row.get("status"):
 			row["status"] = '<span class="indicator-pill {0}"><span>{1}</span><span></span></span>'.format(status_collor_map.get(row["status"]), row["status"])
 
@@ -127,6 +127,7 @@ def update_row_in_contact_set(contact_set, contact_set_row, notes=None, status=N
 				contact.last_action_on = now()
 
 		contact_set.save()
+		return {"status": "updated"}
 
 
 @frappe.whitelist()
