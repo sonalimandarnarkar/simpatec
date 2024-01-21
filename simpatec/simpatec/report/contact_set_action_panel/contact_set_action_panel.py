@@ -13,7 +13,6 @@ def execute(filters=None):
 	return columns, data
 
 
-
 def get_data(filters):
 	if not filters.get("contact_set"):
 		return
@@ -29,15 +28,17 @@ def get_data(filters):
 		WHERE cs.name = %s and csc.parent IS NOT NULL ORDER BY csc.creation ASC""", (filters.get("contact_set")),
 		as_dict=1,
 	)
+	status_collor_map = {"New": "purple", "In Work": "green", "Rejected": "red", "Opportunity": "blue"}
 
 	for row in data:
 		row_for_ui = get_row_for_ui(copy.copy(row))
 		row_for_ui["emails"] = get_contact_info(row_for_ui.contact, "email")
 		row_for_ui["phone_nos"] = get_contact_info(row_for_ui.contact, "phone")
 		row_for_ui["last_action_on"] = cstr(row_for_ui["last_action_on"])
-		row['action'] ='<button class="btn btn-sm" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action"))
+		row['action'] ='<button class="btn btn-primary btn-sm primary-action" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action 📝"))
+		if row.get("status"):
+			row["status"] = '<span class="indicator-pill {0}"><span>{1}</span><span></span></span>'.format(status_collor_map.get(row["status"]), row["status"])
 
-	
 	return data
 
 
@@ -85,28 +86,26 @@ def get_columns():
 			"label": _("Action"),
 			"fieldtype": "Button",
 			"fieldname": "action",
-			"width": 180
+			"width": 100
 		},
 		{
 			"label": _("Status"),
 			"fieldtype": "Data",
 			"fieldname": "status",
-			"width": 180
+			"width": 130
 		},
 		{
 			"label": _("Last Action On"),
 			"fieldtype": "Datetime",
 			"fieldname": "last_action_on",
-			"width": 180
+			"width": 130
 		}
 	]
 	return columns
 
 
 @frappe.whitelist()
-def update_row_in_contact_set(contact_set, contact_set_row, data={}):
-	if isinstance(data, str):
-		data = json.loads(data)
+def update_row_in_contact_set(contact_set, contact_set_row, notes=None, status=None):
 
 	if not frappe.db.exists("Contact Set", contact_set):
 		frappe.throw("Invalid Contact Set")
@@ -116,11 +115,11 @@ def update_row_in_contact_set(contact_set, contact_set_row, data={}):
 	dirty = False
 	for contact in contact_set.contact_set_contacts:
 		if contact.name == contact_set_row:
-			if data.get("status") and data.get("status") != contact.status:
-				contact.status = data.get("status")
+			if status and status != contact.status:
+				contact.status = status
 				dirty = True
-			if data.get("notes") and data.get("notes") != contact.notes:
-				contact.notes = data.get("notes")
+			if notes:
+				contact.notes = notes
 				dirty = True
 	if dirty:
 		for contact in contact_set.contact_set_contacts:

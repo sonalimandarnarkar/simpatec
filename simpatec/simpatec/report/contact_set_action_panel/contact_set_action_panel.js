@@ -18,16 +18,34 @@ frappe.query_reports["Contact Set Action Panel"] = {
 		$(".custom-actions").hide();
 		// $(".standard-actions").hide();
 
+		contact_set_control_panel.update_row_in_contact_set = function (contact_set, contact_set_row, notes, status) {
+			frappe.call({
+				method: "simpatec.simpatec.report.contact_set_action_panel.contact_set_action_panel.update_row_in_contact_set",
+				args: {
+					contact_set: contact_set,
+					contact_set_row: contact_set_row,
+					notes: notes,
+					status: status
+				},
+				callback: function (r) {
+					frappe.ui.hide_open_dialog();
+					report.refresh();
+				}
+			})
+		}
+
 		contact_set_control_panel.open_dialog = function (row) {
-			var getContactInfoHtml = function (contactInfo, field, linkType, label) {
+			var getContactInfoHtml = function (contactInfo, field, linkType, label, contact_set, contact_set_row) {
 				let contactInfoHtmlOutput = "";
-				let html_segment = ""
+				let html_segment = "";
 
 				let linkPrefix = (linkType === "email") ? "mailto:" : "tel:";			
 				contactInfo.forEach(infoObj => {
 					let value = infoObj[field.toLowerCase()];
-					let link = `${linkPrefix}${value}`;					
-					let divElement = `<p><a href="${link}">${value}</a></p>`;			
+					let link = `${linkPrefix}${value}`;
+					let notes = `Outdoing call on ${value}`
+					let divElement = `<p><span><button type="button" class="btn btn-primary btn-sm"><a href="${link}" onclick="contact_set_control_panel.update_row_in_contact_set('${contact_set}', '${contact_set_row}', '${notes}')">📞</a></button></span><span>${value}</span></p>`;
+
 					contactInfoHtmlOutput += divElement;
 				});
 
@@ -56,18 +74,15 @@ frappe.query_reports["Contact Set Action Panel"] = {
 					callback:  function (r) {
 						let row_log = r.message;
 						row_log.forEach(log => {
+							console.log(log);
 							let date = log["date"];
 							let event = log["event"];
 							let notes = log["notes"];
 							let status = log["status"];
-
 							if (date) {
-								let status_html = (status) ? `<p class="pl-3">Status : ${status}</p>` : ``;	
+								let status_html = (status) ? `<span >Status : ${status}</span>` : ``;	
 								let notes_html = (notes) ? `<p class="pl-3">Notes : ${notes}</p>` : ``;	
-								let divElement = `<div>
-								<p>${event}: ${date}</p>
-								${status_html} ${notes_html}
-								</div>`;
+								let divElement = `<div><p>${date} ${status_html}</p>${notes_html}</div>`;
 								rowLogInfoHtmlOutput += divElement;
 							}
 						});
@@ -95,7 +110,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			let last_name = (row["last_name"] === "null") ? null : row["last_name"];
 			let contact_name = (first_name && last_name) ? `${first_name} ${last_name}` : first_name;
 
-			let d = new frappe.ui.Dialog({
+			let dialog = new frappe.ui.Dialog({
 				title: "Take Action",
 				// size: "large",
 				 size: "extra-large",
@@ -111,14 +126,14 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						label: "Email Address",
 						fieldname: "email_address",
 						fieldtype: "HTML",
-						options: getContactInfoHtml(emails, "email_id", "email", "Emails"),
+						options: getContactInfoHtml(emails, "email_id", "email", "Emails", contact_set, contact_set_row),
 						hidden: 1
 					},
 					{
 						label: "Phone Nos",
 						fieldname: "phone_nos",
 						fieldtype: "HTML",
-						options: getContactInfoHtml(phone_nos, "phone", "phone", "Phone Nos")
+						options: getContactInfoHtml(phone_nos, "phone", "phone", "Phone Nos", contact_set, contact_set_row)
 					},
 					{
 						fieldname: "colbreak1234",
@@ -146,27 +161,15 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						fieldname: "notes",
 						fieldtype: "Small Text"
 					},
-
 				],
 				primary_action_label: "Update",
 				primary_action() {
-					var data = d.get_values();
-					frappe.call({
-						method: "simpatec.simpatec.report.contact_set_action_panel.contact_set_action_panel.update_row_in_contact_set",
-						args: {
-							contact_set: contact_set,
-							contact_set_row: contact_set_row,
-							data: data
-						},
-						callback: function (r) {
-							report.refresh();
-						}
-					})
-
-					d.hide();
+					var data = dialog.get_values();
+					contact_set_control_panel.update_row_in_contact_set(contact_set, contact_set_row, data.notes, data.status);
+					// dialog.hide();
 				}
 			});
-			d.show();
+			dialog.show();
 		}
 	}
 };
