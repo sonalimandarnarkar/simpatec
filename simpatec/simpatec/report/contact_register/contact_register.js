@@ -11,6 +11,11 @@ frappe.query_reports["Contact Register"] = {
 	onload: async function (report) {
 		$(".custom-actions").hide();
 		$(".standard-actions").hide();
+		// $(".page-actions").append(`<button class='btn btn-default btn-sm ellipsis contact-set-route' onclick='route_to_contact_set()'>Goto Contact Set</button>`);
+		// route_to_contact_set = function () {
+		// 	frappe.set_route("List", "Contact Set");
+		// 	$(".contact-set-route").hide();
+		// }
 
 		contact_register.open_dialog = function (contact, contact_row) {
 			let d = new frappe.ui.Dialog({
