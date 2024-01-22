@@ -182,9 +182,9 @@ standard_queries = {
 }
 
 
-fixtures = [
-	{
-		'dt': 'DocType Link',
-		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
-	}
-]
+# fixtures = [
+# 	{
+# 		'dt': 'DocType Link',
+# 		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
+# 	}
+# ]
