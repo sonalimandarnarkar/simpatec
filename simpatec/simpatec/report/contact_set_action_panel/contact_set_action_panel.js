@@ -54,8 +54,10 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						let event = log["event"];
 						let notes = log["notes"];
 						let status = log["status"];
+						let status_color = log["status_color"];
 						if (date) {
-							let status_html = (status) ? `<span >Status : ${status}</span>` : ``;	
+							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
+							let status_html = (status) ? `<span >Status: </span><span ${status_color_html}>${status}</span>` : ``;	
 							let notes_html = (notes) ? `<p class="pl-3">Notes : ${notes}</p>` : ``;	
 							let divElement = `<div><p>${date} ${status_html}</p>${notes_html}</div>`;
 							rowLogInfoHtmlOutput += divElement;
@@ -80,11 +82,12 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			let contactInfoHtmlOutput = "";
 			let html_segment = "";
 
-			let linkPrefix = (linkType === "email") ? "mailto:" : "tel:";			
+			let linkPrefix = (linkType === "email") ? "mailto:" : "tel:";
+			let action = (linkType === "email") ? "Sending Email to" : "Outgoing Call on";		
 			contactInfo.forEach(infoObj => {
 				let value = infoObj[field.toLowerCase()];
 				let link = `${linkPrefix}${value}`;
-				let notes = `Outdoing call on ${value}`
+				let notes = `${action} ${value}`
 				let divElement = `<p><span><button type="button" class="btn btn-primary btn-sm"><a href="${link}" onclick="contact_set_control_panel.update_row_in_contact_set('${contact_set}', '${contact_set_row}', '${notes}')">📞</a></button></span><span>${value}</span></p>`;
 
 				contactInfoHtmlOutput += divElement;
@@ -129,7 +132,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						fieldname: "email_address",
 						fieldtype: "HTML",
 						options: getContactInfoHtml(emails, "email_id", "email", "Emails", contact_set, contact_set_row),
-						hidden: 1
+						// hidden: 1
 					},
 					{
 						label: "Phone Nos",

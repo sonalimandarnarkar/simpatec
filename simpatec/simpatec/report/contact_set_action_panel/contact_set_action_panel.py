@@ -7,6 +7,8 @@ from frappe import _
 from frappe.utils import cstr, now, now_datetime, format_datetime
 import copy
 
+status_collor_map = {"New": "purple", "In Work": "green", "Rejected": "red", "Opportunity": "blue"}
+
 def execute(filters=None):
 	data = get_data(filters)
 	columns = get_columns()
@@ -28,7 +30,6 @@ def get_data(filters):
 		WHERE cs.name = %s and csc.parent IS NOT NULL ORDER BY csc.creation ASC""", (filters.get("contact_set")),
 		as_dict=1,
 	)
-	status_collor_map = {"New": "purple", "In Work": "green", "Rejected": "red", "Opportunity": "blue"}
 
 	for row in data:
 		row_for_ui = get_row_for_ui(copy.copy(row))
@@ -68,19 +69,19 @@ def get_columns():
 			"label": _("Title"),
 			"fieldtype": "Data",
 			"fieldname": "title",
-			"width": 180
+			"width": 220
 		},
 		{
 			"label": _("First Name"),
 			"fieldtype": "Data",
 			"fieldname": "first_name",
-			"width": 180
+			"width": 220
 		},
 		{
 			"label": _("Last Name"),
 			"fieldtype": "Data",
 			"fieldname": "last_name",
-			"width": 180
+			"width": 220
 		},
 		{
 			"label": _("Action"),
@@ -92,13 +93,13 @@ def get_columns():
 			"label": _("Status"),
 			"fieldtype": "Data",
 			"fieldname": "status",
-			"width": 130
+			"width": 100
 		},
 		{
 			"label": _("Last Action On"),
 			"fieldtype": "Datetime",
 			"fieldname": "last_action_on",
-			"width": 130
+			"width": 220
 		}
 	]
 	return columns
@@ -148,6 +149,7 @@ def get_row_log(contact_set, contact_set_row):
 				log_dict = {
 					"event": "Created On",
 					"status": row_ad_table_fielddata.get("status"),
+					"status_color": status_collor_map.get(row_ad_table_fielddata.get("status")),
 					"date": format_datetime(row_ad_table_fielddata.get("creation"), format_string=data_format)
 				}
 				row_log.append(log_dict)
@@ -163,6 +165,9 @@ def get_row_log(contact_set, contact_set_row):
 					new_data = d[2]
 
 					if log_field in fields_for_log:
+						if log_field == "status":
+							log_dict["status_color"] = status_collor_map.get(new_data)
+
 						fields_for_log_exist = True
 						log_dict[log_field] = new_data
 
