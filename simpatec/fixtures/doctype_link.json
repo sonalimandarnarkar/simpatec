@@ -13,7 +13,7 @@
   "parent": "Contact",
   "parent_doctype": null,
   "parentfield": "links",
-  "parenttype": "Customize Form",
+  "parenttype": "Customize Form" ,
   "table_fieldname": null
  }
 ]
