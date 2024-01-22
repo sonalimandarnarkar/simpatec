@@ -28,7 +28,6 @@ frappe.query_reports["Contact Set Action Panel"] = {
 					status: status
 				},
 				callback: function (r) {
-					console.log(r.message.status)
 					if (r.message && r.message.status === "updated") {
 						frappe.ui.hide_open_dialog();
 						report.refresh();
@@ -85,10 +84,10 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			let linkPrefix = (linkType === "email") ? "mailto:" : "tel:";
 			let action = (linkType === "email") ? "Sending Email to" : "Outgoing Call on";		
 			contactInfo.forEach(infoObj => {
-				let value = infoObj[field.toLowerCase()];
-				let link = `${linkPrefix}${value}`;
-				let notes = `${action} ${value}`
-				let divElement = `<p><span><button type="button" class="btn btn-primary btn-sm"><a href="${link}" onclick="contact_set_control_panel.update_row_in_contact_set('${contact_set}', '${contact_set_row}', '${notes}')">📞</a></button></span><span>${value}</span></p>`;
+				let contact_medium = infoObj[field.toLowerCase()];
+				let link = `${linkPrefix}${contact_medium}`;
+				let notes = `${action} <b> ${contact_medium}</b>`
+				let divElement = `<p><span><button type="button" class="btn btn-primary btn-sm"><a href="${link}" onclick="contact_set_control_panel.update_row_in_contact_set('${contact_set}', '${contact_set_row}', '${notes}')">📞</a></button></span><span>${contact_medium}</span></p>`;
 
 				contactInfoHtmlOutput += divElement;
 			});
@@ -132,7 +131,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						fieldname: "email_address",
 						fieldtype: "HTML",
 						options: getContactInfoHtml(emails, "email_id", "email", "Emails", contact_set, contact_set_row),
-						// hidden: 1
+						hidden: 1
 					},
 					{
 						label: "Phone Nos",
