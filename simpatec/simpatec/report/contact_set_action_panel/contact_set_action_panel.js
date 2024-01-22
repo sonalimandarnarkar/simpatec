@@ -57,7 +57,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						if (date) {
 							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
 							let status_html = (status) ? `<span >Status: </span><span ${status_color_html}>${status}</span>` : ``;	
-							let notes_html = (notes) ? `<p class="pl-3">Notes : ${notes}</p>` : ``;	
+							let notes_html = (notes) ? `<p class="pl-3">Notes : <i>${notes}</i></p>` : ``;	
 							let divElement = `<div><p>${date} ${status_html}</p>${notes_html}</div>`;
 							rowLogInfoHtmlOutput += divElement;
 						}
@@ -86,7 +86,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			contactInfo.forEach(infoObj => {
 				let contact_medium = infoObj[field.toLowerCase()];
 				let link = `${linkPrefix}${contact_medium}`;
-				let notes = `${action} <b> ${contact_medium}</b>`
+				let notes = `${action} ${contact_medium}`
 				let divElement = `<p><span><button type="button" class="btn btn-primary btn-sm"><a href="${link}" onclick="contact_set_control_panel.update_row_in_contact_set('${contact_set}', '${contact_set_row}', '${notes}')">📞</a></button></span><span>${contact_medium}</span></p>`;
 
 				contactInfoHtmlOutput += divElement;
