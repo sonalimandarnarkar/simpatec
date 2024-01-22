@@ -176,8 +176,6 @@ def get_custom_fields():
 			"fieldname": "item_language",
 			"fieldtype": "Link",
 			"options": "Language",
-			"reqd":1,
-			"insert_after": "col_break1"
 		},
 		{
 			"label": "Start Date",
