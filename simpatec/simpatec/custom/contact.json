@@ -1,4 +1,5 @@
 {
+ "custom_fields": [],
  "custom_perms": [],
  "doctype": "Contact",
  "links": [
@@ -23,5 +24,6 @@
    "table_fieldname": "contact_set_contacts"
   }
  ],
+ "property_setters": [],
  "sync_on_migrate": 1
 }
