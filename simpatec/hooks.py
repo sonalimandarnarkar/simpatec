@@ -180,3 +180,11 @@ user_data_fields = [
 standard_queries = {
 	"Contact": "simpatec.custom_queries.custom_contact_query"
 }
+
+
+fixtures = [
+	{
+		'dt': 'DocType Link',
+		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
+	}
+]
