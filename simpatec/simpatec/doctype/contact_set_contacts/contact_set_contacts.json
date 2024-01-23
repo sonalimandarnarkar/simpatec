@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-12 12:26:51.985529",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contact",
+  "first_name",
+  "last_name",
+  "email_id",
+  "phone_number",
+  "column_break_chzi4",
+  "contact_row",
+  "link_name",
+  "link_doctype",
+  "column_break_pywbl",
+  "status",
+  "last_action_on",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email Address",
+   "options": "Email"
+  },
+  {
+   "fieldname": "column_break_chzi4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "link_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Link Name"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "contact_row",
+   "fieldtype": "Data",
+   "label": "Contact row"
+  },
+  {
+   "fieldname": "link_doctype",
+   "fieldtype": "Link",
+   "label": "Link Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "column_break_pywbl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "New\nIn Work\nRejected\nOpportunity"
+  },
+  {
+   "fieldname": "last_action_on",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Last Action On"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-18 12:48:12.716907",
+ "modified_by": "Administrator",
+ "module": "SimpaTec",
+ "name": "Contact Set Contacts",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

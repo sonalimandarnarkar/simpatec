@@ -107,7 +107,7 @@ def get_custom_fields():
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow Up Maintenance\nOther",
+			"options": "\nFirst Sale\nFollow Up Maintenance\nRTO\nSubscription Annual\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
 		},
