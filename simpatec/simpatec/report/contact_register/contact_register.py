@@ -5,6 +5,8 @@ import frappe
 from frappe import _
 from frappe.utils import now
 
+
+@frappe.whitelist()
 def execute(filters=None):
 	data = get_data(filters)
 	columns = get_columns()
@@ -12,18 +14,20 @@ def execute(filters=None):
 
 
 def get_data(filters):
+	contacts = frappe.db.get_list("Contact", fields="name", filters=filters)
+	contacts = tuple(contact.name for contact in contacts)
 	data = frappe.db.sql(
 		"""
 		select c.name as contact, dl.name as contact_row, c.first_name, c.last_name, c.email_id, 
-		dl.link_doctype as ref_type, dl.link_name as ref_name
+		dl.link_doctype as ref_type, dl.link_name as ref_name, dl.link_title as ref_title
 		from
 			`tabContact` c, `tabDynamic Link` dl
-		where dl.parent = c.name and dl.link_doctype in ('Customer', 'Supplier')""",
-		as_dict=1,
+		where dl.parent = c.name and c.name in (%s)""" % (",".join(["%s"] * len(contacts))), contacts, as_dict=1,
 	)
 
 	for d in data:
-		d['contact_reference'] = '<a href="/app/Form/{0}/{1}" >Customer {1}</a>'.format(d.get('ref_type'), d.get('ref_name'))
+		ref_title = d.get('ref_title') if d.get('ref_title') == d.get('ref_name') else "{0}: {1}".format(d.get('ref_name'), d.get('ref_title'))
+		d['contact_reference'] = '<a href="/app/Form/{0}/{1}" >{2} ({0})</a>'.format(d.get('ref_type'), d.get('ref_name'), ref_title)
 		d['add_to_contact_group'] ='<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>'.format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
 	
 	return data
