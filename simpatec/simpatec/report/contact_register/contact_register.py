@@ -14,16 +14,18 @@ def execute(filters=None):
 
 
 def get_data(filters):
+	data = []
 	contacts = frappe.db.get_list("Contact", fields="name", filters=filters)
-	contacts = tuple(contact.name for contact in contacts)
-	data = frappe.db.sql(
-		"""
-		select c.name as contact, dl.name as contact_row, c.first_name, c.last_name, c.email_id, 
-		dl.link_doctype as ref_type, dl.link_name as ref_name, dl.link_title as ref_title
-		from
-			`tabContact` c, `tabDynamic Link` dl
-		where dl.parent = c.name and c.name in (%s)""" % (",".join(["%s"] * len(contacts))), contacts, as_dict=1,
-	)
+	if contacts:
+		contacts = tuple(contact.name for contact in contacts)
+		data = frappe.db.sql(
+			"""
+			select c.name as contact, dl.name as contact_row, c.first_name, c.last_name, c.email_id, 
+			dl.link_doctype as ref_type, dl.link_name as ref_name, dl.link_title as ref_title
+			from
+				`tabContact` c, `tabDynamic Link` dl
+			where dl.parent = c.name and c.name in (%s)""" % (",".join(["%s"] * len(contacts))), contacts, as_dict=1,
+		)
 
 	for d in data:
 		ref_title = d.get('ref_title') if d.get('ref_title') == d.get('ref_name') else "{0}: {1}".format(d.get('ref_name'), d.get('ref_title'))
