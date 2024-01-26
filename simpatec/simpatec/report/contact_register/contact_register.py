@@ -78,7 +78,7 @@ def get_columns():
 			"fieldname": "contact_reference",
 			"fieldtype": "Data",
 			# "hidden": 1,
-			"width": 180
+			"width": 250
 		},
 
 	]
