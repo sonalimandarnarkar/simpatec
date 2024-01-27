@@ -46,7 +46,6 @@ def get_columns():
 			"label": _("Select"),
 			"fieldname": "check_bulk_select",
 			"fieldtype": "Button",
-			# "hidden": 1,
 			"width": 70
 		},
 		{
@@ -60,21 +59,18 @@ def get_columns():
 			"fieldname": "contact",
 			"fieldtype": "Link",
 			"options": "Contact",
-			# "hidden": 1,
 			"width": 180
 		},
 		{
 			"label": _("First Name"),
 			"fieldname": "first_name",
 			"fieldtype": "Data",
-			# "hidden": 1,
 			"width": 180
 		},
 		{
 			"label": _("Last Name"),
 			"fieldname": "last_name",
 			"fieldtype": "Data",
-			# "hidden": 1,
 			"width": 180
 		},
 		{
@@ -82,14 +78,12 @@ def get_columns():
 			"fieldname": "email_id",
 			"fieldtype": "Data",
 			"options": "Email",
-			# "hidden": 1,
 			"width": 180
 		},
 		{
 			"label": _("Contact Reference"),
 			"fieldname": "contact_reference",
 			"fieldtype": "Data",
-			# "hidden": 1,
 			"width": 250
 		},
 

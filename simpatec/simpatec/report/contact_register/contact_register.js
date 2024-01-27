@@ -39,7 +39,6 @@ frappe.query_reports["Contact Register"] = {
 						},
 						callback: function (r) {
 							report.refresh()
-							// frappe.msgprint(`A new ProMa Checklist was created: <a href="/app/proma-checklist/${r.message}">${r.message}</a>`, "Success")
 						}
 					})
 
@@ -129,12 +128,10 @@ var make_filter_list = function () {
 
 	var filter_button = filter_list_wrapper.find(".filter-button");
 	this.filter_list = new frappe.ui.FilterGroup({
-		// base_list: this.list_view,
 		parent: filter_list_wrapper,
 		doctype: "Contact",
 		filter_button: filter_button,
 		default_filters: [],
-		// on_change: () => {},
 		on_change: () => {
 			var filters = this.filter_list.get_filters();
 			frappe.call({
