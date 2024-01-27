@@ -21,7 +21,7 @@ def get_data(filters):
 		data = frappe.db.sql(
 			"""
 			select c.name as contact, dl.name as contact_row, c.first_name, c.last_name, c.email_id, 
-			dl.link_doctype as ref_type, dl.link_name as ref_name, dl.link_title as ref_title
+			dl.link_doctype as ref_type, dl.name as contact_row_reference, dl.link_name as ref_name, dl.link_title as ref_title
 			from
 				`tabContact` c, `tabDynamic Link` dl
 			where dl.parent = c.name and c.name in (%s)""" % (",".join(["%s"] * len(contacts))), contacts, as_dict=1,
@@ -30,7 +30,12 @@ def get_data(filters):
 	for d in data:
 		ref_title = d.get('ref_title') if d.get('ref_title') == d.get('ref_name') else "{0}: {1}".format(d.get('ref_name'), d.get('ref_title'))
 		d['contact_reference'] = '<a href="/app/Form/{0}/{1}" >{2} ({0})</a>'.format(d.get('ref_type'), d.get('ref_name'), ref_title)
-		d['add_to_contact_group'] ='<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>'.format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
+		d['add_to_contact_group'] ="""
+			<div>
+				<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>
+			</div>
+		""".format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
+		d['check_bulk_select'] ='<input class="bulk-select-contact-set" type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
 	
 	return data
 
@@ -38,10 +43,17 @@ def get_data(filters):
 def get_columns():
 	columns = [
 		{
+			"label": _("Select"),
+			"fieldname": "check_bulk_select",
+			"fieldtype": "Button",
+			# "hidden": 1,
+			"width": 70
+		},
+		{
 			"label": _("Action"),
 			"fieldtype": "Button",
 			"fieldname": "add_to_contact_group",
-			"width": 180
+			"width": 280
 		},
 		{
 			"label": _("Contact"),
@@ -86,7 +98,7 @@ def get_columns():
 
 
 @frappe.whitelist()
-def update_row_in_contact_set(contact, contact_row, contact_set):
+def update_row_in_contact_set(contact, contact_row, contact_set, show_success_msg=True):
 	if not frappe.db.exists("Contact Set", contact_set):
 		frappe.throw("Invalid Contact Set")
 
@@ -108,4 +120,29 @@ def update_row_in_contact_set(contact, contact_row, contact_set):
 	})
 	
 	contact_set.save()
-	frappe.msgprint(_("Added Contact to {0} ✅").format(frappe.get_desk_link("Contact Set", contact_set.name)))
+	if show_success_msg:
+		frappe.msgprint(_("Added Contact to {0} ✅").format(frappe.get_desk_link("Contact Set", contact_set.name)))
+
+
+@frappe.whitelist()
+def bulk_update_row_in_contact_set(contact_set, bulk_update_rows):
+	bulk_update_rows = frappe.parse_json(bulk_update_rows)
+	failed = []
+	for i, d in enumerate(bulk_update_rows, 1):
+		if d.get("contact") and d.get("contact_row"):
+			try:
+				update_row_in_contact_set(d.get("contact"), d.get("contact_row"), contact_set, show_success_msg=False)
+				frappe.db.commit()
+				show_progress(bulk_update_rows, "Updating Contact Set", i, d)
+
+			except Exception:
+				failed.append(d)
+				frappe.db.rollback()
+
+	return failed
+
+
+def show_progress(docnames, message, i, description):
+	n = len(docnames)
+	if n >= 10:
+		frappe.publish_progress(float(i) * 100 / n, title=message, description=description)
