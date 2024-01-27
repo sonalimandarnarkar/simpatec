@@ -12,8 +12,8 @@ frappe.query_reports["Contact Register"] = {
 		$(".custom-actions").hide();
 		$(".standard-actions").hide();
 		make_filter_list();
-		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="bulk_update_contact_set()">Bulk Update Contact Set</button>`);
-		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="route_to_contact_set()">Goto Contact Set</button>`);
+		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="bulk_update_contact_set()">Add selected to Contact Set</button>`);
+		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="route_to_contact_set()">Go to Contact Set</button>`);
 
 		contact_register.open_dialog = function (contact, contact_row) {
 			let d = new frappe.ui.Dialog({
