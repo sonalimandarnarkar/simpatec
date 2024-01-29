@@ -17,7 +17,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 				if (contact_set) {
 					frappe.db.get_value("Contact Set", contact_set, "title", function(value) {
 						contact_set_title_wrapper.remove();
-						contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-2" data-fieldtype="HTML" data-fieldname="title" title="" data-original-title="Contact Set Title"><h3>${value["title"]}</h3></div>`;
+						contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-2" data-fieldtype="HTML" data-fieldname="title" title="" data-original-title="Contact Set Title"><h3><i>${value["title"]}</i></h3></div>`;
 						$('.page-form.flex').append(contact_set_title_wrapper);
 					});
 				} else {
@@ -72,9 +72,9 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						let status_color = log["status_color"];
 						if (date) {
 							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
-							let status_html = (status) ? `<span >Status: </span><span ${status_color_html}>${status}</span>` : ``;	
+							let status_html = (status) ? `<span ${status_color_html}>${status}</span>` : ``;	
 							let notes_html = (notes) ? `<p class="pl-3">Notes : <i>${notes}</i></p>` : ``;	
-							let divElement = `<div><p>${date} ${status_html}</p><p>Created by: ${owner}</p>${notes_html}</div>`;
+							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}</p>${notes_html}</div>`;
 							rowLogInfoHtmlOutput += divElement;
 						}
 					});
@@ -204,7 +204,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 function add_contact_to_contact_set(report) {
 	let contact_set = frappe.query_report.get_filter_value('contact_set');
 	if (!contact_set) {
-		frappe.throw("Please set Contact Set Filter")
+		frappe.throw("Please set Contact Set Filter");
 	}
 
 
@@ -225,12 +225,12 @@ function add_contact_to_contact_set(report) {
 		action(selections, args) {
 			let contacts = selections;
 			let contact_rows = args.filtered_children;
-			console.log(contacts);
-			console.log(contacts.length);
-			console.log(contact_rows);
-			console.log(contact_rows.length);
+			let bulk_update_rows = [];
+
+			if (contacts.length < 1){
+				frappe.throw("Please select Contact");
+			}
 			if (contacts.length > 0 && contact_rows.length > 0) {
-				let bulk_update_rows = [];
 
 				for (let i = 0; i < contacts.length; i++) {
 					let contactObject = {
@@ -254,6 +254,7 @@ function add_contact_to_contact_set(report) {
 						frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${contact_set}" style="font-weight: bold;">${contact_set}</a> ✅`));
 					}
 				})
+
 				d.dialog.hide();
 			}
 		}
