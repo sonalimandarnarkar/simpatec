@@ -52,7 +52,7 @@ def get_columns():
 			"label": _("Action"),
 			"fieldtype": "Button",
 			"fieldname": "add_to_contact_group",
-			"width": 280
+			"width": 150
 		},
 		{
 			"label": _("Contact"),
