@@ -35,7 +35,7 @@ def get_data(filters):
 				<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>
 			</div>
 		""".format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
-		d['check_bulk_select'] ='<input class="bulk-select-contact-set" type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
+		d['check_bulk_select'] ='<input class="bulk-select-contact-set" data-contact={0} data-contact-row={1} type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
 	
 	return data
 
@@ -75,7 +75,7 @@ def get_columns():
 		},
 		{
 			"label": _("Email Address"),
-			"fieldname": "email_id",
+			"fieldname": "email_address",
 			"fieldtype": "Data",
 			"options": "Email",
 			"width": 180
@@ -85,8 +85,7 @@ def get_columns():
 			"fieldname": "contact_reference",
 			"fieldtype": "Data",
 			"width": 250
-		},
-
+		}
 	]
 	return columns
 
