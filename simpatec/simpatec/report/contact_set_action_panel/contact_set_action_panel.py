@@ -7,7 +7,7 @@ from frappe import _
 from frappe.utils import cstr, now, now_datetime, format_datetime
 import copy
 
-status_collor_map = {"New": "purple", "In Work": "green", "Rejected": "red", "Opportunity": "blue"}
+status_collor_map = {"New": "purple", "In Work": "green", "Rejected": "red", "Opportunity": "blue", "Opportunity Created": "green"}
 
 def execute(filters=None):
 	data = get_data(filters)
@@ -22,7 +22,7 @@ def get_data(filters):
 	data = frappe.db.sql(
 		"""
 		SELECT 
-			cs.title, csc.first_name, csc.last_name, csc.status, csc.last_action_on,
+			csc.first_name, csc.last_name, csc.status, csc.last_action_on,
 			cs.name as contact_set, csc.name as contact_set_row, csc.contact
 		FROM `tabContact Set` cs
 		LEFT JOIN `tabContact Set Contacts` csc
@@ -65,12 +65,6 @@ def get_contact_info(contact, info_type):
 
 def get_columns():
 	columns = [
-		{
-			"label": _("Title"),
-			"fieldtype": "Data",
-			"fieldname": "title",
-			"width": 220
-		},
 		{
 			"label": _("First Name"),
 			"fieldtype": "Data",
@@ -136,18 +130,19 @@ def get_row_log(contact_set, contact_set_row):
 	row_log = []
 	fields_for_log = ["status", "notes"]
 	data_format = "{} HH:mm:ss".format(frappe.db.get_single_value("System Settings", "date_format"))
-	versions = frappe.get_all("Version", filters={"ref_doctype": "Contact Set", "docname": contact_set}, fields=["data", "creation"], order_by="creation asc")
+	versions = frappe.get_all("Version", filters={"ref_doctype": "Contact Set", "docname": contact_set}, fields=["data", "creation", "owner"], order_by="creation asc")
+	frappe.get_all("Version", filters={"ref_doctype": "Contact Set", "docname": "Contact-Set-0009"}, fields=["data", "creation"], order_by="creation asc")
 	for version in versions:
 		data = json.loads(version.data)
 		added = data["added"]
 		row_changed = data["row_changed"]
-
 		for row_ad in added:
 			row_ad_table_fieldname = row_ad[0]
 			row_ad_table_fielddata = (row_ad[1])
 			if row_ad_table_fieldname == "contact_set_contacts" and row_ad_table_fielddata.get("name") == contact_set_row:
 				log_dict = {
 					"event": "Created On",
+					"owner": version.owner,
 					"status": row_ad_table_fielddata.get("status"),
 					"status_color": status_collor_map.get(row_ad_table_fielddata.get("status")),
 					"date": format_datetime(row_ad_table_fielddata.get("creation"), format_string=data_format)
@@ -172,7 +167,8 @@ def get_row_log(contact_set, contact_set_row):
 						log_dict[log_field] = new_data
 
 				if fields_for_log_exist:
-					log_dict["event"] = "Updated On"
+					log_dict["event"] = "Updated On",
+					log_dict["owner"] = version.owner,
 					log_dict["date"] = format_datetime(version.creation, format_string=data_format)
 					row_log.append(log_dict)
 
