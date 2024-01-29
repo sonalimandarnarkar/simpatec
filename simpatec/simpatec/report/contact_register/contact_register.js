@@ -47,6 +47,12 @@ frappe.query_reports["Contact Register"] = {
 			});
 			d.show();
 		}
+	},
+	get_datatable_options(options) {
+		return Object.assign(options, {
+			dynamicRowHeight: true,
+			cellHeight: 40,
+		});
 	}
 };
 
