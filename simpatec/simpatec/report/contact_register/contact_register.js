@@ -51,7 +51,7 @@ frappe.query_reports["Contact Register"] = {
 	get_datatable_options(options) {
 		return Object.assign(options, {
 			dynamicRowHeight: true,
-			cellHeight: 40,
+			cellHeight: 45,
 		});
 	}
 };
