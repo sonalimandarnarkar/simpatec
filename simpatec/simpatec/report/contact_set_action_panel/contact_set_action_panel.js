@@ -198,7 +198,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			cellHeight: 40,
 			layout: "fluid",
 		});
-	},
+	}
 };
 
 function add_contact_to_contact_set(report) {
