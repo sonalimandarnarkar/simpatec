@@ -78,7 +78,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "New\nIn Work\nRejected\nOpportunity"
+   "options": "New\nIn Work\nRejected\nOpportunity\nOpportunity Created"
   },
   {
    "fieldname": "last_action_on",
@@ -100,7 +100,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-01-18 12:48:12.716907",
+ "modified": "2024-01-28 06:50:37.843231",
  "modified_by": "Administrator",
  "module": "SimpaTec",
  "name": "Contact Set Contacts",
