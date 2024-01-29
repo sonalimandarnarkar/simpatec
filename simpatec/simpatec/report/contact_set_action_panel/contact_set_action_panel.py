@@ -23,7 +23,8 @@ def get_data(filters):
 		"""
 		SELECT 
 			csc.first_name, csc.last_name, csc.status, csc.last_action_on,
-			cs.name as contact_set, csc.name as contact_set_row, csc.contact
+			cs.name as contact_set, csc.name as contact_set_row, csc.contact,
+			csc.link_doctype as ref_type, csc.link_name as ref_name, csc.link_title as ref_title
 		FROM `tabContact Set` cs
 		LEFT JOIN `tabContact Set Contacts` csc
 		ON csc.parent = cs.name 
@@ -36,9 +37,13 @@ def get_data(filters):
 		row_for_ui["emails"] = get_contact_info(row_for_ui.contact, "email")
 		row_for_ui["phone_nos"] = get_contact_info(row_for_ui.contact, "phone")
 		row_for_ui["last_action_on"] = cstr(row_for_ui["last_action_on"])
+
 		row["action"] ='<button class="btn btn-primary btn-sm primary-action" onclick="contact_set_control_panel.open_dialog({0})">{1}</button>'.format(row_for_ui,  _("Action 📝"))
 		if row.get("status"):
 			row["status"] = '<span class="indicator-pill {0}"><span>{1}</span><span></span></span>'.format(status_collor_map.get(row["status"]), row["status"])
+		
+		ref_title = row.get('ref_title') if row.get('ref_title') == row.get('ref_name') else "{0}: {1}".format(row.get('ref_name'), row.get('ref_title'))
+		row['contact_reference'] = '<a href="/app/Form/{0}/{1}" >{2} ({0})</a>'.format(row.get('ref_type'), row.get('ref_name'), ref_title)
 
 	return data
 
@@ -76,6 +81,12 @@ def get_columns():
 			"fieldtype": "Data",
 			"fieldname": "last_name",
 			"width": 220
+		},
+		{
+			"label": _("Contact Reference"),
+			"fieldname": "contact_reference",
+			"fieldtype": "Data",
+			"width": 250
 		},
 		{
 			"label": _("Action"),

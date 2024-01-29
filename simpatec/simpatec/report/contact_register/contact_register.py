@@ -96,7 +96,7 @@ def update_row_in_contact_set(contact, contact_row, contact_set, show_success_ms
 		frappe.throw("Invalid Contact Set")
 
 	contact_detail = frappe.db.get_values("Contact", contact, ["first_name" ,"last_name", "email_id"], as_dict=1)[0]
-	contact_row_detail = frappe.db.get_values("Dynamic Link", {"parent": contact, "name": contact_row}, ["link_doctype" ,"link_name"], as_dict=1)[0]
+	contact_row_detail = frappe.db.get_values("Dynamic Link", {"parent": contact, "name": contact_row}, ["link_doctype" ,"link_name", "link_title"], as_dict=1)[0]
 
 	contact_set = frappe.get_doc("Contact Set", contact_set)
 
@@ -108,6 +108,7 @@ def update_row_in_contact_set(contact, contact_row, contact_set, show_success_ms
 		"email_id": contact_detail.get("email_id"),
 		"link_doctype": contact_row_detail.get("link_doctype"),
 		"link_name": contact_row_detail.get("link_name"),
+		"link_title": contact_row_detail.get("link_title"),
 		"status": "New",
 		"last_action_on": now()
 	})
