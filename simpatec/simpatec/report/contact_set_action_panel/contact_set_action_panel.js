@@ -10,8 +10,21 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			"label": __("Contact Set"),
 			"fieldtype": "Link",
 			"options": "Contact Set",
-			"reqd": 1
-		},
+			"reqd": 1,
+			"on_change": function() {
+				let contact_set = frappe.query_report.get_filter_value('contact_set');
+				let contact_set_title_wrapper = $('.contact-set-title');
+				if (contact_set) {
+					frappe.db.get_value("Contact Set", contact_set, "title", function(value) {
+						contact_set_title_wrapper.remove();
+						contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-2" data-fieldtype="HTML" data-fieldname="title" title="" data-original-title="Contact Set Title"><h3>${value["title"]}</h3></div>`;
+						$('.page-form.flex').append(contact_set_title_wrapper);
+					});
+				} else {
+					contact_set_title_wrapper.remove();
+				}
+			}
+		}
 	],
 
 	onload: async function (report) {
@@ -157,7 +170,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						label: "Status",
 						fieldname: "status",
 						fieldtype: "Select",
-						options: "\nNew\nIn Work\nRejected\nOpportunity",
+						options: "\nNew\nIn Work\nRejected\nOpportunity\nOpportunity Created",
 						default: status
 					},
 					{
