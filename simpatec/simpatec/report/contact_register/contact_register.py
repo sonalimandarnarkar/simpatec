@@ -35,7 +35,7 @@ def get_data(filters):
 				<button class="btn btn-sm" onclick="contact_register.open_dialog({0}, {1})">{2}</button>
 			</div>
 		""".format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
-		d['check_bulk_select'] ='<input class="bulk-select-contact-set" type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
+		d['check_bulk_select'] ='<input class="bulk-select-contact-set" data-contact={0} data-contact-row={1} type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
 	
 	return data
 
@@ -43,7 +43,7 @@ def get_data(filters):
 def get_columns():
 	columns = [
 		{
-			"label": _("Select"),
+			"label": _('<input class="bulk-select-all" type="checkbox" onclick="bulk_select_all()" />'),
 			"fieldname": "check_bulk_select",
 			"fieldtype": "Button",
 			"width": 70
@@ -52,7 +52,7 @@ def get_columns():
 			"label": _("Action"),
 			"fieldtype": "Button",
 			"fieldname": "add_to_contact_group",
-			"width": 280
+			"width": 150
 		},
 		{
 			"label": _("Contact"),
@@ -75,7 +75,7 @@ def get_columns():
 		},
 		{
 			"label": _("Email Address"),
-			"fieldname": "email_id",
+			"fieldname": "email_address",
 			"fieldtype": "Data",
 			"options": "Email",
 			"width": 180
@@ -85,8 +85,7 @@ def get_columns():
 			"fieldname": "contact_reference",
 			"fieldtype": "Data",
 			"width": 250
-		},
-
+		}
 	]
 	return columns
 
@@ -97,7 +96,7 @@ def update_row_in_contact_set(contact, contact_row, contact_set, show_success_ms
 		frappe.throw("Invalid Contact Set")
 
 	contact_detail = frappe.db.get_values("Contact", contact, ["first_name" ,"last_name", "email_id"], as_dict=1)[0]
-	contact_row_detail = frappe.db.get_values("Dynamic Link", {"parent": contact, "name": contact_row}, ["link_doctype" ,"link_name"], as_dict=1)[0]
+	contact_row_detail = frappe.db.get_values("Dynamic Link", {"parent": contact, "name": contact_row}, ["link_doctype" ,"link_name", "link_title"], as_dict=1)[0]
 
 	contact_set = frappe.get_doc("Contact Set", contact_set)
 
@@ -109,6 +108,7 @@ def update_row_in_contact_set(contact, contact_row, contact_set, show_success_ms
 		"email_id": contact_detail.get("email_id"),
 		"link_doctype": contact_row_detail.get("link_doctype"),
 		"link_name": contact_row_detail.get("link_name"),
+		"link_title": contact_row_detail.get("link_title"),
 		"status": "New",
 		"last_action_on": now()
 	})

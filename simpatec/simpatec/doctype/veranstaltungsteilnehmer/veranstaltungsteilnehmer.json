@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-28 08:33:18.303605",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "veranstaltung",
+  "contact",
+  "first_name",
+  "last_name",
+  "email_address",
+  "attended",
+  "company",
+  "address_street",
+  "address_town",
+  "address_zip",
+  "participant_exhibitor",
+  "partnercode"
+ ],
+ "fields": [
+  {
+   "fieldname": "veranstaltung",
+   "fieldtype": "Link",
+   "label": "Veranstaltung",
+   "options": "Veranstaltung"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Link",
+   "label": "Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "EMail Address"
+  },
+  {
+   "fieldname": "attended",
+   "fieldtype": "Select",
+   "label": "Attended",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "company"
+  },
+  {
+   "fieldname": "address_street",
+   "fieldtype": "Data",
+   "label": "Billing Address Street"
+  },
+  {
+   "fieldname": "address_town",
+   "fieldtype": "Data",
+   "label": "Billing Address Town"
+  },
+  {
+   "fieldname": "address_zip",
+   "fieldtype": "Data",
+   "label": "Billing Address ZIP"
+  },
+  {
+   "fieldname": "participant_exhibitor",
+   "fieldtype": "Select",
+   "label": "Participant / Exhibitor",
+   "options": "Teilnehmer - 99,00 \u20ac\nAussteller - 1.400,00 \u20ac"
+  },
+  {
+   "fieldname": "partnercode",
+   "fieldtype": "Select",
+   "label": "Partneranmeldung",
+   "options": "KIS001\nCON002\nHEIT003"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-28 08:37:32.650922",
+ "modified_by": "Administrator",
+ "module": "SimpaTec",
+ "name": "Veranstaltungsteilnehmer",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

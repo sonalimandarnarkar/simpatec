@@ -47,6 +47,12 @@ frappe.query_reports["Contact Register"] = {
 			});
 			d.show();
 		}
+	},
+	get_datatable_options(options) {
+		return Object.assign(options, {
+			dynamicRowHeight: true,
+			cellHeight: 45,
+		});
 	}
 };
 
@@ -69,6 +75,24 @@ function update_bulk_list(contact, contact_row) {
 		} else {
 			// if unchecked then search and remove object {contact, contact_row} from array frappe.query_reports["Contact Register"]["bulk_update_rows"]
 			frappe.query_reports["Contact Register"]["bulk_update_rows"] = frappe.query_reports["Contact Register"]["bulk_update_rows"].filter(item => !(item.contact === contact && item.contact_row === contact_row));
+		}
+	});
+}
+
+function bulk_select_all() {
+	$(".bulk-select-all").on("change",function(){
+		let _val = $(this).is(":checked") ? "checked" : "unchecked";
+		frappe.query_reports["Contact Register"]["bulk_update_rows"] = [];
+		if (_val == "checked") {
+			$(".bulk-select-contact-set").prop('checked', true);
+			$(".bulk-select-contact-set:checked").each(function() {
+				let contact = $(this).data("contact");
+				let contact_row = $(this).data("contact-row");
+				frappe.query_reports["Contact Register"]["bulk_update_rows"].push({ contact, contact_row })
+			  });
+		} else {
+			$(".bulk-select-contact-set").prop('checked', false);
+			frappe.query_reports["Contact Register"]["bulk_update_rows"] = [];
 		}
 	});
 }
@@ -101,6 +125,7 @@ function bulk_update_contact_set() {
 					bulk_update_rows: bulk_update_rows
 				},
 				callback: function (r) {
+					$(".bulk-select-all").prop('checked', false);
 					$(".bulk-select-contact-set").prop('checked', false);
 					frappe.query_reports["Contact Register"]["bulk_update_rows"] = [];
 					frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${data.contact_set}" style="font-weight: bold;">${data.contact_set}</a> ✅`));

@@ -10,12 +10,27 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			"label": __("Contact Set"),
 			"fieldtype": "Link",
 			"options": "Contact Set",
-			"reqd": 1
-		},
+			"reqd": 1,
+			"on_change": function(report) {
+				let contact_set_title_wrapper = $('.contact-set-title');
+				let contact_set = frappe.query_report.get_filter_value('contact_set');
+				if (contact_set) {
+					frappe.db.get_value("Contact Set", contact_set, "title", function(value) {
+						contact_set_title_wrapper.remove();
+						contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-2" data-fieldtype="HTML" data-fieldname="title" title="" data-original-title="Contact Set Title"><h3><i>${value["title"]}</i></h3></div>`;
+						$('.page-form.flex').append(contact_set_title_wrapper);
+					});
+				} else {
+					contact_set_title_wrapper.remove();
+				}
+				report.refresh();
+			}
+		}
 	],
 
 	onload: async function (report) {
 		$(".custom-actions").hide();
+		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="add_contact_to_contact_set()">Add Contact</button>`);
 		// $(".standard-actions").hide();
 
 		contact_set_control_panel.update_row_in_contact_set = function (contact_set, contact_set_row, notes, status) {
@@ -52,13 +67,14 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						let date = log["date"];
 						let event = log["event"];
 						let notes = log["notes"];
+						let owner = log["owner"];
 						let status = log["status"];
 						let status_color = log["status_color"];
 						if (date) {
 							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
-							let status_html = (status) ? `<span >Status: </span><span ${status_color_html}>${status}</span>` : ``;	
+							let status_html = (status) ? `<span ${status_color_html}>${status}</span>` : ``;	
 							let notes_html = (notes) ? `<p class="pl-3">Notes : <i>${notes}</i></p>` : ``;	
-							let divElement = `<div><p>${date} ${status_html}</p>${notes_html}</div>`;
+							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}</p>${notes_html}</div>`;
 							rowLogInfoHtmlOutput += divElement;
 						}
 					});
@@ -117,7 +133,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			let dialog = new frappe.ui.Dialog({
 				title: "Take Action",
 				// size: "large",
-				 size: "extra-large",
+				size: "extra-large",
 				fields: [
 					{
 						label: "Contact Name",
@@ -157,7 +173,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						label: "Status",
 						fieldname: "status",
 						fieldtype: "Select",
-						options: "\nNew\nIn Work\nRejected\nOpportunity",
+						options: "\nNew\nIn Work\nRejected\nOpportunity\nOpportunity Created",
 						default: status
 					},
 					{
@@ -175,5 +191,73 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			});
 			dialog.show();
 		}
+	},
+	get_datatable_options(options) {
+		return Object.assign(options, {
+			dynamicRowHeight: true,
+			cellHeight: 40,
+			layout: "fluid",
+		});
 	}
 };
+
+function add_contact_to_contact_set(report) {
+	let contact_set = frappe.query_report.get_filter_value('contact_set');
+	if (!contact_set) {
+		frappe.throw("Please set Contact Set Filter");
+	}
+
+
+	const d = new frappe.ui.form.MultiSelectDialog({
+		doctype: "Contact",
+		target: {},
+		setters: {
+			// status: null,
+			// gender: null,
+		},
+		add_filters_group: true,
+		allow_child_item_selection: true,
+		child_fieldname: "links",
+		child_columns: ["link_doctype", "link_name", "link_title"],
+		primary_action_label: "Add rows in Contact Set",
+		secondary_action_label: "Add rows in Contact Set",
+		size: "extra-large",
+		action(selections, args) {
+			let contacts = selections;
+			let contact_rows = args.filtered_children;
+			let bulk_update_rows = [];
+
+			if (contacts.length < 1){
+				frappe.throw("Please select Contact");
+			}
+			if (contacts.length > 0 && contact_rows.length > 0) {
+
+				for (let i = 0; i < contacts.length; i++) {
+					let contactObject = {
+						"contact": contacts[i],
+						"contact_row": contact_rows[i]
+					};
+					bulk_update_rows.push(contactObject);
+				}
+
+				console.log(bulk_update_rows);
+
+				frappe.call({
+					method: "simpatec.simpatec.report.contact_register.contact_register.bulk_update_row_in_contact_set",
+					// freeze: true,
+					args: {
+						contact_set,
+						bulk_update_rows: bulk_update_rows
+					},
+					callback: function (r) {
+						frappe.query_report.refresh();
+						frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${contact_set}" style="font-weight: bold;">${contact_set}</a> ✅`));
+					}
+				})
+
+				d.dialog.hide();
+			}
+		}
+	});
+
+}
