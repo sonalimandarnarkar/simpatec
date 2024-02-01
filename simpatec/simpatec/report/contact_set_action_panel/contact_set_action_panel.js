@@ -12,7 +12,8 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			"options": "Contact Set",
 			"reqd": 1,
 			"on_change": function(report) {
-				set_contact_set_title(report);
+				set_contact_set_title();
+				report.refresh();
 			}
 		}
 	],
@@ -26,7 +27,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="add_contact_to_contact_set()">Add Contact</button>`);
 		}
 
-		set_contact_set_title(report);
+		set_contact_set_title();
 
 		contact_set_control_panel.update_row_in_contact_set = function (contact_set, contact_set_row, notes, status) {
 			frappe.call({
@@ -257,7 +258,7 @@ function add_contact_to_contact_set(report) {
 
 }
 
-function set_contact_set_title(report) {
+function set_contact_set_title() {
 	let contact_set_title_wrapper = $('.contact-set-title');
 	let contact_set = frappe.query_report.get_filter_value('contact_set');
 	if (contact_set) {
@@ -269,7 +270,6 @@ function set_contact_set_title(report) {
 	} else {
 		contact_set_title_wrapper.remove();
 	}
-	report.refresh();
 }
 
 function get_default_standard_action_html() {
