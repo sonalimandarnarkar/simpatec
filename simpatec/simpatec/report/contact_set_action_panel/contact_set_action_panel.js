@@ -12,26 +12,22 @@ frappe.query_reports["Contact Set Action Panel"] = {
 			"options": "Contact Set",
 			"reqd": 1,
 			"on_change": function(report) {
-				let contact_set_title_wrapper = $('.contact-set-title');
-				let contact_set = frappe.query_report.get_filter_value('contact_set');
-				if (contact_set) {
-					frappe.db.get_value("Contact Set", contact_set, "title", function(value) {
-						contact_set_title_wrapper.remove();
-						contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-2" data-fieldtype="HTML" data-fieldname="title" title="" data-original-title="Contact Set Title"><h3><i>${value["title"]}</i></h3></div>`;
-						$('.page-form.flex').append(contact_set_title_wrapper);
-					});
-				} else {
-					contact_set_title_wrapper.remove();
-				}
+				set_contact_set_title();
 				report.refresh();
 			}
 		}
 	],
 
 	onload: async function (report) {
-		$(".custom-actions").hide();
-		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="add_contact_to_contact_set()">Add Contact</button>`);
-		// $(".standard-actions").hide();
+		if ($('body[data-route="query-report/Contact Set Action Panel"]').length > 0) {
+			let report_wrapper = $('body[data-route="query-report/Contact Set Action Panel"]');
+			let page_action_wrapper = report_wrapper.find('div[id="page-query-report"]').find(".page-head-content").find(".page-actions");
+			page_action_wrapper.html(`
+			${get_default_standard_action_html()}
+			<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="add_contact_to_contact_set()">Add Contact</button>`);
+		}
+
+		set_contact_set_title();
 
 		contact_set_control_panel.update_row_in_contact_set = function (contact_set, contact_set_row, notes, status) {
 			frappe.call({
@@ -73,8 +69,8 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						if (date) {
 							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
 							let status_html = (status) ? `<span ${status_color_html}>${status}</span>` : ``;	
-							let notes_html = (notes) ? `<p class="pl-3">Notes : <i>${notes}</i></p>` : ``;	
-							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}</p>${notes_html}</div>`;
+							let notes_html = (notes) ? `<span><i>${notes}</i></span>` : ``;	
+							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}: ${notes_html}</p></div>`;
 							rowLogInfoHtmlOutput += divElement;
 						}
 					});
@@ -90,7 +86,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 					}
 				}
 			})
-			return html_segment
+			return html_segment;
 		}
 
 		getContactInfoHtml = function (contactInfo, field, linkType, label, contact_set, contact_set_row) {
@@ -117,7 +113,7 @@ frappe.query_reports["Contact Set Action Panel"] = {
 					<div class="like-disabled-input">${contactInfoHtmlOutput}</div>
 				</div>`
 			}
-			return html_segment
+			return html_segment;
 		}
 
 		contact_set_control_panel.open_dialog = function (row) {
@@ -260,4 +256,72 @@ function add_contact_to_contact_set(report) {
 		}
 	});
 
+}
+
+function set_contact_set_title() {
+	let contact_set_title_wrapper = $('.contact-set-title');
+	let contact_set = frappe.query_report.get_filter_value('contact_set');
+	if (contact_set) {
+		frappe.db.get_value("Contact Set", contact_set, "title", function(value) {
+			contact_set_title_wrapper.remove();
+			contact_set_title_wrapper = `<div class="contact-set-title mt-2 col-md-6" data-fieldtype="HTML"><h3><i>${value["title"]}</i></h3></div>`;
+			$('div[id="page-query-report"]').find('.page-form.flex').append(contact_set_title_wrapper);
+		});
+	} else {
+		contact_set_title_wrapper.remove();
+	}
+}
+
+function get_default_standard_action_html() {
+	// copied from report source 
+	return `<div class="standard-actions flex">      <span class="page-icon-group hidden-xs hidden-sm"><button class="text-muted btn btn-default  icon-btn" title="" data-original-title="Refresh">
+	<svg class="icon  icon-sm" style="">
+<use class="" href="#icon-refresh"></use>
+</svg>
+</button></span>      <div class="menu-btn-group">       <button type="button" class="btn btn-default icon-btn" data-toggle="dropdown" aria-expanded="false" title="" data-original-title="Menu">        <span>         <span class="menu-btn-group-label" data-label="">          <svg class="icon icon-sm">           <use href="#icon-dot-horizontal">           </use>          </svg>         </span>        </span>       </button>       <ul class="dropdown-menu dropdown-menu-right" role="menu" style=""><li class="user-action">
+		<a class="grey-link dropdown-item visible-xs" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Refresh"><span class="alt-underline">R</span>efresh</span>
+		</a>
+	</li><li class="dropdown-divider user-action"></li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Edit"><span class="alt-underline">E</span>dit</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Print"><span class="alt-underline">P</span>rint</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="PDF">P<span class="alt-underline">D</span>F</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Export">E<span class="alt-underline">x</span>port</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Setup%20Auto%20Email">Se<span class="alt-underline">t</span>up Auto Email</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Add%20Column"><span class="alt-underline">A</span>dd Column</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="User%20Permissions"><span class="alt-underline">U</span>ser Permissions</span>
+		</a>
+	</li><li>
+		<a class="grey-link dropdown-item" href="#" onclick="return false;">
+			
+			<span class="menu-item-label" data-label="Save">Sa<span class="alt-underline">v</span>e</span>
+		</a>
+	</li></ul>      </div>      <button class="btn btn-secondary btn-default btn-sm hide"></button>      <div class="actions-btn-group hide">       <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-expanded="false">        <span>         <span class="hidden-xs actions-btn-group-label" data-label="Actions"><span class="alt-underline">A</span>ctions</span>         <svg class="icon icon-xs">          <use href="#icon-select">          </use>         </svg>        </span>       </button>       <ul class="dropdown-menu dropdown-menu-right" role="menu">       </ul>      </div>      <button class="btn btn-primary btn-sm hide primary-action"></button>     </div>`
 }
