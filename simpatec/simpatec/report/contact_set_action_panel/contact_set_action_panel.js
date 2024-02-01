@@ -68,8 +68,8 @@ frappe.query_reports["Contact Set Action Panel"] = {
 						if (date) {
 							let status_color_html = (status_color) ? `class="indicator-pill ${status_color}"`: ``;
 							let status_html = (status) ? `<span ${status_color_html}>${status}</span>` : ``;	
-							let notes_html = (notes) ? `<p class="pl-3">Notes : <i>${notes}</i></p>` : ``;	
-							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}</p>${notes_html}</div>`;
+							let notes_html = (notes) ? `<span><i>${notes}</i></span>` : ``;	
+							let divElement = `<div><p>${date} ${status_html}</p><p>${owner}: ${notes_html}</p></div>`;
 							rowLogInfoHtmlOutput += divElement;
 						}
 					});
