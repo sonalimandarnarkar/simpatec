@@ -141,7 +141,12 @@ function bulk_update_contact_set() {
 					$(".bulk-select-all").prop('checked', false);
 					$(".bulk-select-contact-set").prop('checked', false);
 					frappe.query_reports["Contact Register"]["bulk_update_rows"] = [];
-					frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${data.contact_set}" style="font-weight: bold;">${data.contact_set}</a> ✅`));
+					frappe.msgprint(__(`Contact has been added to  <a href="/app/contact-set/${data.contact_set}" style="font-weight: bold;">${data.contact_set}</a> ✅. 
+					Would you like to: <ol>
+							<li><a href="#">Go back to Contact Register and add further Contacts</a></li>
+							<li><a href="/app/query-report/Contact Set Action Panel">Switch to the Contact Set Action Panel</a></li>
+						</ol>`
+				  	));
 				}
 			})
 			d.hide();
