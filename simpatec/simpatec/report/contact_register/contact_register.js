@@ -9,11 +9,24 @@ frappe.query_reports["Contact Register"] = {
 	"bulk_update_rows": [],
 
 	onload: async function (report) {
-		$(".custom-actions").hide();
-		$(".standard-actions").hide();
-		make_filter_list();
-		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="bulk_update_contact_set()">Add selected to Contact Set</button>`);
-		$(".page-actions").append(`<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="route_to_contact_set()">Go to Contact Set</button>`);
+		if ($('body[data-route="query-report/Contact Register"]').length > 0) {
+			let report_wrapper = $('body[data-route="query-report/Contact Register"]');
+			let page_action_wrapper = report_wrapper.find('div[id="page-query-report"]').find(".page-head-content").find(".page-actions");
+			page_action_wrapper.html(`<button class="btn btn-default btn-sm ellipsis contact-set-route ml-2 mr-2" onclick="bulk_update_contact_set()">Add selected to Contact Set</button>
+			<button class="btn btn-default btn-sm ellipsis contact-set-route" onclick="route_to_contact_set()">Switch to Contact Set</button>
+			<div class="filter-selector">
+				<button class="btn btn-default btn-sm filter-button">
+					<span class="filter-icon">
+						${frappe.utils.icon("filter")}
+					</span>
+					<span class="button-label hidden-xs">
+						${__("Filter")}
+					<span>
+				</button>
+			</div>`);
+
+			make_filter_list(page_action_wrapper);
+		}
 
 		contact_register.open_dialog = function (contact, contact_row) {
 			let d = new frappe.ui.Dialog({
@@ -137,23 +150,10 @@ function bulk_update_contact_set() {
 	d.show();
 }
 
-var make_filter_list = function () {
-	var filter_list_wrapper = $(".page-actions")
-	$(`<div class="filter-selector">
-		<button class="btn btn-default btn-sm filter-button">
-			<span class="filter-icon">
-				${frappe.utils.icon("filter")}
-			</span>
-			<span class="button-label hidden-xs">
-				${__("Filter")}
-			<span>
-		</button>
-	</div>`
-	).appendTo(filter_list_wrapper);
-
-	var filter_button = filter_list_wrapper.find(".filter-button");
+var make_filter_list = function (page_action_wrapper) {
+	var filter_button = page_action_wrapper.find(".filter-button");
 	this.filter_list = new frappe.ui.FilterGroup({
-		parent: filter_list_wrapper,
+		parent: page_action_wrapper,
 		doctype: "Contact",
 		filter_button: filter_button,
 		default_filters: [],
