@@ -3,30 +3,39 @@
 
 import frappe
 from frappe import _
-from frappe.utils import now
-
+from frappe.utils import now, cstr
+from frappe.handler import execute_cmd
 
 @frappe.whitelist()
-def execute(filters=None):
-	data = get_data(filters)
+def execute(filters=None, limit=100):
+	filters = frappe.parse_json(filters)
+	if not filters:
+		filters = []
+
+	if not limit:
+		limit = 100
+
+	filters.append(["Dynamic Link","name","is","set",0])
+	data, total_count = get_data(filters, limit=limit)
 	columns = get_columns()
-	return columns, data
+	return columns, data, total_count
 
 
-def get_data(filters):
+def get_data(filters, limit=100):
 	data = []
-	contacts = frappe.db.get_list("Contact", fields="name", filters=filters)
-	if contacts:
-		contacts = tuple(contact.name for contact in contacts)
-		data = frappe.db.sql(
-			"""
-			select c.name as contact, dl.name as contact_row, c.first_name, c.last_name, c.email_id, 
-			dl.link_doctype as ref_type, dl.name as contact_row_reference, dl.link_name as ref_name, dl.link_title as ref_title
-			from
-				`tabContact` c, `tabDynamic Link` dl
-			where dl.parent = c.name and c.name in (%s)""" % (",".join(["%s"] * len(contacts))), contacts, as_dict=1,
-		)
+	frappe.local.form_dict = frappe._dict({"doctype": "Contact", "fields": ["name"], "filters": filters})
+	total_count = len(execute_cmd("frappe.desk.reportview.get_list"))
 
+	fields = [
+		"`tabContact`.`name` as contact","`tabContact`.`first_name`", "`tabContact`.`last_name`", "`tabContact`.`email_id` as email_address",
+		 "`tabDynamic Link`.`name` as contact_row", "`tabDynamic Link`.`link_doctype` as ref_type", "`tabDynamic Link`.`link_name` as ref_name",
+		 "`tabDynamic Link`.`link_title` as ref_title"
+	]
+	frappe.local.form_dict = frappe._dict({
+		"doctype": "Contact", "fields": fields, "filters": filters, "limit": limit, "order_by": "`tabContact`.`modified` asc",
+		"as_list": 0, "debug": 1
+	})
+	data = execute_cmd("frappe.desk.reportview.get_list")
 	for d in data:
 		ref_title = d.get('ref_title') if d.get('ref_title') == d.get('ref_name') else "{0}: {1}".format(d.get('ref_name'), d.get('ref_title'))
 		d['contact_reference'] = '<a href="/app/Form/{0}/{1}" >{2} ({0})</a>'.format(d.get('ref_type'), d.get('ref_name'), ref_title)
@@ -36,8 +45,8 @@ def get_data(filters):
 			</div>
 		""".format("'" + d.contact + "'", "'" + d.contact_row + "'",  _("Add to Contact Set"))
 		d['check_bulk_select'] ='<input class="bulk-select-contact-set" data-contact={0} data-contact-row={1} type="checkbox" id={1} onclick="update_bulk_list({0}, {1})">'.format("'" + d.contact + "'", "'" + d.contact_row + "'")
-	
-	return data
+
+	return data, "{0} of {1}".format(len(data), total_count)
 
 
 def get_columns():

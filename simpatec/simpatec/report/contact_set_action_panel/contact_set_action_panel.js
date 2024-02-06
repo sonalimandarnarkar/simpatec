@@ -197,65 +197,166 @@ frappe.query_reports["Contact Set Action Panel"] = {
 	}
 };
 
-function add_contact_to_contact_set(report) {
+async function  add_contact_to_contact_set(report) {
 	let contact_set = frappe.query_report.get_filter_value('contact_set');
 	if (!contact_set) {
 		frappe.throw("Please set Contact Set Filter");
 	}
 
-
-	const d = new frappe.ui.form.MultiSelectDialog({
-		doctype: "Contact",
-		target: {},
-		setters: {
-			// status: null,
-			// gender: null,
-		},
-		add_filters_group: true,
-		allow_child_item_selection: true,
-		child_fieldname: "links",
-		child_columns: ["link_doctype", "link_name", "link_title"],
-		primary_action_label: "Add rows in Contact Set",
-		secondary_action_label: "Add rows in Contact Set",
-		size: "extra-large",
-		action(selections, args) {
-			let contacts = selections;
-			let contact_rows = args.filtered_children;
-			let bulk_update_rows = [];
-
-			if (contacts.length < 1){
-				frappe.throw("Please select Contact");
-			}
-			if (contacts.length > 0 && contact_rows.length > 0) {
-
-				for (let i = 0; i < contacts.length; i++) {
-					let contactObject = {
-						"contact": contacts[i],
-						"contact_row": contact_rows[i]
-					};
-					bulk_update_rows.push(contactObject);
-				}
-
-				console.log(bulk_update_rows);
-
-				frappe.call({
-					method: "simpatec.simpatec.report.contact_register.contact_register.bulk_update_row_in_contact_set",
-					// freeze: true,
-					args: {
-						contact_set,
-						bulk_update_rows: bulk_update_rows
+	const d =  new frappe.ui.Dialog({
+		title: "Select Contacts",
+		fields: [
+			{
+				fieldtype: "HTML",
+				fieldname: "filter_area",
+			},
+			{
+				fieldtype: "Table",
+				fieldname: "contacts",
+				cannot_add_rows: true,
+				cannot_delete_rows: true,
+				in_place_edit: true,
+				// editable_grid: false,
+				data: [],
+				read_only: 1,
+				fields: [
+					{
+						label: __("Contact"),
+						fieldname: "contact",
+						fieldtype: "Link",
+						options: "Contact",
+						in_list_view: true,
+						read_only: 1,
+						columns: 2
 					},
-					callback: function (r) {
-						frappe.query_report.refresh();
-						frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${contact_set}" style="font-weight: bold;">${contact_set}</a> ✅`));
+					{
+						label: __("Contact Row"),
+						fieldname: "contact_row",
+						fieldtype: "Data",
+						options: "Contact",
+						read_only: 1,
+						hidden: 1
+					},
+					{
+						label: __("First Name"),
+						fieldname: "first_name",
+						fieldtype: "Data",
+						in_list_view: true,
+						read_only: 1,
+						columns: 3
+					},
+					{
+						label: __("Last Name"),
+						fieldname: "last_name",
+						fieldtype: "Data",
+						in_list_view: true,
+						read_only: 1,
+						columns: 3
+					},
+					{
+						label: __("Email Address"),
+						fieldname: "email_address",
+						fieldtype: "Data",
+						in_list_view: true,
+						read_only: 1,
+						columns: 2
 					}
-				})
-
-				d.dialog.hide();
+				]
+			},
+			{
+				label: __("Show More"),
+				fieldtype: "Button",
+				fieldname: "show_more",
+				click: async function() {
+					let filters = filter_list.get_filters();
+					limit = limit + cint(d.get_value('row_count'));
+					await get_contacts(filters, limit, d);
+				}
+			},
+			{
+				fieldtype: "Int",
+				fieldname: "row_count",
+				read_only: 1,
+				default: 0
 			}
+		],
+		size: "extra-large",
+		primary_action_label: __("Add rows in Contact Set"),
+		primary_action: () => {
+			let bulk_update_rows = d.fields_dict.contacts.grid.get_selected_children();
+			if (bulk_update_rows.length < 1){
+				frappe.throw("Please select Atleast 1 Contact Row");
+			}
+			
+			frappe.call({
+				method: "simpatec.simpatec.report.contact_register.contact_register.bulk_update_row_in_contact_set",
+				// freeze: true,
+				args: {
+					contact_set: contact_set,
+					bulk_update_rows: bulk_update_rows
+				},
+				callback: function (r) {
+					frappe.query_report.refresh();
+					frappe.msgprint(__(`Bulk Added Contacts to  <a href="/app/contact-set/${contact_set}" style="font-weight: bold;">${contact_set}</a> ✅`));
+				}
+			})
+			d.hide();
+		},
+	});
+	let limit = 100;
+
+	let filter_list = new frappe.ui.FilterGroup({
+		parent: d.get_field("filter_area").$wrapper,
+		doctype: "Contact",
+		default_filters: [],
+		parent_doctype: "Contact",
+		on_change: async() => {
+			let filters = filter_list.get_filters();
+			await get_contacts(filters, limit, d);
 		}
 	});
+	// 'Apply Filter' breaks since the filers are not in a popover
+	// Hence keeping it hidden
+	filter_list.wrapper.find(".apply-filters").hide();
+	await get_contacts([], limit, d);
+	d.show();
 
+}
+
+async function get_contacts(filters, limit, dialog) {
+	let dialog_contacts = [];
+	await frappe.call({
+		method: "simpatec.simpatec.report.contact_register.contact_register.execute",
+		args: {
+			filters: filters,
+			limit: limit
+		},
+		freeze: true,
+		freeze_message: "Loading data..."
+	}).then(r => {
+		// debugger;
+		if (r.message[1] && r.message[1].length > 0) {
+			r.message[1].forEach(contact => {
+				dialog_contacts.push(
+					{
+						"contact": contact.contact,
+						"contact_row": contact.contact_row,
+						"first_name": contact.first_name,
+						"last_name": contact.last_name,
+						"email_address": contact.email_address
+					});
+			});
+		} else {
+
+		}
+		dialog.fields_dict.contacts.grid.grid_pagination.page_length = limit;
+		dialog.fields_dict.contacts.df.data = dialog_contacts;
+		dialog.set_value("row_count", dialog_contacts.length);
+		dialog.fields_dict.contacts.grid.refresh();
+		dialog.fields_dict.contacts.grid.header_search.show_search = false;
+		dialog.fields_dict.contacts.grid.header_search.show_search_row();
+
+	})
 }
 
 function set_contact_set_title() {
