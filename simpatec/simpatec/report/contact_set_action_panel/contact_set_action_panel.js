@@ -353,9 +353,6 @@ async function get_contacts(filters, limit, dialog) {
 		dialog.fields_dict.contacts.df.data = dialog_contacts;
 		dialog.set_value("row_count", dialog_contacts.length);
 		dialog.fields_dict.contacts.grid.refresh();
-		dialog.fields_dict.contacts.grid.header_search.show_search = false;
-		dialog.fields_dict.contacts.grid.header_search.show_search_row();
-
 	})
 }
 
