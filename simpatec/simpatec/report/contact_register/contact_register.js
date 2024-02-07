@@ -30,6 +30,7 @@ frappe.query_reports["Contact Register"] = {
 			
 			setup_paging_area(page_action_wrapper);
 			make_filter_list(page_action_wrapper);
+			// bulk_set_render_in_checkbox_col(page_action_wrapper);
 		}
 
 		contact_register.open_dialog = function (contact, contact_row) {
@@ -64,6 +65,9 @@ frappe.query_reports["Contact Register"] = {
 			});
 			d.show();
 		}
+	},
+	after_datatable_render: function(datatable_obj) {
+		$(datatable_obj.wrapper).find("div[title='Bulk Select']").html('<input class="bulk-select-all" type="checkbox" onclick="bulk_select_all()" />');
 	},
 	get_datatable_options(options) {
 		return Object.assign(options, {
