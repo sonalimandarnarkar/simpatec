@@ -65,6 +65,9 @@ frappe.query_reports["Contact Register"] = {
 			d.show();
 		}
 	},
+	after_datatable_render: function(datatable_obj) {
+		$(datatable_obj.wrapper).find("div[title='Bulk Select']").html('<input class="bulk-select-all" type="checkbox" onclick="bulk_select_all()" />');
+	},
 	get_datatable_options(options) {
 		return Object.assign(options, {
 			dynamicRowHeight: true,

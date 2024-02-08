@@ -52,7 +52,7 @@ def get_data(filters, limit=100):
 def get_columns():
 	columns = [
 		{
-			"label": _('<input class="bulk-select-all" type="checkbox" onclick="bulk_select_all()" />'),
+			"label": _("Bulk Select"),
 			"fieldname": "check_bulk_select",
 			"fieldtype": "Button",
 			"width": 70
