@@ -32,6 +32,12 @@ frappe.ui.form.on('Quotation', {
 				}
 			}
 			refresh_field(table_fieldname);
+		},
+		frm.occurence_len = function(arr, element){
+			
+			return arr.filter(
+				(ele) => ele.item_language == element
+			).length;
 		}
 	}
 });
@@ -69,12 +75,19 @@ frappe.ui.form.on('Quotation Item',{
 			
 		}
 		else if (frm.doc.language=== row.item_language){
-			frappe.confirm(__("Setting all rows be back to : <b>'{0}'</b>", [row.item_language]),
-			()=>{
-				frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
-			}, ()=>{
-				//cancel
-			})
+			
+			let row_occurence = frm.occurence_len(data, row.item_language);
+			if (row_occurence < data.length){
+				//				
+				frappe.confirm(__("Setting all rows be back to : <b>'{0}'</b>", [row.item_language]),
+					()=>{
+							frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+						}, 
+					()=>{
+						//cancel
+					}
+				)
+			}
 		}
 		
 		
