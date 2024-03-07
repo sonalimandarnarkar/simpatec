@@ -2,41 +2,82 @@ frappe.ui.form.on('Quotation', {
 	// refresh: function(frm) {
 
 	// }
+	setup: function(frm){
+		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
+			
+
+			var data = frm.doc[parentfield];
+			let idx = data.indexOf(current_row);
+			if (data.length === 1 || data[0] === current_row) return;
+			
+			if (typeof fieldnames === "string") {
+				fieldnames = [fieldnames];
+			}			
+			
+			$.each(fieldnames, function (i, fieldname) {
+				frappe.model.set_value(
+					current_row.doctype,
+					current_row.name,
+					fieldname,
+					data[idx - 1][fieldname]
+				);
+			});
+		},
+		frm.auto_fill_all_empty_rows = function(doc, dt, dn, table_fieldname, fieldname) {
+			var d = locals[dt][dn];
+			if(d[fieldname]){
+				var cl = doc[table_fieldname] || [];
+				for(var i = 0; i < cl.length; i++) {
+					if(cl[i][fieldname]) cl[i][fieldname] = d[fieldname];
+				}
+			}
+			refresh_field(table_fieldname);
+		}
+	}
 });
 
 frappe.ui.form.on('Quotation Item',{
 	//
 	item_name: function(frm, cdt, cdn){
 
-		var tchild = locals[cdt][cdn];
-		var lng_of_arry = frm.doc.items;
-
-		if (lng_of_arry.length > 1){
-			if (tchild.idx > 1){
-				var prv_val = frm.doc.items[tchild.idx-2].item_language;
-				
-				frappe.model.set_value(cdt,cdn, "item_language", prv_val);
-				frm.refresh_field('item_language');
-				console.log(prv_val);
+		var data = frm.doc.items;
+		var row = locals[cdt][cdn];
+		if (data.length === 1 || data[0] === row) {
+			if (frm.doc.language){
+				row.item_language = frm.doc.language;
+				refresh_field("item_language", cdn, "items");
 			}
-		}
-		else{
-			frappe.model.set_value(cdt,cdn, "item_language", frm.doc.language);
-			frm.refresh_field('item_language');
+			
+		} else {
+			frm.copy_from_previous_row("items", row, ["item_language"]);
 		}	
 	},
 
 	item_language: function(frm, cdt, cdn){
-		/* 
-		onblur: {
-			var child = locals[cdt][cdn];
-			console.log("blob blur"+ child.idx);
-            let dialog = new frappe.ui.Dialog({
-			title: __("Process"),
+		
+		//frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+		var row = locals[cdt][cdn];
+		if(!(frm.doc.language=== row.item_language)){
 			
-		    });
-		    dialog.show();
-		}*/
+
+			frappe.confirm(__("Should all rows be set to  : <b>'{0}'</b>", [row.item_language]),
+			()=>{
+				frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+			}, ()=>{
+				//cancel
+			})
+			
+		}
+		else if (frm.doc.language=== row.item_language){
+			frappe.confirm(__("Setting all rows be back to : <b>'{0}'</b>", [row.item_language]),
+			()=>{
+				frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+			}, ()=>{
+				//cancel
+			})
+		}
+		
+		
 	},
 	
 });
