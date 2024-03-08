@@ -61,25 +61,28 @@ frappe.ui.form.on('Quotation Item',{
 
 	item_language: function(frm, cdt, cdn){
 		
-		//frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+		var data = frm.doc.items;
+		
 		var row = locals[cdt][cdn];
-		if(!(frm.doc.language=== row.item_language)){
+		if(!(frm.doc.language=== row.item_language)){			
+			let row_occurence = frm.occurence_len(data, row.item_language);
+			if (row_occurence < data.length){
 			
-
-			frappe.confirm(__(" :speech_balloon: The language <b>{0}</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
-			()=>{
-				frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
-			}, ()=>{
-				//cancel
-			})
-			
+				frappe.confirm(__(" 💬 The language <b>{0}</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
+				()=>{
+					frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+				}, ()=>{
+					//cancel
+				})
+			}
+			//
 		}
 		else if (frm.doc.language=== row.item_language){
 			
 			let row_occurence = frm.occurence_len(data, row.item_language);
 			if (row_occurence < data.length){
 				//				
-				frappe.confirm(__(" :speech_balloon: The language <b>'{0}'</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
+				frappe.confirm(__(" 💬 The language <b>'{0}'</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
 					()=>{
 							frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
 						}, 
