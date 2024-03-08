@@ -66,7 +66,7 @@ frappe.ui.form.on('Quotation Item',{
 		if(!(frm.doc.language=== row.item_language)){
 			
 
-			frappe.confirm(__("Should all rows be set to  : <b>'{0}'</b>", [row.item_language]),
+			frappe.confirm(__(" :speech_balloon: The language <b>{0}</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
 			()=>{
 				frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
 			}, ()=>{
@@ -79,7 +79,7 @@ frappe.ui.form.on('Quotation Item',{
 			let row_occurence = frm.occurence_len(data, row.item_language);
 			if (row_occurence < data.length){
 				//				
-				frappe.confirm(__("Setting all rows be back to : <b>'{0}'</b>", [row.item_language]),
+				frappe.confirm(__(" :speech_balloon: The language <b>'{0}'</b> in the just edited row is different to the others. Should it apply to all rows?", [row.item_language]),
 					()=>{
 							frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
 						}, 
