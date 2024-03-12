@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:title",
+ "creation": "2024-03-11 14:09:16.462609",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "language",
+  "disabled",
+  "anschreiben",
+  "cover_letter_en",
+  "cover_letter_de",
+  "cover_letter_fr"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "unique": 1
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Link",
+   "label": "Language",
+   "options": "Language"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "anschreiben",
+   "fieldtype": "Text Editor",
+   "label": "Anschreiben"
+  },
+  {
+   "fieldname": "cover_letter_en",
+   "fieldtype": "Text Editor",
+   "label": "Cover Letter EN"
+  },
+  {
+   "fieldname": "cover_letter_de",
+   "fieldtype": "Text Editor",
+   "label": "Cover Letter DE"
+  },
+  {
+   "fieldname": "cover_letter_fr",
+   "fieldtype": "Text Editor",
+   "label": "Cover Letter FR"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-12 09:29:58.974868",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Cover Letter Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
