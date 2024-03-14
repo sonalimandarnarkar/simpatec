@@ -5,6 +5,14 @@ from frappe.model.mapper import get_mapped_doc
 
 
 @frappe.whitelist()
+def validate(doc, handler=None):
+	if doc.sales_order_type == "Internal Clearance":
+		doc.eligable_for_clearance = 0
+		doc.internal_clearance_details = ""
+	elif doc.eligable_for_clearance:
+		doc.sales_order_clearances = []
+
+@frappe.whitelist()
 def make_software_maintenance(source_name, target_doc=None):
 	def postprocess(source, doc):
 		if source.sales_order_type == "First Sale":
@@ -33,7 +41,7 @@ def make_software_maintenance(source_name, target_doc=None):
 
 
 def update_software_maintenance(doc, method=None):
-	if doc.software_maintenance:
+	if doc.get("software_maintenance"):
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
 		software_maintenance.performance_period_start = doc.performance_period_start
 		software_maintenance.performance_period_end = doc.performance_period_end
