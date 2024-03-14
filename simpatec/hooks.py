@@ -101,6 +101,7 @@ before_uninstall = "simpatec.install.before_uninstall"
 
 doc_events = {
 	"Sales Order": {
+        "validate": "simpatec.events.sales_order.validate",
 		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
 	}
 }
