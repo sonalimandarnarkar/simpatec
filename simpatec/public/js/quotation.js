@@ -5,19 +5,20 @@ frappe.ui.form.on('Quotation', {
             if (!field.$clear_icon_appended) {
                 field.$clear_icon_appended = true;
 
-
                 //&#9705;
 				var $clearIcon = $('<span class="clear-icon" style="cursor: pointer; position: absolute; right: 35px; top: 50%; transform: translateY(-50%); font-size: 15px; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%;  color: #1C2126;">&#x2716;</span>');
                 field.$input.parent().css('position', 'relative'); 
                 field.$input.css('position', 'relative'); 
                 field.$input.after($clearIcon);
 
-
                 $clearIcon.on('click', function() {
                     
 					frm.set_query("anschreiben_vorlage", () => {
 						let filters = {};
-						
+						/* return {
+							filters: filters
+						}
+						 */
 					});
 					frm.set_value(field.df.fieldname, '');
                 });
@@ -35,7 +36,6 @@ frappe.ui.form.on('Quotation', {
 	setup: function(frm){
 		frm.set_query("anschreiben_vorlage", () => {
 			let filters = {};
-			//console.log("lang",frm.doc.language);
 			if (frm.doc.language) filters["language"] = frm.doc.language;
 			return {
 				filters: filters
