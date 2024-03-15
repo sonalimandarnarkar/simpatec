@@ -125,7 +125,7 @@ def get_custom_fields():
 			"fieldtype": "Link",
 			"options": "Internal Clearance Details",
 			"allow_on_submit": 1,
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1",
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
 			"insert_after": "eligable_for_clearance",
 		},
 		{
