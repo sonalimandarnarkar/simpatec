@@ -112,28 +112,28 @@ def get_custom_fields():
 			"insert_after": "simpatec_section"
 		},
 		{
-			"allow_on_submit": 1,
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\"",
+			"label": "Eligable for Clearance",
 			"fieldname": "eligable_for_clearance",
 			"fieldtype": "Check",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.sales_order_type != \"\"",
 			"insert_after": "sales_order_type",
-			"label": "Eligable for Clearance",
 		},
 		{
-			"allow_on_submit": 1,
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1",
+			"label": "Internal Clearance Details",
 			"fieldname": "internal_clearance_details",
 			"fieldtype": "Link",
 			"options": "Internal Clearance Details",
-			"insert_after": "sales_order_type",
-			"label": "Internal Clearance Details",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1",
+			"insert_after": "eligable_for_clearance",
 		},
 		{
 			"label": "Item Group",
 			"fieldname": "item_group",
 			"fieldtype": "Link",
 			"options": "Item Group",
-			"insert_after": "eligable_for_clearance"
+			"insert_after": "internal_clearance_details"
 		},
 		{
 			"label": "Performance Period Start",
@@ -143,14 +143,9 @@ def get_custom_fields():
 			"insert_after": "item_group",
 		},
 		{
-			"fieldname": "column_break_5",
-			"fieldtype": "Column Break",
-			"insert_after": "performance_period_start",
-		},
-		{
 			"fieldname": "column_break_fdgxg",
 			"fieldtype": "Column Break",
-			"insert_after": "column_break_5",
+			"insert_after": "performance_period_start",
 		},
 		{
 			"label": "UID",
@@ -194,8 +189,8 @@ def get_custom_fields():
 			"label": "Internal Clearance",
 			"fieldname": "internal_clearance",
 			"fieldtype": "Section Break",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
 			"insert_after": "ihr_ansprechpartner",
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\"",
 		},
 		{
 			"label": "Sales Order Clearances",
