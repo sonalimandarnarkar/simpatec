@@ -4,8 +4,6 @@ frappe.ui.form.on('Sales Order', {
         frm.set_query('sales_order', 'sales_order_clearances', function () {
             return {
                 filters: {
-                    "name": ["!=", frm.doc.name],
-                    "sales_order_type": ["!=", "Internal Clearance"],
                     "eligable_for_clearance": 1,
                     "docstatus": 1
                 },
