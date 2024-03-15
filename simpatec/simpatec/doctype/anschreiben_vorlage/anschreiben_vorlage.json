@@ -26,8 +26,10 @@
   {
    "fieldname": "language",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Language",
-   "options": "Language"
+   "options": "Language",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -58,7 +60,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-12 15:29:58.974868",
+ "modified": "2024-03-15 10:10:27.010081",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Anschreiben Vorlage",
