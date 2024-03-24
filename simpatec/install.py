@@ -102,21 +102,38 @@ def get_custom_fields():
 			"label": "SimpaTec",
 			"fieldname": "simpatec_section",
 			"fieldtype": "Section Break",
-		},
+		},	
 		{
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow Up Maintenance\nRTO\nSubscription Annual\nOther",
+			"options": "\nFirst Sale\nFollow Up Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
+		},
+		{
+			"label": "Eligable for Clearance",
+			"fieldname": "eligable_for_clearance",
+			"fieldtype": "Check",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.sales_order_type != \"\"",
+			"insert_after": "sales_order_type",
+		},
+		{
+			"label": "Internal Clearance Details",
+			"fieldname": "internal_clearance_details",
+			"fieldtype": "Link",
+			"options": "Internal Clearance Details",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "eligable_for_clearance",
 		},
 		{
 			"label": "Item Group",
 			"fieldname": "item_group",
 			"fieldtype": "Link",
 			"options": "Item Group",
-			"insert_after": "sales_order_type"
+			"insert_after": "internal_clearance_details"
 		},
 		{
 			"label": "Performance Period Start",
@@ -167,6 +184,20 @@ def get_custom_fields():
 			"options": "Employee",
 			"reqd":1,
 			"insert_after": "assigned_to"
+		},
+		{
+			"label": "Internal Clearance",
+			"fieldname": "internal_clearance",
+			"fieldtype": "Section Break",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
+			"insert_after": "ihr_ansprechpartner",
+		},
+		{
+			"label": "Sales Order Clearances",
+			"fieldname": "sales_order_clearances",
+			"fieldtype": "Table",
+			"options": "Sales Order Clearances",
+			"insert_after": "internal_clearance"
 		},
 	]
 

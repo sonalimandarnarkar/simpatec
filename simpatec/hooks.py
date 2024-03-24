@@ -33,7 +33,8 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
     "Issue" : "public/js/issue.js",
-    "Sales Order" : "public/js/sales_order.js"
+    "Sales Order" : "public/js/sales_order.js",
+	"Quotation" : "public/js/quotation.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -100,6 +101,7 @@ before_uninstall = "simpatec.install.before_uninstall"
 
 doc_events = {
 	"Sales Order": {
+        "validate": "simpatec.events.sales_order.validate",
 		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
 	}
 }
@@ -182,9 +184,28 @@ standard_queries = {
 }
 
 
-# fixtures = [
+fixtures = [
 # 	{
 # 		'dt': 'DocType Link',
 # 		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
 # 	}
-# ]
+	
+	{
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                (
+                    "Quotation-anrede",
+                    "Quotation-anschreiben_vorlage",
+                    "Quotation-anschreiben",
+					"Quotation-cover_letter_en",
+					"Quotation-cover_letter_de",
+					"Quotation-cover_letter_fr"
+					"Quotation-ignore_cover_language",
+                ),
+            ]
+        ],
+    },
+]
