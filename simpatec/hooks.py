@@ -197,13 +197,13 @@ fixtures = [
                 "name",
                 "in",
                 (
-                    "Quotation-anrede",
-                    "Quotation-anschreiben_vorlage",
-                    "Quotation-anschreiben",
-					"Quotation-cover_letter_en",
-					"Quotation-cover_letter_de",
-					"Quotation-cover_letter_fr"
-					"Quotation-ignore_cover_language",
+			"Quotation-anrede",
+			"Quotation-anschreiben_vorlage",
+			"Quotation-anschreiben",
+			"Quotation-cover_letter_en",
+			"Quotation-cover_letter_de",
+			"Quotation-cover_letter_fr"
+			"Quotation-ignore_cover_language",
                 ),
             ]
         ],
