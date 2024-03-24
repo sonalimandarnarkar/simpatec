@@ -184,9 +184,28 @@ standard_queries = {
 }
 
 
-# fixtures = [
+fixtures = [
 # 	{
 # 		'dt': 'DocType Link',
 # 		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
 # 	}
-# ]
+	
+	{
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                (
+			"Quotation-anrede",
+			"Quotation-anschreiben_vorlage",
+			"Quotation-anschreiben",
+			"Quotation-cover_letter_en",
+			"Quotation-cover_letter_de",
+			"Quotation-cover_letter_fr"
+			"Quotation-ignore_cover_language",
+                ),
+            ]
+        ],
+    },
+]
