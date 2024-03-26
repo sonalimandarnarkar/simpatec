@@ -83,3 +83,58 @@ frappe.ui.form.on("Sales Order Clearances", {
     },
 
 })
+
+frappe.ui.form.on('Sales Order Item',{
+    //
+    item_name: function(frm, cdt, cdn){
+
+		var data = frm.doc.items;
+		var row = locals[cdt][cdn];
+		if (data.length === 1 || data[0] === row) {
+			if (frm.doc.language){
+				row.item_language = frm.doc.language;
+				refresh_field("item_language", cdn, "items");
+			}
+			
+		} else {
+			frm.copy_from_previous_row("items", row, ["item_language"]);
+		}	
+	},
+
+	item_language: function(frm, cdt, cdn){
+		
+		var data = frm.doc.items;
+		
+		var row = locals[cdt][cdn];
+		if(!(frm.doc.language=== row.item_language)){			
+			let row_occurence = frm.occurence_len(data, row.item_language);
+			if (row_occurence < data.length){
+			
+				frappe.confirm("💬"+__("  The language <b>{0}</b> in the just edited row is different to the others. Should <b>{0}</b> apply to all rows?", [ row.item_language]),
+				()=>{
+					frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+				}, ()=>{
+					//cancel
+				})
+			}
+			//
+		}
+		else if (frm.doc.language=== row.item_language){
+			
+			let row_occurence = frm.occurence_len(data, row.item_language);
+			if (row_occurence < data.length){
+				//				
+				frappe.confirm("💬"+__("    The language <b>'{0}'</b> in the just edited row is different to the others. Should <b>'{0}'</b> apply to all rows?", [ row.item_language]),
+					()=>{
+							frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "item_language");
+						}, 
+					()=>{
+						//cancel
+					}
+				)
+			}
+		}
+		
+		
+	},
+})
