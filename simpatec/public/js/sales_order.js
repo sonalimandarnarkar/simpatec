@@ -10,6 +10,44 @@ frappe.ui.form.on('Sales Order', {
             };
         });
     },
+    setup: function(frm){
+		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
+			
+
+			var data = frm.doc[parentfield];
+			let idx = data.indexOf(current_row);
+			if (data.length === 1 || data[0] === current_row) return;
+			
+			if (typeof fieldnames === "string") {
+				fieldnames = [fieldnames];
+			}			
+			
+			$.each(fieldnames, function (i, fieldname) {
+				frappe.model.set_value(
+					current_row.doctype,
+					current_row.name,
+					fieldname,
+					data[idx - 1][fieldname]
+				);
+			});
+		},
+		frm.auto_fill_all_empty_rows = function(doc, dt, dn, table_fieldname, fieldname) {
+			var d = locals[dt][dn];
+			if(d[fieldname]){
+				var cl = doc[table_fieldname] || [];
+				for(var i = 0; i < cl.length; i++) {
+					if(cl[i][fieldname]) cl[i][fieldname] = d[fieldname];
+				}
+			}
+			refresh_field(table_fieldname);
+		},
+		frm.occurence_len = function(arr, element){
+			
+			return arr.filter(
+				(ele) => ele.item_language == element
+			).length;
+		}
+	},
 
     refresh(frm) {
         // GET SIMPATEC GLOBAL SETTINGS
