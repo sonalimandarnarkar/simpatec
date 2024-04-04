@@ -104,7 +104,7 @@ frappe.ui.form.on('Quotation Item',{
 		var row = locals[cdt][cdn];
 		if(!(frm.doc.language=== row.item_language)){			
 			let row_occurence = frm.occurence_len(data, row.item_language);
-			if (row_occurence < data.length){
+			if (row_occurence < data.length && !cur_dialog){
 			
 				frappe.confirm("💬"+__("  The language <b>{0}</b> in the just edited row is different to the others. Should <b>{0}</b> apply to all rows?", [ row.item_language]),
 				()=>{
@@ -118,7 +118,7 @@ frappe.ui.form.on('Quotation Item',{
 		else if (frm.doc.language=== row.item_language){
 			
 			let row_occurence = frm.occurence_len(data, row.item_language);
-			if (row_occurence < data.length){
+			if (row_occurence < data.length && !cur_dialog){
 				//				
 				frappe.confirm("💬"+__("    The language <b>'{0}'</b> in the just edited row is different to the others. Should <b>'{0}'</b> apply to all rows?", [ row.item_language]),
 					()=>{
