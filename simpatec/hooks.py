@@ -32,9 +32,13 @@ app_license = "MIT"
 
 # include js in doctype views
 doctype_js = {
+    "Customer" : "public/js/customer.js",
     "Issue" : "public/js/issue.js",
     "Sales Order" : "public/js/sales_order.js",
-	"Quotation" : "public/js/quotation.js"
+	"Quotation" : "public/js/quotation.js",
+	"Opportunity": "public/js/opportunity.js",
+	"Purchase Order" : "public/js/purchase_order.js",
+	"Sales Invoice" : "public/js/sales_invoice.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -103,6 +107,9 @@ doc_events = {
 	"Sales Order": {
         "validate": "simpatec.events.sales_order.validate",
 		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
+	},
+	"Purchase Order": {
+		"validate": "simpatec.events.purchase_order.validate",
 	}
 }
 
