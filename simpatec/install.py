@@ -120,20 +120,11 @@ def get_custom_fields():
 			"insert_after": "sales_order_type",
 		},
 		{
-			"label": "Internal Clearance Details",
-			"fieldname": "internal_clearance_details",
-			"fieldtype": "Link",
-			"options": "Internal Clearance Details",
-			"allow_on_submit": 1,
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
-			"insert_after": "eligable_for_clearance",
-		},
-		{
 			"label": "Item Group",
 			"fieldname": "item_group",
 			"fieldtype": "Link",
 			"options": "Item Group",
-			"insert_after": "internal_clearance_details"
+			"insert_after": "eligable_for_clearance"
 		},
 		{
 			"label": "Performance Period Start",
@@ -189,7 +180,7 @@ def get_custom_fields():
 			"label": "Internal Clearance",
 			"fieldname": "internal_clearance",
 			"fieldtype": "Section Break",
-			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\" || doc.eligable_for_clearance == 1 ",
 			"insert_after": "ihr_ansprechpartner",
 		},
 		{
@@ -197,7 +188,30 @@ def get_custom_fields():
 			"fieldname": "sales_order_clearances",
 			"fieldtype": "Table",
 			"options": "Sales Order Clearances",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
 			"insert_after": "internal_clearance"
+		},
+		{
+			"label": "Internal Clearance Details",
+			"fieldname": "internal_clearance_details",
+			"fieldtype": "Link",
+			"options": "Internal Clearance Details",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "sales_order_clearances",
+		},
+		{
+			"fieldname": "column_break_jvteb",
+			"fieldtype": "Column Break",
+			"insert_after": "internal_clearance_details",
+		},
+		{
+			"label": "Clear By",
+			"fieldname": "clear_by",
+			"fieldtype": "Link",
+			"options": "Company",
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "column_break_jvteb",
 		},
 	]
 
