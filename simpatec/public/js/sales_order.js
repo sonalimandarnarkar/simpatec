@@ -5,6 +5,7 @@ frappe.ui.form.on('Sales Order', {
             return {
                 filters: {
                     "eligable_for_clearance": 1,
+                    "clear_by": frm.doc.company,
                     "docstatus": 1
                 },
             };
@@ -24,6 +25,14 @@ frappe.ui.form.on('Sales Order', {
         		})                
             }, __("Create"));
         }
+
+        // MAKE TABLE FULL WIDTH
+        if(frm.doc.sales_order_type == "Internal Clearance"){
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").addClass("col-md-12")
+        }else {
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").removeClass("col-md-12")
+        }
+
     },
 
     get_simpatec_settings(frm){ // SIMPATECH GLOBAL SETTING FUNCTION
@@ -41,7 +50,24 @@ frappe.ui.form.on('Sales Order', {
                 }
             }
         });
+    },
+    eligable_for_clearance(frm){ // ELIGIBLE FOR CLEARANCE CHECK FUNCTIONALITY
+        // SET CLEAR BY REQUIRED IF ELIGABLE FOR CLEARANCE IS CHECKED
+        if (frm.doc.eligable_for_clearance){
+            frm.toggle_reqd("clear_by", 1)
+        }else{
+            frm.toggle_reqd("clear_by", 0)
+        }
+    },
+    sales_order_type(frm){
+        // MAKE TABLE FULL WIDTH
+        if(frm.doc.sales_order_type == "Internal Clearance"){
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").addClass("col-md-12")
+        }else{
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").removeClass("col-md-12")
+        }
     }
+
 })
 
 // SALES ORDER CLEARANCE TABLE EVENTS
