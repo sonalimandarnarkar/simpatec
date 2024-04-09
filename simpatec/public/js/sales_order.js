@@ -6,7 +6,8 @@ frappe.ui.form.on('Sales Order', {
                 filters: {
                     "eligable_for_clearance": 1,
                     "clear_by": frm.doc.company,
-                    "docstatus": 1
+                    "docstatus": 1,
+                    "clearance_status": ["!=", "Cleared"]
                 },
             };
         });
@@ -141,7 +142,8 @@ frappe.ui.form.on("Sales Order Clearances", {
         // CHECK IF ITEM ROW IS ALREADY AVAILABLE
         if (!is_null(item_row)){
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            frappe.model.set_value(item_row.doctype, item_row.name, "description", `Clearance from ${cur_row.sales_order} ${cur_row.clearance_details}`)
+            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${frm.doc.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(cur_frm.get_formatted("total")).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "rate", cur_row.clearance_amount)
         }
         refresh_field("items");
     },

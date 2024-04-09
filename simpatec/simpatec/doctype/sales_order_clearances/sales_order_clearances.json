@@ -44,15 +44,17 @@
    "read_only": 1
   },
   {
+   "fetch_from": "sales_order.clearance_amount",
    "fieldname": "clearance_amount",
    "fieldtype": "Currency",
-   "label": "Clearance Amount"
+   "label": "Clearance Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-03-14 10:50:48.318368",
+ "modified": "2024-04-09 06:26:41.112179",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Sales Order Clearances",

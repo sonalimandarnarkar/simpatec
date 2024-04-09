@@ -106,10 +106,15 @@ before_uninstall = "simpatec.install.before_uninstall"
 doc_events = {
 	"Sales Order": {
         "validate": "simpatec.events.sales_order.validate",
-		"on_submit": "simpatec.events.sales_order.update_software_maintenance"
+		"on_submit": [
+            "simpatec.events.sales_order.update_software_maintenance", 
+			"simpatec.events.sales_order.update_internal_clearance_status"
+            ],
+		"on_cancel": "simpatec.events.sales_order.reset_internal_clearance_status"
 	},
-	"Purchase Order": {
-		"validate": "simpatec.events.purchase_order.validate",
+    "Purchase Order": {
+        "on_submit": "simpatec.events.purchase_order.on_submit",
+        "validate": "simpatec.events.purchase_order.validate",
 	}
 }
 
