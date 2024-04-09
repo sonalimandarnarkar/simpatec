@@ -261,11 +261,113 @@ def get_custom_fields():
 			"fieldname": "end_date",
 			"fieldtype": "Date",
 			"insert_after": "start_date",
-		}
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "item_name_en",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "item_name",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "item_name_de",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_name_en",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "item_name_fr",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_name_de",
+		},
+
+		{
+			"label": "Item Description EN",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "id_de",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "id_de",
+		},
 	]
+
+	custom_fields_item = [
+		{
+			"label": "Translation",
+			"fieldname": "translation",
+			"fieldtype": "Section Break",
+			"insert_after": "image",
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "in_en",
+			"fieldtype": "Data",
+			"insert_after": "translation",
+		},
+		{
+			"label": "Item Description EN",
+			"fieldname": "id_en",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_en",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "in_de",
+			"fieldtype": "Data",
+			"insert_after": "id_en",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_de",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "in_fr",
+			"fieldtype": "Data",
+			"insert_after": "id_de",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "id_fr",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_fr",
+		},
+	]
+
 
 	return {
 		"Customer": custom_fields_customer,
 		"Sales Order": custom_fields_so,
-		"Sales Order Item": custom_fields_soi
+		"Sales Order Item": custom_fields_soi,
+		"Item": custom_fields_item
 	}
