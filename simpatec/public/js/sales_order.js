@@ -141,8 +141,12 @@ frappe.ui.form.on("Sales Order Clearances", {
         var item_row = frm.doc.items[cur_row.idx - 1];
         // CHECK IF ITEM ROW IS ALREADY AVAILABLE
         if (!is_null(item_row)){
+            var formatted_currency = frappe.format(cur_row.net_total, { fieldtype: "Currency", currency: frm.doc.currency });
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${frm.doc.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(cur_frm.get_formatted("total")).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${cur_row.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", `${cur_row.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", `${cur_row.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_fr", `${cur_row.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
             frappe.model.set_value(item_row.doctype, item_row.name, "rate", cur_row.clearance_amount)
         }
         refresh_field("items");
