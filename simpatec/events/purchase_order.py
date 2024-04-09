@@ -17,7 +17,7 @@ def on_submit(doc, handler=None):
 def update_clearance_amount_in_sales_order(self):
     """Update Clearance Amount in Sales Order"""
     for item in self.items:
-        if item.sales_orde
+        if item.sales_order:
             so = frappe.get_doc("Sales Order", item.sales_order)
             is_eligable_for_clearance = so.eligable_for_clearance
             internal_clearance_details = so.internal_clearance_details
