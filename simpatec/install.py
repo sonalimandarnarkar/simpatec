@@ -127,11 +127,18 @@ def get_custom_fields():
 			"insert_after": "eligable_for_clearance"
 		},
 		{
+			"label": "Quotation Label",
+			"fieldname": "quotation_label",
+			"fieldtype": "Link",
+			"options": "Angebotsvorlage",
+			"insert_after": "item_group"
+		},
+		{
 			"label": "Performance Period Start",
 			"fieldname": "performance_period_start",
 			"fieldtype": "Date",
 			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
-			"insert_after": "item_group",
+			"insert_after": "quotation_label",
 		},
 		{
 			"fieldname": "column_break_fdgxg",
@@ -201,9 +208,19 @@ def get_custom_fields():
 			"insert_after": "sales_order_clearances",
 		},
 		{
+			"label": "Clearance Amount",
+			"fieldname": "clearance_amount",
+			"fieldtype": "Currency",
+			"description": "Clearance Amount = ((Sales Order Net Amount) - (Purchase Order Net Amount)) * (1-(Clearance Rate))",
+			"allow_on_submit": 1,
+			"read_only": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "internal_clearance_details",
+		},
+		{
 			"fieldname": "column_break_jvteb",
 			"fieldtype": "Column Break",
-			"insert_after": "internal_clearance_details",
+			"insert_after": "clearance_amount",
 		},
 		{
 			"label": "Clear By",
@@ -212,6 +229,16 @@ def get_custom_fields():
 			"options": "Company",
 			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
 			"insert_after": "column_break_jvteb",
+		},
+		{
+			"label": "Clearance Status",
+			"fieldname": "clearance_status",
+			"fieldtype": "Select",
+			"options": "\nCleared\nNot Cleared\n",
+			"default": "Not Cleared",
+			"read_only": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "clear_by",
 		},
 	]
 

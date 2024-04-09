@@ -12,6 +12,37 @@ def validate(doc, handler=None):
 	elif doc.eligable_for_clearance:
 		doc.sales_order_clearances = []
 
+	validate_duplicate_linked_internal_clearance(doc)
+
+
+@frappe.whitelist()
+def validate_duplicate_linked_internal_clearance(doc):
+	linked_so = []
+	if doc.sales_order_type == "Internal Clearance":
+		for so in doc.sales_order_clearances:
+			so_clearances = frappe.get_all("Sales Order Clearances", filters={
+					"sales_order":so.sales_order, 
+					"parent":["!=", doc.name],
+					"docstatus": ["!=", 2]
+				})
+			if len(so_clearances) > 0:
+				linked_so.append(so.sales_order)
+
+	if len(linked_so) > 0:
+		linked_so = " <br>".join(linked_so)
+		frappe.throw("Cannot be linked because these Sales Order are already linked in Different Clearances <br> {0}".format(linked_so))
+
+
+
+@frappe.whitelist()
+def reset_internal_clearance_status(doc, handler=None):
+	if doc.sales_order_type == "Internal Clearance":
+		for so in doc.sales_order_clearances:
+			so_doc = frappe.get_doc("Sales Order", so.sales_order)
+			if so_doc.clearance_status == "Cleared":
+				frappe.db.set_value(so_doc.doctype, so_doc.name, "clearance_status", "Not Cleared")
+
+
 @frappe.whitelist()
 def make_software_maintenance(source_name, target_doc=None):
 	def postprocess(source, doc):
@@ -38,6 +69,13 @@ def make_software_maintenance(source_name, target_doc=None):
 	)
 
 	return doc
+
+@frappe.whitelist()
+def update_internal_clearance_status(doc, handler=None):
+	if doc.sales_order_type == "Internal Clearance":
+		for item in doc.items:
+			internal_so = doc.sales_order_clearances[item.idx - 1].get("sales_order")
+			frappe.db.set_value(doc.doctype, internal_so, "clearance_status", "Cleared")
 
 
 def update_software_maintenance(doc, method=None):
