@@ -1,60 +1,6 @@
-frappe.ui.form.on('Quotation', {
-	refresh: function(frm) {
-
-        function addClearIconToField(field) {
-            if (!field.$clear_icon_appended) {
-                field.$clear_icon_appended = true;
-
-				var $clearIcon = $('<span id="xsimpactggleicon" class="clear-icon" style="cursor: pointer; position: absolute; right: 35px; top: 50%; transform: translateY(-50%); font-size: 15px; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%;  color: #1C2126;"><svg class="icon "> <use href="#icon-filter-x"></use> </svg> </span>');
-                field.$input.parent().css('position', 'relative'); 
-                field.$input.css('position', 'relative'); 
-                field.$input.after($clearIcon);
-
-                $clearIcon.on('click', function() {
-					let qd = cur_frm.fields_dict["anschreiben_vorlage"].get_query();
-					var x = document.getElementById("xsimpactggleicon").children[0];
-					if (!(qd == undefined) && qd.filters.language === frm.doc.language){
-						x.innerHTML = '<use href="#icon-filter"></use>';
-						frm.set_query("anschreiben_vorlage", () => {
-							let filters = {};
-							/* return {
-								filters: filters
-							} */
-						});
-					}
-					else{
-						x.innerHTML = '<use href="#icon-filter-x"></use>';
-						frm.set_query("anschreiben_vorlage", () => {
-							let filters = {};
-							if (frm.doc.language) filters["language"] = frm.doc.language;
-							return {
-								filters: filters
-							}
-						});
-
-					}
-                    					
-					frm.set_value(field.df.fieldname, '');
-                });
-            }
-        }
-
-
-        $.each(frm.fields_dict, function(fieldname, field) {
-            
-			if (fieldname == 'anschreiben_vorlage') {
-                addClearIconToField(field);
-            }
-        });
-    },
+frappe.ui.form.on('Sales Invoice', {
+	
 	setup: function(frm){
-		frm.set_query("anschreiben_vorlage", () => {
-			let filters = {};
-			if (frm.doc.language) filters["language"] = frm.doc.language;
-			return {
-				filters: filters
-			}
-		});
 		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
 			
 
@@ -94,7 +40,7 @@ frappe.ui.form.on('Quotation', {
 	}
 });
 
-frappe.ui.form.on('Quotation Item',{
+frappe.ui.form.on('Sales Invoice Item',{
 	//
 	item_name: function(frm, cdt, cdn){
 

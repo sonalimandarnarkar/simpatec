@@ -1,13 +1,23 @@
 import frappe
 
 @frappe.whitelist()
+def validate(doc, handler=None):
+    """"""
+    supplier_lang = frappe.db.get_value('Supplier',doc.supplier,'language')
+    doc.language = supplier_lang
+    
+    for lang in doc.items:
+        lang.item_language = supplier_lang
+        ##print(lang.description)
+
+@frappe.whitelist()
 def on_submit(doc, handler=None):
     update_clearance_amount_in_sales_order(doc)
 
 def update_clearance_amount_in_sales_order(self):
     """Update Clearance Amount in Sales Order"""
     for item in self.items:
-        if item.sales_order:
+        if item.sales_orde
             so = frappe.get_doc("Sales Order", item.sales_order)
             is_eligable_for_clearance = so.eligable_for_clearance
             internal_clearance_details = so.internal_clearance_details

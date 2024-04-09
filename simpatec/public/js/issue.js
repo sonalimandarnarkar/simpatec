@@ -7,10 +7,10 @@ frappe.ui.form.on('Issue', {
 	},
 	make_dashboard: (frm) => {
 		if(!frm.is_new()) {
-            if (frm.doc.customer && frm.doc.item_group) {
+            if (frm.doc.customer) {
                 frappe.call({
-                    method: 'simpatec.events.issue.software_maintenance',
-                    args: {item_group: frm.doc.item_group, customer: frm.doc.customer},
+                    method: 'simpatec.events.api.software_maintenance',
+                    args: {customer: frm.doc.customer},
                     callback: (r) => {
                         if(!r.message) {
                             return;
