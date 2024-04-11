@@ -28,5 +28,5 @@ def update_clearance_amount_in_sales_order(self):
                     Sales Order net amount (Y)
                     Purchase Order net amount (X)
                     Clearance Amount = ((Y) - (X)) * (1-(Z))"""
-                    clearance_amount = ((so.total) - (self.total)) * (1-(internal_commision_rate/100))
+                    clearance_amount = (so.total - self.total) * (internal_commision_rate/100)
                     frappe.db.set_value(so.doctype, so.name, "clearance_amount", clearance_amount)
