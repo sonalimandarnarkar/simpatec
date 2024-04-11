@@ -143,7 +143,7 @@ frappe.ui.form.on("Sales Order Clearances", {
         if (!is_null(item_row)){
             var formatted_currency = frappe.format(cur_row.net_total, { fieldtype: "Currency", currency: frm.doc.currency });
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${cur_row.customer_name} - ${frm.doc.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_fr", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
