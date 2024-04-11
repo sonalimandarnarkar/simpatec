@@ -211,7 +211,7 @@ def get_custom_fields():
 			"label": "Clearance Amount",
 			"fieldname": "clearance_amount",
 			"fieldtype": "Currency",
-			"description": "Clearance Amount = ((Sales Order Net Amount) - (Purchase Order Net Amount)) * (1-(Clearance Rate))",
+			"description": "Clearance Amount = ((Sales Order Net Amount) - (Purchase Order Net Amount)) * (Clearance Rate)",
 			"allow_on_submit": 1,
 			"read_only": 1,
 			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
