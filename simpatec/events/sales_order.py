@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
 from frappe.model.mapper import get_mapped_doc
+from datetime import date, timedelta
 
 
 @frappe.whitelist()
@@ -81,8 +82,8 @@ def update_internal_clearance_status(doc, handler=None):
 def update_software_maintenance(doc, method=None):
 	if doc.get("software_maintenance"):
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
-		software_maintenance.performance_period_start = doc.performance_period_start
-		software_maintenance.performance_period_end = doc.performance_period_end
+		# software_maintenance.performance_period_start = doc.performance_period_start
+		# software_maintenance.performance_period_end = doc.performance_period_end
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
 			software_maintenance.append("items", {
@@ -131,9 +132,9 @@ def make_sales_order(software_maintenance, is_background_job=True):
 	employee =  frappe.get_cached_value('Employee', {'user_id': software_maintenance.assign_to}, 'name')
 	if not employee:
 		frappe.throw(_("User {0} not set in Employee").format(software_maintenance.assign_to))
-
+	old_start_date = software_maintenance.performance_period_start
 	performance_period_start = add_days(software_maintenance.performance_period_end, 1)
-	performance_period_end = add_years(performance_period_start, software_maintenance.maintenance_duration)
+	performance_period_end = add_years(performance_period_start, software_maintenance.maintenance_duration) - timedelta(days=1)
 	total_days = getdate(performance_period_end) - getdate(performance_period_start)
 
 	days_diff = total_days.days%365
@@ -155,16 +156,30 @@ def make_sales_order(software_maintenance, is_background_job=True):
 	sales_order.order_type = "Sales"
 
 	for item in software_maintenance.items:
+		start_date = performance_period_start
+		item_rate = item.rate
+		if item.start_date != old_start_date:
+			per_day_rate = item.rate / 365
+			start_date = item.end_date
+			d0 = start_date
+			d1 = performance_period_end
+			delta = d1 - d0
+			days_remaining = delta.days
+			total_remaining_item_rate = days_remaining * per_day_rate
+			item_rate = total_remaining_item_rate
+
 		sales_order.append("items", {
 			"item_code": item.item_code,
 			"item_name": item.item_name,
 			"description": item.description,
 			"conversion_factor": item.conversion_factor,
 			"qty": item.qty,
-			"rate": item.rate,
+			"rate": item_rate,
 			"uom": item.uom,
 			"item_language": item.item_language,
-			"delivery_date": sales_order.transaction_date
+			"delivery_date": sales_order.transaction_date,
+			"start_date": start_date,
+			"end_date": performance_period_end
 		})
 
 	sales_order.insert()

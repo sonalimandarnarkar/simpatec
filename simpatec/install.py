@@ -267,6 +267,13 @@ def get_custom_fields():
 			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
 			"insert_after": "clear_by",
 		},
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
 	]
 
 	custom_fields_soi = [
@@ -391,10 +398,43 @@ def get_custom_fields():
 		},
 	]
 
+	custom_fields_si = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
+	custom_fields_po = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
+	custom_fields_pi = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
 
 	return {
 		"Customer": custom_fields_customer,
 		"Sales Order": custom_fields_so,
 		"Sales Order Item": custom_fields_soi,
-		"Item": custom_fields_item
+		"Item": custom_fields_item,
+		"Sales Invoice": custom_fields_si,
+		"Purchase Invoice": custom_fields_pi,
+		"Purchase Order": custom_fields_po,
 	}
