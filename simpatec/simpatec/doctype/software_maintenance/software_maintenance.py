@@ -6,6 +6,11 @@ from frappe import _
 from frappe.model.document import Document
 
 class SoftwareMaintenance(Document):
+
+	def before_save(self):
+		if self.is_new():
+			self.new_doc = True
+
 	def on_update(self):
 		self.update_sales_order()
 
