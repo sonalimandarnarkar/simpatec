@@ -82,8 +82,12 @@ def update_internal_clearance_status(doc, handler=None):
 def update_software_maintenance(doc, method=None):
 	if doc.get("software_maintenance"):
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
-		# software_maintenance.performance_period_start = doc.performance_period_start
-		# software_maintenance.performance_period_end = doc.performance_period_end
+		if (doc.performance_period_start is not None and doc.performance_period_start != "") and (doc.performance_period_end is not None and doc.performance_period_end != ""):
+			if software_maintenance.performance_period_start != doc.performance_period_start:
+				software_maintenance.performance_period_start = doc.performance_period_start
+			if software_maintenance.performance_period_end != doc.performance_period_end:
+				software_maintenance.performance_period_end = doc.performance_period_end
+			
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
 			software_maintenance.append("items", {
@@ -139,8 +143,8 @@ def make_sales_order(software_maintenance, is_background_job=True):
 
 	days_diff = total_days.days%365
 	if days_diff != 0:
-		performance_period_end = add_days(performance_period_end, -days_diff)
-		total_days = getdate(performance_period_end) - getdate(performance_period_start)
+		_performance_period_end = add_days(performance_period_end, -days_diff)
+		total_days = getdate(_performance_period_end) - getdate(performance_period_start)
 
 	transaction_date = add_days(performance_period_end, -cint(software_maintenance.lead_time))
 	sales_order = frappe.new_doc("Sales Order")
