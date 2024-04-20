@@ -13,6 +13,9 @@ def validate(doc, handler=None):
 	elif doc.eligable_for_clearance:
 		doc.sales_order_clearances = []
 
+	if doc.software_maintenance:
+		if doc.sales_order_type == "First Sale" and frappe.db.exists("Sales Order", {"sales_order_type": "First Sale", "software_maintenance": doc.software_maintenance}):
+			frappe.throw("First Sales for {0} Exist<br>Select Follow-up Sales or Follow-up Maintenance".format(frappe.get_desk_link("Software Maintenance", doc.software_maintenance)))
 	validate_duplicate_linked_internal_clearance(doc)
 
 

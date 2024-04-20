@@ -52,6 +52,29 @@ frappe.ui.form.on('Sales Order', {
 	},
 
     refresh(frm) {
+
+        // if (frm.doc.first_sales_software_maintenence == 1) {
+        //     frm.set_value("sales_order_type", "First Sale")
+        //     frm.toggle_enable("sales_order_type", 0)
+        // } else {
+        //     frm.toggle_enable("sales_order_type", 1)
+        // }
+
+        if(frm.doc.docstatus == 0){
+            if(frm.doc.sales_order_type == "First Sale") {
+                frm.toggle_enable("software_maintenance", 0)
+                frm.toggle_reqd("software_maintenance", 0)
+            } 
+            else if(["Follow-Up Sale", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+                frm.toggle_reqd("software_maintenance", 1)
+                frm.toggle_enable("software_maintenance", 1)
+            }
+            else{
+                frm.toggle_reqd("software_maintenance", 0)
+                frm.toggle_enable("software_maintenance", 1)
+            }
+        }
+
         // GET SIMPATEC GLOBAL SETTINGS
         frm.events.get_simpatec_settings(frm)
 
@@ -105,7 +128,31 @@ frappe.ui.form.on('Sales Order', {
         }else{
             $("div[data-fieldname='sales_order_clearances']").parents(".form-column").removeClass("col-md-12")
         }
-    }
+
+        if(frm.doc.sales_order_type == "First Sale") {
+            frm.toggle_enable("software_maintenance", 0)
+            frm.toggle_reqd("software_maintenance", 0)
+        }
+        else if(["Follow-Up Sale", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+            frm.toggle_reqd("software_maintenance", 1)
+            frm.toggle_enable("software_maintenance", 1)
+        }
+        else {
+            frm.toggle_reqd("software_maintenance", 0)
+            frm.toggle_enable("software_maintenance", 1)
+        }
+
+    },
+
+    // first_sales_software_maintenence(frm){
+    //     if (frm.doc.first_sales_software_maintenence == 1){
+    //         frm.set_value("sales_order_type", "First Sale")
+    //         frm.toggle_enable("sales_order_type", 0)
+    //     }else{
+    //         frm.toggle_enable("sales_order_type", 1)
+    //         frm.set_value("sales_order_type", "")
+    //     }
+    // }
 
 })
 
