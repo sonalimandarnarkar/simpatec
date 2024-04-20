@@ -14,5 +14,7 @@ frappe.ui.form.on('Software Maintenance', {
                 },
             });
         }, __("Renew Sales Order"));
+        //hide all + in the connection
+        $('.form-documents button').hide();
     }
 });
