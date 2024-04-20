@@ -53,13 +53,6 @@ frappe.ui.form.on('Sales Order', {
 
     refresh(frm) {
 
-        // if (frm.doc.first_sales_software_maintenence == 1) {
-        //     frm.set_value("sales_order_type", "First Sale")
-        //     frm.toggle_enable("sales_order_type", 0)
-        // } else {
-        //     frm.toggle_enable("sales_order_type", 1)
-        // }
-
         if(frm.doc.docstatus == 0){
             if(frm.doc.sales_order_type == "First Sale") {
                 frm.toggle_enable("software_maintenance", 0)
@@ -143,16 +136,6 @@ frappe.ui.form.on('Sales Order', {
         }
 
     },
-
-    // first_sales_software_maintenence(frm){
-    //     if (frm.doc.first_sales_software_maintenence == 1){
-    //         frm.set_value("sales_order_type", "First Sale")
-    //         frm.toggle_enable("sales_order_type", 0)
-    //     }else{
-    //         frm.toggle_enable("sales_order_type", 1)
-    //         frm.set_value("sales_order_type", "")
-    //     }
-    // }
 
 })
 
