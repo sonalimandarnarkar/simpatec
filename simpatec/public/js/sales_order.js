@@ -11,6 +11,15 @@ frappe.ui.form.on('Sales Order', {
                 },
             };
         });
+        
+        // FILTER ONLY SELECTED CUSTOMER SOFTWARE MAINTENANCE
+        frm.set_query('software_maintenance', function () {
+            return {
+                filters: {
+                    "customer": frm.doc.customer,
+                },
+            };
+        });
     },
     setup: function(frm){
 		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
