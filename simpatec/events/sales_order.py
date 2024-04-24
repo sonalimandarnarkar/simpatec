@@ -52,6 +52,17 @@ def make_software_maintenance(source_name, target_doc=None):
 	def postprocess(source, doc):
 		if source.sales_order_type == "First Sale":
 			doc.first_sale_on = source.transaction_date
+			for item in doc.items:
+				item.start_date = item.start_date + timedelta(days=365)
+				item.end_date = item.end_date + timedelta(days=365)
+				days_diff = item.end_date - item.start_date
+				if days_diff == 365:
+					item.end_date = item.end_date - timedelta(days=1)
+				so_item = source.items[item.idx-1]
+				if so_item.item_type == "Maintenance Item":
+					item.rate = so_item.reccuring_maintenance_amount
+				else:
+					item.rate = 0
 		doc.assign_to = source.assigned_to
 
 	doc = get_mapped_doc(
