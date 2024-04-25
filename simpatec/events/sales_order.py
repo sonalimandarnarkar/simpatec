@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
 from frappe.model.mapper import get_mapped_doc
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 
 @frappe.whitelist()
@@ -60,7 +60,7 @@ def make_software_maintenance(source_name, target_doc=None):
 					item.end_date = item.end_date - timedelta(days=1)
 				so_item = source.items[item.idx-1]
 				if so_item.item_type == "Maintenance Item":
-					item.rate = so_item.reccuring_maintenance_amount
+					item.rate = so_item.reoccuring_maintenance_amount
 				else:
 					item.rate = 0
 		doc.assign_to = source.assigned_to
@@ -96,14 +96,29 @@ def update_internal_clearance_status(doc, handler=None):
 def update_software_maintenance(doc, method=None):
 	if doc.get("software_maintenance"):
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
-		if (doc.performance_period_start is not None and doc.performance_period_start != "") and (doc.performance_period_end is not None and doc.performance_period_end != ""):
-			if software_maintenance.performance_period_start != doc.performance_period_start:
-				software_maintenance.performance_period_start = doc.performance_period_start
-			if software_maintenance.performance_period_end != doc.performance_period_end:
-				software_maintenance.performance_period_end = doc.performance_period_end
+		if doc.sales_order_type not in ["Follow-Up Sale"]:
+			if (doc.performance_period_start is not None and doc.performance_period_start != "") and (doc.performance_period_end is not None and doc.performance_period_end != ""):
+				if software_maintenance.performance_period_start != doc.performance_period_start:
+					software_maintenance.performance_period_start = doc.performance_period_start
+				if software_maintenance.performance_period_end != doc.performance_period_end:
+					software_maintenance.performance_period_end = doc.performance_period_end
 			
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
+			if item.item_type == "Maintenance Item":
+				item.rate = item.reoccuring_maintenance_amount
+			else:
+				item.rate = 0
+			if type(item.start_date) == str:
+				item.start_date = datetime.strptime(item.start_date, "%Y-%m-%d")
+			if type(item.end_date) == str:
+				item.end_date = datetime.strptime(item.end_date, "%Y-%m-%d")
+			item.start_date = item.start_date + timedelta(days=365)
+			item.end_date = item.end_date + timedelta(days=365)
+			days_diff = item.end_date - item.start_date
+			if days_diff == 365:
+				item.end_date = item.end_date - timedelta(days=1)
+
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
