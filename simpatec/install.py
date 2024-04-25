@@ -107,7 +107,7 @@ def get_custom_fields():
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
+			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
 		},
@@ -277,6 +277,40 @@ def get_custom_fields():
 	]
 
 	custom_fields_soi = [
+		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_section",
+			"fieldtype": "Section Break",
+			"insert_after": ""
+		},	
+		{
+			"label": "Item Type",
+			"fieldname": "item_type",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.item_type",
+			"read_only": 1,
+			"fetch_if_empty": 1,
+			"insert_after": "simpatec_section",
+		
+		},
+		{
+			"fieldname": "column_break_vh0vp",
+			"fieldtype": "Column Break",
+			"insert_after": "item_type",
+		},
+		{
+			"label": "Reoccuring Maintenance Amount",
+			"fieldname": "reoccuring_maintenance_amount",
+			"fieldtype": "Currency",
+			"description": "The grand total of the reoccurring maintenance cost",
+			"depends_on": "eval: doc.item_type == \"Maintenance Item\"",
+			"insert_after": "column_break_vh0vp"
+		},
+		{
+			"fieldname": "section_break_kiny4",
+			"fieldtype": "Section Break",
+			"insert_after": "reoccuring_maintenance_amount"
+		},
 		{
 			"label": "Item Language",
 			"fieldname": "item_language",

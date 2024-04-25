@@ -67,7 +67,7 @@ frappe.ui.form.on('Sales Order', {
                 frm.toggle_enable("software_maintenance", 0)
                 frm.toggle_reqd("software_maintenance", 0)
             } 
-            else if(["Follow-Up Sale", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+            else if (["Follow-Up Sale", "Reoccuring Maintenance", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
                 frm.toggle_reqd("software_maintenance", 1)
                 frm.toggle_enable("software_maintenance", 1)
             }
@@ -137,7 +137,7 @@ frappe.ui.form.on('Sales Order', {
             // frm.toggle_enable("performance_period_start", 1)
             // frm.toggle_enable("performance_period_end", 1)
         }
-        else if(["Follow-Up Sale", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+        else if (["Follow-Up Sale", "Reoccuring Maintenance", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
             frm.toggle_reqd("software_maintenance", 1)
             frm.toggle_enable("software_maintenance", 1)
         }
@@ -146,20 +146,20 @@ frappe.ui.form.on('Sales Order', {
             frm.toggle_enable("software_maintenance", 1)
         }
         
-        if(["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
-            frm.toggle_enable("performance_period_start", 0)
-            frm.toggle_enable("performance_period_end", 0)
-        }else{
-            frm.toggle_enable("performance_period_start", 1)
-            frm.toggle_enable("performance_period_end", 1)
-        }
+        // if(["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
+        //     frm.toggle_enable("performance_period_start", 0)
+        //     frm.toggle_enable("performance_period_end", 0)
+        // }else{
+        //     frm.toggle_enable("performance_period_start", 1)
+        //     frm.toggle_enable("performance_period_end", 1)
+        // }
 
     },
     performance_period_start: function (frm) {
         var currentDate = moment(frm.doc.performance_period_start);
         var futureMonth = moment(currentDate).add(364, 'd');
         frm.set_value("performance_period_end", futureMonth.format('YYYY-MM-DD'))
-        if (["First Sale", "Reoccurring Maintenance"].includes(frm.doc.sales_order_type)){
+        if (["First Sale", "Follow-Up Sale", "Reoccurring Maintenance"].includes(frm.doc.sales_order_type)){
             $.each(frm.doc.items || [], function (i, d) {
                 if (!d.start_date) d.start_date = frm.doc.performance_period_start;
             });
@@ -173,17 +173,17 @@ frappe.ui.form.on('Sales Order', {
         refresh_field("items");
     },
 
-    software_maintenance: function(frm){
-        if(!is_null(frm.doc.software_maintenance)){
-            if (["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
-                frm.toggle_enable("performance_period_start",0)
-                frm.toggle_enable("performance_period_end",0)
-            }
-        }else{
-            frm.toggle_enable("performance_period_start", 1)
-            frm.toggle_enable("performance_period_end", 1)
-        }
-    }
+    // software_maintenance: function(frm){
+    //     if(!is_null(frm.doc.software_maintenance)){
+    //         if (["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
+    //             frm.toggle_enable("performance_period_start",0)
+    //             frm.toggle_enable("performance_period_end",0)
+    //         }
+    //     }else{
+    //         frm.toggle_enable("performance_period_start", 1)
+    //         frm.toggle_enable("performance_period_end", 1)
+    //     }
+    // }
 
 })
 
@@ -234,7 +234,7 @@ frappe.ui.form.on("Sales Order Clearances", {
 
 frappe.ui.form.on('Sales Order Item',{
     item_code: function (frm, cdt, cdn) {
-        if(["First Sale"].includes(frm.doc.sales_order_type)){
+        if (["First Sale", "Follow-Up Sale", "Reoccuring Maintenance","Follow Up Maintenance"].includes(frm.doc.sales_order_type)){
             var row = locals[cdt][cdn];
             if (frm.doc.performance_period_start) {
                 row.start_date = frm.doc.performance_period_start;
