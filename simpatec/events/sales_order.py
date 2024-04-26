@@ -110,11 +110,23 @@ def update_software_maintenance(doc, method=None):
 			else:
 				item.rate = 0
 			if type(item.start_date) == str:
-				item.start_date = datetime.strptime(item.start_date, "%Y-%m-%d")
+				item.start_date = datetime.strptime(item.start_date, "%Y-%m-%d").date()
 			if type(item.end_date) == str:
-				item.end_date = datetime.strptime(item.end_date, "%Y-%m-%d")
+				item.end_date = datetime.strptime(item.end_date, "%Y-%m-%d").date()
 			item.start_date = item.start_date + timedelta(days=365)
 			item.end_date = item.end_date + timedelta(days=365)
+			if doc.sales_order_type == "Follow-Up Sale":
+				item.end_date = software_maintenance.performance_period_end + timedelta(days=365)
+				per_day_rate = item.rate / 365
+				start_date = item.start_date
+				d0 = start_date
+				d1 = item.end_date
+				delta = d1 - d0
+				days_remaining = delta.days
+				total_remaining_item_rate = days_remaining * per_day_rate
+				item.rate = total_remaining_item_rate
+			# expected_end_date = item.end_date + timedelta(days=365)
+
 			days_diff = item.end_date - item.start_date
 			if days_diff == 365:
 				item.end_date = item.end_date - timedelta(days=1)
