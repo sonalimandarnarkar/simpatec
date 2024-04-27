@@ -107,7 +107,7 @@ def get_custom_fields():
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow Up Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
+			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
 		},
@@ -120,27 +120,25 @@ def get_custom_fields():
 			"insert_after": "sales_order_type",
 		},
 		{
-			"label": "Internal Clearance Details",
-			"fieldname": "internal_clearance_details",
-			"fieldtype": "Link",
-			"options": "Internal Clearance Details",
-			"allow_on_submit": 1,
-			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
-			"insert_after": "eligable_for_clearance",
-		},
-		{
 			"label": "Item Group",
 			"fieldname": "item_group",
 			"fieldtype": "Link",
 			"options": "Item Group",
-			"insert_after": "internal_clearance_details"
+			"insert_after": "eligable_for_clearance"
+		},
+		{
+			"label": "Quotation Label",
+			"fieldname": "quotation_label",
+			"fieldtype": "Link",
+			"options": "Angebotsvorlage",
+			"insert_after": "item_group"
 		},
 		{
 			"label": "Performance Period Start",
 			"fieldname": "performance_period_start",
 			"fieldtype": "Date",
 			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
-			"insert_after": "item_group",
+			"insert_after": "quotation_label",
 		},
 		{
 			"fieldname": "column_break_fdgxg",
@@ -189,7 +187,7 @@ def get_custom_fields():
 			"label": "Internal Clearance",
 			"fieldname": "internal_clearance",
 			"fieldtype": "Section Break",
-			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\" || doc.eligable_for_clearance == 1 ",
 			"insert_after": "ihr_ansprechpartner",
 		},
 		{
@@ -197,11 +195,122 @@ def get_custom_fields():
 			"fieldname": "sales_order_clearances",
 			"fieldtype": "Table",
 			"options": "Sales Order Clearances",
+			"depends_on": "eval:doc.sales_order_type == \"Internal Clearance\"",
 			"insert_after": "internal_clearance"
+		},
+		{
+			"label": "Internal Clearance Details",
+			"fieldname": "internal_clearance_details",
+			"fieldtype": "Link",
+			"options": "Internal Clearance Details",
+			"allow_on_submit": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "sales_order_clearances",
+		},
+		{
+			"label": "Purchase Order Total",
+			"fieldname": "po_total",
+			"fieldtype": "Currency",
+			"read_only": 1,
+			"no_copy": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "internal_clearance_details",
+		},
+		{
+			"label": "Sales Order Margin",
+			"fieldname": "so_margin",
+			"fieldtype": "Currency",
+			"read_only": 1,
+			"no_copy": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "po_total",
+		},
+		{
+			"label": "Sales Order Margin Percentage",
+			"fieldname": "so_margin_percent",
+			"fieldtype": "Percent",
+			"read_only": 1,
+			"no_copy": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "so_margin",
+		},
+		{
+			"label": "Clearance Amount",
+			"fieldname": "clearance_amount",
+			"fieldtype": "Currency",
+			"description": "Clearance Amount = ((Sales Order Net Amount) - (Purchase Order Net Amount)) * (Clearance Rate)",
+			"read_only": 1,
+			"no_copy": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "so_margin_percent",
+		},
+		{
+			"fieldname": "column_break_jvteb",
+			"fieldtype": "Column Break",
+			"insert_after": "clearance_amount",
+		},
+		{
+			"label": "Clear By",
+			"fieldname": "clear_by",
+			"fieldtype": "Link",
+			"options": "Company",
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "column_break_jvteb",
+		},
+		{
+			"label": "Clearance Status",
+			"fieldname": "clearance_status",
+			"fieldtype": "Select",
+			"options": "\nCleared\nNot Cleared\n",
+			"default": "Not Cleared",
+			"read_only": 1,
+			"depends_on": "eval:doc.sales_order_type != \"Internal Clearance\" && doc.eligable_for_clearance == 1 && doc.sales_order_type != \"\"",
+			"insert_after": "clear_by",
+		},
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
 		},
 	]
 
 	custom_fields_soi = [
+		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_section",
+			"fieldtype": "Section Break",
+			"insert_after": ""
+		},	
+		{
+			"label": "Item Type",
+			"fieldname": "item_type",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.item_type",
+			"read_only": 1,
+			"fetch_if_empty": 1,
+			"insert_after": "simpatec_section",
+		
+		},
+		{
+			"fieldname": "column_break_vh0vp",
+			"fieldtype": "Column Break",
+			"insert_after": "item_type",
+		},
+		{
+			"label": "Reoccuring Maintenance Amount",
+			"fieldname": "reoccuring_maintenance_amount",
+			"fieldtype": "Currency",
+			"description": "The grand total of the reoccurring maintenance cost",
+			"depends_on": "eval: doc.item_type == \"Maintenance Item\"",
+			"insert_after": "column_break_vh0vp"
+		},
+		{
+			"fieldname": "section_break_kiny4",
+			"fieldtype": "Section Break",
+			"insert_after": "reoccuring_maintenance_amount"
+		},
 		{
 			"label": "Item Language",
 			"fieldname": "item_language",
@@ -220,11 +329,146 @@ def get_custom_fields():
 			"fieldname": "end_date",
 			"fieldtype": "Date",
 			"insert_after": "start_date",
-		}
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "item_name_en",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "item_name",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "item_name_de",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_name_en",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "item_name_fr",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_name_de",
+		},
+
+		{
+			"label": "Item Description EN",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "id_de",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "id_de",
+		},
 	]
+
+	custom_fields_item = [
+		{
+			"label": "Translation",
+			"fieldname": "translation",
+			"fieldtype": "Section Break",
+			"insert_after": "image",
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "in_en",
+			"fieldtype": "Data",
+			"insert_after": "translation",
+		},
+		{
+			"label": "Item Description EN",
+			"fieldname": "id_en",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_en",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "in_de",
+			"fieldtype": "Data",
+			"insert_after": "id_en",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_de",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "in_fr",
+			"fieldtype": "Data",
+			"insert_after": "id_de",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "id_fr",
+			"fieldtype": "Text Editor",
+			"insert_after": "in_fr",
+		},
+	]
+
+	custom_fields_si = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
+	custom_fields_po = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
+	custom_fields_pi = [
+		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "accounting_dimensions_section",
+		},
+	]
+
 
 	return {
 		"Customer": custom_fields_customer,
 		"Sales Order": custom_fields_so,
-		"Sales Order Item": custom_fields_soi
+		"Sales Order Item": custom_fields_soi,
+		"Item": custom_fields_item,
+		"Sales Invoice": custom_fields_si,
+		"Purchase Invoice": custom_fields_pi,
+		"Purchase Order": custom_fields_po,
 	}

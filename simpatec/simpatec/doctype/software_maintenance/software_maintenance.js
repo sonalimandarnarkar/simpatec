@@ -13,6 +13,24 @@ frappe.ui.form.on('Software Maintenance', {
                 callback: function (r) {
                 },
             });
-        }, __("Renew Sales Order"));
+        }, __("Create Sales Order"));
+
+
+        frm.add_custom_button('Reoccuring Software Maintenance', function () {
+            frappe.call({
+                method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_sales_order",
+                args: {
+                    software_maintenance: frm.doc.name,
+                    is_background_job: 0,
+                    is_reoccuring: 1
+                },
+                callback: function (r) {
+                },
+            });
+        }, __("Create Sales Order"));
+
+
+        //hide all + in the connection
+        $('.form-documents button').hide();
     }
 });

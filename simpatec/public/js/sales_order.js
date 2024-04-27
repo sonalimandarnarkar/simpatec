@@ -5,7 +5,18 @@ frappe.ui.form.on('Sales Order', {
             return {
                 filters: {
                     "eligable_for_clearance": 1,
-                    "docstatus": 1
+                    "clear_by": frm.doc.company,
+                    "docstatus": 1,
+                    "clearance_status": ["!=", "Cleared"]
+                },
+            };
+        });
+        
+        // FILTER ONLY SELECTED CUSTOMER SOFTWARE MAINTENANCE
+        frm.set_query('software_maintenance', function () {
+            return {
+                filters: {
+                    "customer": frm.doc.customer,
                 },
             };
         });
@@ -50,6 +61,22 @@ frappe.ui.form.on('Sales Order', {
 	},
 
     refresh(frm) {
+
+        if(frm.doc.docstatus == 0){
+            if(frm.doc.sales_order_type == "First Sale") {
+                frm.toggle_enable("software_maintenance", 0)
+                frm.toggle_reqd("software_maintenance", 0)
+            } 
+            else if (["Follow-Up Sale", "Reoccuring Maintenance", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+                frm.toggle_reqd("software_maintenance", 1)
+                frm.toggle_enable("software_maintenance", 1)
+            }
+            else{
+                frm.toggle_reqd("software_maintenance", 0)
+                frm.toggle_enable("software_maintenance", 1)
+            }
+        }
+
         // GET SIMPATEC GLOBAL SETTINGS
         frm.events.get_simpatec_settings(frm)
 
@@ -62,6 +89,14 @@ frappe.ui.form.on('Sales Order', {
         		})                
             }, __("Create"));
         }
+
+        // MAKE TABLE FULL WIDTH
+        if(frm.doc.sales_order_type == "Internal Clearance"){
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").addClass("col-md-12")
+        }else {
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").removeClass("col-md-12")
+        }
+
     },
 
     get_simpatec_settings(frm){ // SIMPATECH GLOBAL SETTING FUNCTION
@@ -79,7 +114,77 @@ frappe.ui.form.on('Sales Order', {
                 }
             }
         });
-    }
+    },
+    eligable_for_clearance(frm){ // ELIGIBLE FOR CLEARANCE CHECK FUNCTIONALITY
+        // SET CLEAR BY REQUIRED IF ELIGABLE FOR CLEARANCE IS CHECKED
+        if (frm.doc.eligable_for_clearance){
+            frm.toggle_reqd("clear_by", 1)
+        }else{
+            frm.toggle_reqd("clear_by", 0)
+        }
+    },
+    sales_order_type(frm){
+        // MAKE TABLE FULL WIDTH
+        if(frm.doc.sales_order_type == "Internal Clearance"){
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").addClass("col-md-12")
+        }else{
+            $("div[data-fieldname='sales_order_clearances']").parents(".form-column").removeClass("col-md-12")
+        }
+
+        if(frm.doc.sales_order_type == "First Sale") {
+            frm.toggle_enable("software_maintenance", 0)
+            frm.toggle_reqd("software_maintenance", 0)
+            // frm.toggle_enable("performance_period_start", 1)
+            // frm.toggle_enable("performance_period_end", 1)
+        }
+        else if (["Follow-Up Sale", "Reoccuring Maintenance", "Follow Up Maintenance"].includes(frm.doc.sales_order_type)) {
+            frm.toggle_reqd("software_maintenance", 1)
+            frm.toggle_enable("software_maintenance", 1)
+        }
+        else {
+            frm.toggle_reqd("software_maintenance", 0)
+            frm.toggle_enable("software_maintenance", 1)
+        }
+        
+        // if(["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
+        //     frm.toggle_enable("performance_period_start", 0)
+        //     frm.toggle_enable("performance_period_end", 0)
+        // }else{
+        //     frm.toggle_enable("performance_period_start", 1)
+        //     frm.toggle_enable("performance_period_end", 1)
+        // }
+
+    },
+    performance_period_start: function (frm) {
+        var currentDate = moment(frm.doc.performance_period_start);
+        var futureMonth = moment(currentDate).add(364, 'd');
+        frm.set_value("performance_period_end", futureMonth.format('YYYY-MM-DD'))
+        if (["First Sale", "Follow-Up Sale", "Reoccurring Maintenance"].includes(frm.doc.sales_order_type)){
+            $.each(frm.doc.items || [], function (i, d) {
+                if (!d.start_date) d.start_date = frm.doc.performance_period_start;
+            });
+            refresh_field("items");
+        }
+    },
+    performance_period_end: function (frm) {
+        $.each(frm.doc.items || [], function (i, d) {
+            if (!d.end_date) d.end_date = frm.doc.performance_period_end;
+        });
+        refresh_field("items");
+    },
+
+    // software_maintenance: function(frm){
+    //     if(!is_null(frm.doc.software_maintenance)){
+    //         if (["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
+    //             frm.toggle_enable("performance_period_start",0)
+    //             frm.toggle_enable("performance_period_end",0)
+    //         }
+    //     }else{
+    //         frm.toggle_enable("performance_period_start", 1)
+    //         frm.toggle_enable("performance_period_end", 1)
+    //     }
+    // }
+
 })
 
 // SALES ORDER CLEARANCE TABLE EVENTS
@@ -114,8 +219,13 @@ frappe.ui.form.on("Sales Order Clearances", {
         var item_row = frm.doc.items[cur_row.idx - 1];
         // CHECK IF ITEM ROW IS ALREADY AVAILABLE
         if (!is_null(item_row)){
+            var formatted_currency = frappe.format(cur_row.net_total, { fieldtype: "Currency", currency: frm.doc.currency });
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            frappe.model.set_value(item_row.doctype, item_row.name, "description", `Clearance from ${cur_row.sales_order} ${cur_row.clearance_details}`)
+            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_fr", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            frappe.model.set_value(item_row.doctype, item_row.name, "rate", cur_row.clearance_amount)
         }
         refresh_field("items");
     },
@@ -123,7 +233,20 @@ frappe.ui.form.on("Sales Order Clearances", {
 })
 
 frappe.ui.form.on('Sales Order Item',{
-    //
+    item_code: function (frm, cdt, cdn) {
+        if (["First Sale", "Follow-Up Sale", "Reoccuring Maintenance","Follow Up Maintenance"].includes(frm.doc.sales_order_type)){
+            var row = locals[cdt][cdn];
+            if (frm.doc.performance_period_start) {
+                row.start_date = frm.doc.performance_period_start;
+                refresh_field("start_date", cdn, "items");
+            }
+            if (frm.doc.performance_period_end) {
+                row.end_date = frm.doc.performance_period_end;
+                refresh_field("end_date", cdn, "items");
+            }
+        }
+
+    },
     item_name: function(frm, cdt, cdn){
 
 		var data = frm.doc.items;

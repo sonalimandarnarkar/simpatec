@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
 from frappe.model.mapper import get_mapped_doc
+from datetime import date, timedelta, datetime
 
 
 @frappe.whitelist()
@@ -12,11 +13,56 @@ def validate(doc, handler=None):
 	elif doc.eligable_for_clearance:
 		doc.sales_order_clearances = []
 
+	if doc.software_maintenance:
+		if doc.sales_order_type == "First Sale" and frappe.db.exists("Sales Order", {"sales_order_type": "First Sale", "software_maintenance": doc.software_maintenance}):
+			frappe.throw("First Sales for {0} Exist<br>Select Follow-up Sales or Follow-up Maintenance".format(frappe.get_desk_link("Software Maintenance", doc.software_maintenance)))
+	validate_duplicate_linked_internal_clearance(doc)
+
+
+@frappe.whitelist()
+def validate_duplicate_linked_internal_clearance(doc):
+	linked_so = []
+	if doc.sales_order_type == "Internal Clearance":
+		for so in doc.sales_order_clearances:
+			so_clearances = frappe.get_all("Sales Order Clearances", filters={
+					"sales_order":so.sales_order, 
+					"parent":["!=", doc.name],
+					"docstatus": ["!=", 2]
+				})
+			if len(so_clearances) > 0:
+				linked_so.append(so.sales_order)
+
+	if len(linked_so) > 0:
+		linked_so = " <br>".join(linked_so)
+		frappe.throw("Cannot be linked because these Sales Order are already linked in Different Clearances <br> {0}".format(linked_so))
+
+
+
+@frappe.whitelist()
+def reset_internal_clearance_status(doc, handler=None):
+	if doc.sales_order_type == "Internal Clearance":
+		for so in doc.sales_order_clearances:
+			so_doc = frappe.get_doc("Sales Order", so.sales_order)
+			if so_doc.clearance_status == "Cleared":
+				frappe.db.set_value(so_doc.doctype, so_doc.name, "clearance_status", "Not Cleared")
+
+
 @frappe.whitelist()
 def make_software_maintenance(source_name, target_doc=None):
 	def postprocess(source, doc):
 		if source.sales_order_type == "First Sale":
 			doc.first_sale_on = source.transaction_date
+			for item in doc.items:
+				item.start_date = item.start_date + timedelta(days=365)
+				item.end_date = item.end_date + timedelta(days=365)
+				days_diff = item.end_date - item.start_date
+				if days_diff == 365:
+					item.end_date = item.end_date - timedelta(days=1)
+				so_item = source.items[item.idx-1]
+				if so_item.item_type == "Maintenance Item":
+					item.rate = so_item.reoccuring_maintenance_amount
+				else:
+					item.rate = 0
 		doc.assign_to = source.assigned_to
 
 	doc = get_mapped_doc(
@@ -39,14 +85,52 @@ def make_software_maintenance(source_name, target_doc=None):
 
 	return doc
 
+@frappe.whitelist()
+def update_internal_clearance_status(doc, handler=None):
+	if doc.sales_order_type == "Internal Clearance":
+		for item in doc.items:
+			internal_so = doc.sales_order_clearances[item.idx - 1].get("sales_order")
+			frappe.db.set_value(doc.doctype, internal_so, "clearance_status", "Cleared")
+
 
 def update_software_maintenance(doc, method=None):
 	if doc.get("software_maintenance"):
 		software_maintenance = frappe.get_doc("Software Maintenance", doc.software_maintenance)
-		software_maintenance.performance_period_start = doc.performance_period_start
-		software_maintenance.performance_period_end = doc.performance_period_end
+		if doc.sales_order_type not in ["Follow-Up Sale"]:
+			if (doc.performance_period_start is not None and doc.performance_period_start != "") and (doc.performance_period_end is not None and doc.performance_period_end != ""):
+				if software_maintenance.performance_period_start != doc.performance_period_start:
+					software_maintenance.performance_period_start = doc.performance_period_start
+				if software_maintenance.performance_period_end != doc.performance_period_end:
+					software_maintenance.performance_period_end = doc.performance_period_end
+			
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
+			if item.item_type == "Maintenance Item":
+				item.rate = item.reoccuring_maintenance_amount
+			else:
+				item.rate = 0
+			if type(item.start_date) == str:
+				item.start_date = datetime.strptime(item.start_date, "%Y-%m-%d").date()
+			if type(item.end_date) == str:
+				item.end_date = datetime.strptime(item.end_date, "%Y-%m-%d").date()
+			item.start_date = item.start_date + timedelta(days=365)
+			item.end_date = item.end_date + timedelta(days=365)
+			if doc.sales_order_type == "Follow-Up Sale":
+				item.end_date = software_maintenance.performance_period_end + timedelta(days=365)
+				per_day_rate = item.rate / 365
+				start_date = item.start_date
+				d0 = start_date
+				d1 = item.end_date
+				delta = d1 - d0
+				days_remaining = delta.days
+				total_remaining_item_rate = days_remaining * per_day_rate
+				item.rate = total_remaining_item_rate
+			# expected_end_date = item.end_date + timedelta(days=365)
+
+			days_diff = item.end_date - item.start_date
+			if days_diff == 365:
+				item.end_date = item.end_date - timedelta(days=1)
+
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
@@ -93,15 +177,15 @@ def make_sales_order(software_maintenance, is_background_job=True):
 	employee =  frappe.get_cached_value('Employee', {'user_id': software_maintenance.assign_to}, 'name')
 	if not employee:
 		frappe.throw(_("User {0} not set in Employee").format(software_maintenance.assign_to))
-
+	old_start_date = software_maintenance.performance_period_start
 	performance_period_start = add_days(software_maintenance.performance_period_end, 1)
-	performance_period_end = add_years(performance_period_start, software_maintenance.maintenance_duration)
+	performance_period_end = add_years(performance_period_start, software_maintenance.maintenance_duration) - timedelta(days=1)
 	total_days = getdate(performance_period_end) - getdate(performance_period_start)
 
 	days_diff = total_days.days%365
 	if days_diff != 0:
-		performance_period_end = add_days(performance_period_end, -days_diff)
-		total_days = getdate(performance_period_end) - getdate(performance_period_start)
+		_performance_period_end = add_days(performance_period_end, -days_diff)
+		total_days = getdate(_performance_period_end) - getdate(performance_period_start)
 
 	transaction_date = add_days(performance_period_end, -cint(software_maintenance.lead_time))
 	sales_order = frappe.new_doc("Sales Order")
@@ -117,16 +201,30 @@ def make_sales_order(software_maintenance, is_background_job=True):
 	sales_order.order_type = "Sales"
 
 	for item in software_maintenance.items:
+		start_date = performance_period_start
+		item_rate = item.rate
+		if item.start_date != old_start_date:
+			per_day_rate = item.rate / 365
+			start_date = item.end_date
+			d0 = start_date
+			d1 = performance_period_end
+			delta = d1 - d0
+			days_remaining = delta.days
+			total_remaining_item_rate = days_remaining * per_day_rate
+			item_rate = total_remaining_item_rate
+
 		sales_order.append("items", {
 			"item_code": item.item_code,
 			"item_name": item.item_name,
 			"description": item.description,
 			"conversion_factor": item.conversion_factor,
 			"qty": item.qty,
-			"rate": item.rate,
+			"rate": item_rate,
 			"uom": item.uom,
 			"item_language": item.item_language,
-			"delivery_date": sales_order.transaction_date
+			"delivery_date": sales_order.transaction_date,
+			"start_date": start_date,
+			"end_date": performance_period_end
 		})
 
 	sales_order.insert()
