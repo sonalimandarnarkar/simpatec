@@ -99,6 +99,27 @@ frappe.ui.form.on('Sales Order', {
 
     },
 
+    internal_clearance_details: function(frm){
+        frappe.call({
+            method: "simpatec.events.sales_order.update_clearance_and_margin_amount",
+            args: {
+                self: frm.doc
+            },
+            async: false,
+            callback: function(r){
+                if(r.message){
+                    r = r.message
+                    frm.set_value("po_total", r.po_total)
+                    frm.set_value("so_margin", r.so_margin)
+                    frm.set_value("so_margin_percent", r.so_margin_percent)
+                    frm.set_value("clearance_amount", r.clearance_amount)
+                }
+            }
+        })
+        
+    },
+
+
     get_simpatec_settings(frm){ // SIMPATECH GLOBAL SETTING FUNCTION
         frm.doc.clearance_item = ""
         frm.call({
