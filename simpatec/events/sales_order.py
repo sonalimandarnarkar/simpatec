@@ -1,3 +1,4 @@
+import json
 import frappe
 from frappe import _
 from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
@@ -233,3 +234,29 @@ def make_sales_order(software_maintenance, is_background_job=True):
 		frappe.msgprint("Maintenance Duration (Years): {}".format(software_maintenance.maintenance_duration))
 		frappe.msgprint("Maintenance Duration (Days): {}".format(total_days.days))
 		frappe.msgprint(_("New {} Created").format(frappe.get_desk_link("Sales Order", sales_order.name)))
+		
+@frappe.whitelist()
+def update_clearance_and_margin_amount(self, handler=None):
+	if type(self) == str:
+		self = frappe._dict(json.loads(self))
+	"""Update Clearance Amount in Sales Order"""
+	po_items = frappe.get_all("Purchase Order Item", filters={"sales_order": self.name}, fields="*")
+	for item in po_items:
+		if item.sales_order:
+			po_total = frappe.db.get_value("Purchase Order", item.parent, "total")
+			is_eligable_for_clearance = self.eligable_for_clearance
+			internal_clearance_details = self.internal_clearance_details
+			if is_eligable_for_clearance:
+				if internal_clearance_details is not None and internal_clearance_details != "":
+					internal_commision_rate = frappe.db.get_value("Internal Clearance Details", internal_clearance_details, "clearance_rate") or 0
+					"""Clearance Comission (Z)
+					Sales Order net amount (Y)
+					Purchase Order net amount (X)
+					Clearance Amount = ((Y) - (X)) * (1-(Z))"""
+
+					so_margin_amount = self.total - po_total
+					so_margin_percent = ((self.total - po_total)/self.total) * 100
+					clearance_amount = (self.total - po_total) * (internal_commision_rate/100)
+					return {"po_total": po_total, "so_margin": so_margin_amount, "so_margin_percent": so_margin_percent, "clearance_amount": clearance_amount}
+				else:
+					return {"po_total": po_total, "so_margin": 0, "so_margin_percent": 0, "clearance_amount": 0}
