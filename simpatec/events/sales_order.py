@@ -50,7 +50,7 @@ def reset_internal_clearance_status(doc, handler=None):
 
 @frappe.whitelist()
 def make_software_maintenance(source_name, target_doc=None):
-	def postprocess(source, doc):
+	def postprocess(source, doc): # source = Sales Order, doc = Software Maintenance
 		if source.sales_order_type == "First Sale":
 			doc.first_sale_on = source.transaction_date
 			for item in doc.items:
@@ -62,8 +62,10 @@ def make_software_maintenance(source_name, target_doc=None):
 				so_item = source.items[item.idx-1]
 				if so_item.item_type == "Maintenance Item":
 					item.rate = so_item.reoccuring_maintenance_amount
+					item.reoccuring_maintenance_amount = so_item.reoccuring_maintenance_amount
 				else:
 					item.rate = 0
+					item.reoccuring_maintenance_amount = 0
 		doc.assign_to = source.assigned_to
 
 	doc = get_mapped_doc(
@@ -106,42 +108,48 @@ def update_software_maintenance(doc, method=None):
 			
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
+			item_rate = item.rate
+			item_reoccuring_maintenance_amount = item.reoccuring_maintenance_amount
+			item_start_date = item.start_date
+			item_end_date = item.end_date
 			if item.item_type == "Maintenance Item":
-				item.rate = item.reoccuring_maintenance_amount
+				item_rate = item.reoccuring_maintenance_amount
 			else:
-				item.rate = 0
-			if type(item.start_date) == str:
-				item.start_date = datetime.strptime(item.start_date, "%Y-%m-%d").date()
-			if type(item.end_date) == str:
-				item.end_date = datetime.strptime(item.end_date, "%Y-%m-%d").date()
-			item.start_date = item.start_date + timedelta(days=365)
-			item.end_date = item.end_date + timedelta(days=365)
+				item_rate = 0
+				item_reoccuring_maintenance_amount = 0
+			if type(item_start_date) == str:
+				item_start_date = datetime.strptime(item_start_date, "%Y-%m-%d").date()
+			if type(item_end_date) == str:
+				item_end_date = datetime.strptime(item_end_date, "%Y-%m-%d").date()
+			item_start_date = item_start_date + timedelta(days=365)
+			item_end_date = item_end_date + timedelta(days=365)
 			if doc.sales_order_type == "Follow-Up Sale":
-				item.end_date = software_maintenance.performance_period_end + timedelta(days=365)
-				per_day_rate = item.rate / 365
-				start_date = item.start_date
+				item_end_date = software_maintenance.performance_period_end + timedelta(days=365)
+				per_day_rate = item_rate / 365
+				start_date = item_start_date
 				d0 = start_date
-				d1 = item.end_date
+				d1 = item_end_date
 				delta = d1 - d0
 				days_remaining = delta.days
 				total_remaining_item_rate = days_remaining * per_day_rate
-				item.rate = total_remaining_item_rate
+				item_rate = total_remaining_item_rate
 			# expected_end_date = item.end_date + timedelta(days=365)
 
-			days_diff = item.end_date - item.start_date
+			days_diff = item_end_date - item_start_date
 			if days_diff == 365:
-				item.end_date = item.end_date - timedelta(days=1)
+				item_end_date = item_end_date - timedelta(days=1)
 
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
 				"description": item.description,
-				"start_date": item.start_date,
-				"end_date": item.end_date,
+				"start_date": item_start_date,
+				"end_date": item_end_date,
 				"price_list_rate": item.price_list_rate,
 				"conversion_factor": item.conversion_factor,
 				"item_language": item.item_language,
-				"rate": item.rate,
+				"rate": item_rate,
+				"reoccuring_maintenance_amount": item_reoccuring_maintenance_amount,
 				"qty": item.qty,
 				"uom": item.uom
 			})
