@@ -167,14 +167,7 @@ frappe.ui.form.on('Sales Order', {
             frm.toggle_enable("software_maintenance", 1)
         }
         
-        // if(["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
-        //     frm.toggle_enable("performance_period_start", 0)
-        //     frm.toggle_enable("performance_period_end", 0)
-        // }else{
-        //     frm.toggle_enable("performance_period_start", 1)
-        //     frm.toggle_enable("performance_period_end", 1)
-        // }
-
+  
     },
     performance_period_start: function (frm) {
         var currentDate = moment(frm.doc.performance_period_start);
@@ -182,29 +175,27 @@ frappe.ui.form.on('Sales Order', {
         frm.set_value("performance_period_end", futureMonth.format('YYYY-MM-DD'))
         if (["First Sale", "Follow-Up Sale", "Reoccurring Maintenance"].includes(frm.doc.sales_order_type)){
             $.each(frm.doc.items || [], function (i, d) {
-                if (!d.start_date) d.start_date = frm.doc.performance_period_start;
+                if (!d.start_date){
+                    d.start_date = frm.doc.performance_period_start;
+                } else if (d.start_date != frm.doc.performance_period_start){
+                    d.start_date = frm.doc.performance_period_start;
+                }
             });
             refresh_field("items");
         }
     },
     performance_period_end: function (frm) {
         $.each(frm.doc.items || [], function (i, d) {
-            if (!d.end_date) d.end_date = frm.doc.performance_period_end;
+            if (!d.end_date){
+                d.end_date = frm.doc.performance_period_end;
+            }
+            else if (d.end_date != frm.doc.performance_period_end){
+                d.end_date = frm.doc.performance_period_end
+            }
+            
         });
         refresh_field("items");
     },
-
-    // software_maintenance: function(frm){
-    //     if(!is_null(frm.doc.software_maintenance)){
-    //         if (["Follow-Up Sale"].includes(frm.doc.sales_order_type)) {
-    //             frm.toggle_enable("performance_period_start",0)
-    //             frm.toggle_enable("performance_period_end",0)
-    //         }
-    //     }else{
-    //         frm.toggle_enable("performance_period_start", 1)
-    //         frm.toggle_enable("performance_period_end", 1)
-    //     }
-    // }
 
 })
 

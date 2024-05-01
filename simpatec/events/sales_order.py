@@ -4,7 +4,7 @@ from frappe import _
 from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
 from frappe.model.mapper import get_mapped_doc
 from datetime import date, timedelta, datetime
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 
 @frappe.whitelist()
@@ -126,10 +126,23 @@ def update_software_maintenance(doc, method=None):
 			item_end_date = item_end_date + timedelta(days=365)
 			if doc.sales_order_type == "Follow-Up Sale":
 				item_end_date = software_maintenance.performance_period_end + timedelta(days=365)
+				
+				# Initialize a counter for months
+				months_count = 0
+				current_date = item_start_date
+				# Loop through the months between start and end dates
+				while current_date <= item_end_date:
+					# Increment the month counter
+					months_count += 1
+					# Move to the next month
+					current_date = current_date.replace(day=1)  # Move to the first day of the month
+					current_date = current_date + relativedelta(months=1)  # Move to the next month
+
+				# Total Months difference
+				remaining_months = months_count
+				# Calculating Per month rate by dividing it by 12
 				per_month_rate = flt(item_rate / 12,2)
-				start_date = item_start_date
-				delta_months = relativedelta.relativedelta(item_end_date, start_date)
-				remaining_months = delta_months.months
+				# calculating total rate of calculated months
 				total_remaining_item_rate = remaining_months * per_month_rate
 				item_rate = total_remaining_item_rate
 
