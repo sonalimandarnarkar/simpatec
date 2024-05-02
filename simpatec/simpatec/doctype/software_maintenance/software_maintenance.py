@@ -28,7 +28,7 @@ class SoftwareMaintenance(Document):
 
 
 @frappe.whitelist()
-def make_sales_order(software_maintenance, is_background_job=True, is_reoccuring=None):
+def make_reoccuring_sales_order(software_maintenance, is_background_job=True):
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
 	if not software_maintenance.assign_to:
 		frappe.throw(_("Please set 'Assign to' in Software maintenance '{0}'").format(software_maintenance.name))
@@ -60,17 +60,17 @@ def make_sales_order(software_maintenance, is_background_job=True, is_reoccuring
 	sales_order.order_type = "Sales"
 
 	for item in software_maintenance.items:
-		start_date = performance_period_start
-		item_rate = item.rate
-		if item.start_date != old_start_date:
-			per_day_rate = item.rate / 365
-			start_date = item.end_date
-			d0 = start_date
-			d1 = performance_period_end
-			delta = d1 - d0
-			days_remaining = delta.days
-			total_remaining_item_rate = days_remaining * per_day_rate
-			item_rate = total_remaining_item_rate
+		# start_date = performance_period_start
+		# item_rate = item.rate
+		# if item.start_date != old_start_date:
+		# 	per_day_rate = item.rate / 365
+		# 	start_date = item.end_date
+		# 	d0 = start_date
+		# 	d1 = performance_period_end
+		# 	delta = d1 - d0
+		# 	days_remaining = delta.days
+		# 	total_remaining_item_rate = days_remaining * per_day_rate
+		# 	item_rate = total_remaining_item_rate
 
 		sales_order.append("items", {
 			"item_code": item.item_code,
@@ -78,13 +78,13 @@ def make_sales_order(software_maintenance, is_background_job=True, is_reoccuring
 			"description": item.description,
 			"conversion_factor": item.conversion_factor,
 			"qty": item.qty,
-			"rate": item_rate,
-			"reoccuring_maintenance_amount": item_rate,
+			"rate": item.rate,
+			"reoccuring_maintenance_amount": item.reoccuring_maintenance_amount,
 			"uom": item.uom,
 			"item_language": item.item_language,
 			"delivery_date": sales_order.transaction_date,
-			"start_date": start_date,
-			"end_date": performance_period_end
+			"start_date": item.start_date,
+			"end_date": item.end_date
 		})
 
 	sales_order.insert()

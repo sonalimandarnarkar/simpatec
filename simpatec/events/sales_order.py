@@ -113,6 +113,11 @@ def update_software_maintenance(doc, method=None):
 			item_reoccuring_maintenance_amount = item.reoccuring_maintenance_amount
 			item_start_date = item.start_date
 			item_end_date = item.end_date
+
+			if doc.sales_order_type == "Reoccuring Maintenance":
+				item_start_date = software_maintenance.performance_period_start
+				item_end_date = software_maintenance.performance_period_end
+
 			if item.item_type == "Maintenance Item":
 				item_rate = item.reoccuring_maintenance_amount
 			else:
