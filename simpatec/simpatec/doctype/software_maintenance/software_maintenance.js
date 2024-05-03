@@ -33,3 +33,24 @@ frappe.ui.form.on('Software Maintenance', {
         $('.form-documents button').hide();
     }
 });
+
+frappe.ui.form.on('Software Maintenance Item', {
+    item_code(frm, cdt, cdn){
+        var item = frappe.get_doc(cdt, cdn);
+        item.pricing_rules = ''
+        if (item.item_code && item.uom) {
+            return frm.call({
+                method: "erpnext.stock.get_item_details.get_conversion_factor",
+                args: {
+                    item_code: item.item_code,
+                    uom: item.uom
+                },
+                callback: function (r) {
+                    if (!r.exc) {
+                        frappe.model.set_value(cdt, cdn, 'conversion_factor', r.message.conversion_factor);
+                    }
+                }
+            });
+        }
+    },
+});
