@@ -20,7 +20,9 @@
   "conversion_factor",
   "reoccuring_maintenance_amount",
   "rate",
-  "price_list_rate"
+  "price_list_rate",
+  "einkauf_section",
+  "einkaufspreis"
  ],
  "fields": [
   {
@@ -149,11 +151,22 @@
    "fieldname": "reoccuring_maintenance_amount",
    "fieldtype": "Currency",
    "label": "Reoccuring Maintenance Amount"
+  },
+  {
+   "fieldname": "einkauf_section",
+   "fieldtype": "Section Break",
+   "label": "Einkauf"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "einkaufspreis",
+   "fieldtype": "Currency",
+   "label": "Einkaufspreis"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-05-02 14:23:13.603984",
+ "modified": "2024-05-06 13:07:30.985487",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance Item",
