@@ -167,7 +167,8 @@ def update_software_maintenance(doc, method=None):
 				"rate": item_rate,
 				"reoccuring_maintenance_amount": item_reoccuring_maintenance_amount,
 				"qty": item.qty,
-				"uom": item.uom
+				"uom": item.uom,
+				"einkaufspreis": item.einkaufspreis
 			})
 
 		software_maintenance.save()

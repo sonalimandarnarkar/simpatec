@@ -60,18 +60,6 @@ def make_reoccuring_sales_order(software_maintenance, is_background_job=True):
 	sales_order.order_type = "Sales"
 
 	for item in software_maintenance.items:
-		# start_date = performance_period_start
-		# item_rate = item.rate
-		# if item.start_date != old_start_date:
-		# 	per_day_rate = item.rate / 365
-		# 	start_date = item.end_date
-		# 	d0 = start_date
-		# 	d1 = performance_period_end
-		# 	delta = d1 - d0
-		# 	days_remaining = delta.days
-		# 	total_remaining_item_rate = days_remaining * per_day_rate
-		# 	item_rate = total_remaining_item_rate
-
 		sales_order.append("items", {
 			"item_code": item.item_code,
 			"item_name": item.item_name,
@@ -84,7 +72,8 @@ def make_reoccuring_sales_order(software_maintenance, is_background_job=True):
 			"item_language": item.item_language,
 			"delivery_date": sales_order.transaction_date,
 			"start_date": item.start_date,
-			"end_date": item.end_date
+			"end_date": item.end_date,
+			"einkaufspreis": item.einkaufspreis
 		})
 
 	sales_order.insert()

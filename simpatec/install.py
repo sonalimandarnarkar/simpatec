@@ -390,6 +390,19 @@ def get_custom_fields():
 			"depends_on": "eval:doc.item_language == 'fr'",
 			"insert_after": "id_de",
 		},
+		{
+			"label": "Einkauf",
+			"fieldname": "einkauf",
+			"insert_after": "transaction_date",
+			"fieldtype": "Section Break",
+		},
+		{
+			"label": "Einkaufspreis",
+			"fieldname": "einkaufspreis",
+			"insert_after": "einkauf",
+			"fieldtype": "Currency",
+			"allow_on_submit": 1,
+		}
 	]
 
 	custom_fields_item = [
