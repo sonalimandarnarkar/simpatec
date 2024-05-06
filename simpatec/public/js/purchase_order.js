@@ -93,7 +93,9 @@ frappe.ui.form.on('Purchase Order Item',{
 	},
 
 	schedule_date: function(frm, cdt, cdn){
+		let cur_row = locals[cdt][cdn]
 		frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "schedule_date");
+		frm.set_value("schedule_date", cur_row.schedule_date)
 	}
 	
 });
