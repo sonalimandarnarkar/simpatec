@@ -365,7 +365,7 @@ def get_custom_fields():
 
 		{
 			"label": "Item Description EN",
-			"fieldname": "id_de",
+			"fieldname": "id_en",
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
@@ -379,11 +379,11 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'de'",
-			"insert_after": "id_de",
+			"insert_after": "id_en",
 		},
 		{
 			"label": "Item Description FR",
-			"fieldname": "id_de",
+			"fieldname": "id_fr",
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
@@ -480,6 +480,70 @@ def get_custom_fields():
 		},
 	]
 
+	custom_fields_poi = [
+		{
+			"label": "Item Language",
+			"fieldname": "item_language",
+			"fieldtype": "Link",
+			"options": "Language",
+			"insert_after": "column_break_4",
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "item_name_en",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "item_name",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "item_name_de",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_name_en",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "item_name_fr",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_name_de",
+		},
+		{
+			"label": "Item Description EN",
+			"fieldname": "item_description_en",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "item_description_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_description_en",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "item_description_fr",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_description_de",
+		},
+	]
+
 
 	return {
 		"Customer": custom_fields_customer,
@@ -489,4 +553,5 @@ def get_custom_fields():
 		"Sales Invoice": custom_fields_si,
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
+		"Purchase Order Item": custom_fields_poi,
 	}
