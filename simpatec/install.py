@@ -482,10 +482,31 @@ def get_custom_fields():
 
 	custom_fields_poi = [
 		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_sec_br",
+			"fieldtype": "Section Break",
+			"insert_after": "",
+		},
+		{
+			"label": "Print Options",
+			"fieldname": "print_options",
+			"fieldtype": "Select",
+			"options": "\nItem Name\nItem Name and Description\nDescription\nHide Both",
+			"default": "Item Name and Description",
+			"insert_after": "simpatec_sec_br",
+		},
+		{
+			"label": "",
+			"fieldname": "sec_br_",
+			"fieldtype": "Section Break",
+			"insert_after": "print_options",
+		},
+		{
 			"label": "Item Language",
 			"fieldname": "item_language",
 			"fieldtype": "Link",
 			"options": "Language",
+			"depends_on": "eval: [\"Item Name\",\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
 			"insert_after": "column_break_4",
 		},
 		{
@@ -494,7 +515,7 @@ def get_custom_fields():
 			"fieldtype": "Data",
 			"fetch_from": "item_code.in_en",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'en'",
+			"depends_on": "eval:doc.item_language == 'en' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
 			"insert_after": "item_name",
 		},
 		{
@@ -503,7 +524,7 @@ def get_custom_fields():
 			"fieldtype": "Data",
 			"fetch_from": "item_code.in_de",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'de'",
+			"depends_on": "eval:doc.item_language == 'de' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
 			"insert_after": "item_name_en",
 		},
 		{
@@ -512,7 +533,7 @@ def get_custom_fields():
 			"fieldtype": "Data",
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'fr'",
+			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
 			"insert_after": "item_name_de",
 		},
 		{
@@ -521,7 +542,7 @@ def get_custom_fields():
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'en'",
+			"depends_on": "eval:doc.item_language == 'en' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
 			"insert_after": "description",
 		},
 		{
@@ -530,7 +551,7 @@ def get_custom_fields():
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'de'",
+			"depends_on": "eval:doc.item_language == 'de' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
 			"insert_after": "item_description_en",
 		},
 		{
@@ -539,7 +560,7 @@ def get_custom_fields():
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
-			"depends_on": "eval:doc.item_language == 'fr'",
+			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
 			"insert_after": "item_description_de",
 		},
 	]

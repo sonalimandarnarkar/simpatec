@@ -1,38 +1,8 @@
 frappe.ui.form.on('Purchase Order', {
 	refresh: function(frm){
-		let btn = cur_frm.fields_dict.items.grid.add_custom_button("Remove Item Description", function(){ 
-			if (!is_null(frm.fields_dict.items.grid.get_selected_children())) {
-				$.each(frm.fields_dict.items.grid.get_selected_children(), (k, v) => {
-					v.description = ""
-					if (v.item_language == 'en'){
-						v.item_description_en = ""
-					} else if(v.item_language == 'de'){
-						v.item_description_de = ""
-					} else if (v.item_language == 'fr') {
-						v.item_description_fr = ""
-					}
-					v.__checked = 0
-				})
-			}else{
-				$.each(frm.doc.items, (k, v) => {
-					v.description = ""
-					if (v.item_language == 'en') {
-						v.item_description_en = ""
-					} else if (v.item_language == 'de') {
-						v.item_description_de = ""
-					} else if (v.item_language == 'fr') {
-						v.item_description_fr = ""
-					}
-					v.__checked = 0
-				})
-			}
-			refresh_field("items");
-			frm.dirty()
-			frappe.msgprint("Item Description Removed")
-		})
-		btn.addClass("btn-secondary")
-		btn.removeClass("btn-default")
+		frm.events.print_settings(frm)
 	},
+
 	setup: function(frm){
 		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
 			
@@ -69,6 +39,53 @@ frappe.ui.form.on('Purchase Order', {
 			return arr.filter(
 				(ele) => ele.item_language == element
 			).length;
+		}
+	},
+
+	print_settings: function (frm) {
+		if(frm.doc.docstatus == 0){
+			let btn = frm.fields_dict.items.grid.add_custom_button("Item Print Settings", function () {
+				let d = new frappe.ui.Dialog({
+					title: __('Print Settings'),
+					fields: [
+						{
+							fieldtype: 'Select',
+							fieldname: 'default_printing_option',
+							label: __('Select Default Print Option'),
+							options: [
+								"Item Name", "Item Name and Description", "Description", "Hide Both"
+							],
+
+						},
+
+					],
+					primary_action_label: __('Update'),
+					primary_action: (values) => {
+						if (frm.doc.docstatus == 0) {
+							frappe.call({
+								method: "simpatec.events.purchase_order.set_default_print_options",
+								args: {
+									docname: frm.doc.name,
+									default_print_value: values.default_printing_option
+								},
+								callback: (r) => {
+									frappe.msgprint("Print Options updated")
+									d.hide();
+									frm.reload_doc()
+								}
+							})
+						}
+					},
+				});
+				d.show()
+			})
+			btn.addClass("btn-primary")
+			btn.addClass("item-print-settings")
+			btn.removeClass("btn-default")
+			btn.css("margin-right", "4px")
+		}
+		else{
+			$('.item-print-settings').remove()
 		}
 	}
 });
