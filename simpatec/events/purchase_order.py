@@ -37,3 +37,9 @@ def update_clearance_amount_in_sales_order(self):
                     frappe.db.set_value(so.doctype, so.name, "so_margin", so_margin_amount)
                     frappe.db.set_value(so.doctype, so.name, "so_margin_percent", so_margin_percent)
                     frappe.db.set_value(so.doctype, so.name, "clearance_amount", clearance_amount)
+
+
+@frappe.whitelist()
+def set_default_print_options(docname=None, default_print_value=None):
+    frappe.db.sql("update `tabPurchase Order Item` set `print_options` = '{default_print_value}' where parent='{docname}'".format(default_print_value=default_print_value, docname=docname))
+    frappe.db.commit();
