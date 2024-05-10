@@ -3,7 +3,6 @@
  "allow_rename": 1,
  "autoname": "format:{item_group} {customer_subsidiary}",
  "creation": "2023-12-04 16:48:56.057355",
- "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -27,8 +26,6 @@
   "licence_renewal_via",
   "maintenance_duration",
   "lead_time",
-  "auto_repeat",
-  "auto_repeat_end_date",
   "licence_section_section",
   "software_maintenance_contacts",
   "section_break_oqvv5",
@@ -166,20 +163,6 @@
    "options": "30\n45\n60\n90\n120"
   },
   {
-   "description": "Link the Auto Repeat of mostly Quotation or Sales Order.",
-   "fieldname": "auto_repeat",
-   "fieldtype": "Link",
-   "label": "Auto Repeat",
-   "options": "Auto Repeat"
-  },
-  {
-   "fetch_from": "auto_repeat.end_date",
-   "fieldname": "auto_repeat_end_date",
-   "fieldtype": "Date",
-   "label": "Auto Repeat End Date",
-   "read_only": 1
-  },
-  {
    "fieldname": "licence_section_section",
    "fieldtype": "Section Break",
    "label": "Licence Section"
@@ -284,11 +267,10 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-01-11 10:31:26.656484",
+ "modified": "2024-05-10 07:23:42.539083",
  "modified_by": "Administrator",
- "module": "SimpaTec",
+ "module": "Simpatec",
  "name": "Software Maintenance",
- "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -307,6 +289,5 @@
  "search_fields": "customer,status,main_customer_contact",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
  "track_changes": 1
 }
