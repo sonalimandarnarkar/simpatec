@@ -6,7 +6,12 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "clearance_item"
+  "sales_section",
+  "clearance_item",
+  "danger_zone_section",
+  "html_1",
+  "update_software_maintenance_items",
+  "html_2"
  ],
  "fields": [
   {
@@ -14,12 +19,37 @@
    "fieldtype": "Link",
    "label": "Clearance Item",
    "options": "Item"
+  },
+  {
+   "fieldname": "sales_section",
+   "fieldtype": "Section Break",
+   "label": "Sales"
+  },
+  {
+   "fieldname": "danger_zone_section",
+   "fieldtype": "Section Break",
+   "label": "\u26a0\ufe0f Danger Zone \u26a0\ufe0f"
+  },
+  {
+   "fieldname": "update_software_maintenance_items",
+   "fieldtype": "Button",
+   "label": "Update Software Maintenance Items"
+  },
+  {
+   "fieldname": "html_1",
+   "fieldtype": "HTML",
+   "options": "<p style=\"color: red;\">In this section you will find options like scripts that can heavily influence the data of the system and lead to severe data loss. Please consult the documentation and your project manager before triggering anything in this section!!</p>"
+  },
+  {
+   "fieldname": "html_2",
+   "fieldtype": "HTML",
+   "options": "Hitting this button will remove all the items from all the Software Maintenance records and renew them from the Sales Order that is linked in each Software Maintenance Record. Also that record is updated by setting the sales_order_type to \"First Sale\"."
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-13 00:46:52.905219",
+ "modified": "2024-05-22 16:07:34.454383",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "SimpaTec Settings",
