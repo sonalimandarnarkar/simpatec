@@ -5,7 +5,7 @@ from frappe.utils import cint, cstr, flt, add_days, add_years, today, getdate
 from frappe.model.mapper import get_mapped_doc
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
-
+from six import string_types
 
 @frappe.whitelist()
 def validate(doc, handler=None):
@@ -285,3 +285,272 @@ def update_clearance_and_margin_amount(self, handler=None):
 					return {"po_total": po_total, "so_margin": so_margin_amount, "so_margin_percent": so_margin_percent, "clearance_amount": clearance_amount}
 				else:
 					return {"po_total": po_total, "so_margin": 0, "so_margin_percent": 0, "clearance_amount": 0}
+				
+@frappe.whitelist()
+def make_purchase_order_for_default_supplier(source_name, selected_items=None, target_doc=None):
+	"""Creates Purchase Order for each Supplier. Returns a list of doc objects."""
+
+	from erpnext.setup.utils import get_exchange_rate
+
+	if not selected_items:
+		return
+
+	if isinstance(selected_items, string_types):
+		selected_items = json.loads(selected_items)
+
+	def set_missing_values(source, target):
+		target.supplier = supplier
+		target.currency = frappe.db.get_value(
+			"Supplier", filters={"name": supplier}, fieldname=["default_currency"]
+		)
+		company_currency = frappe.db.get_value(
+			"Company", filters={"name": target.company}, fieldname=["default_currency"]
+		)
+
+		target.conversion_rate = get_exchange_rate(target.currency, company_currency, args="for_buying")
+
+		target.apply_discount_on = ""
+		target.additional_discount_percentage = 0.0
+		target.discount_amount = 0.0
+		target.inter_company_order_reference = ""
+		target.shipping_rule = ""
+
+		default_price_list = frappe.get_value("Supplier", supplier, "default_price_list")
+		if default_price_list:
+			target.buying_price_list = default_price_list
+
+		if any(item.delivered_by_supplier == 1 for item in source.items):
+			if source.shipping_address_name:
+				target.shipping_address = source.shipping_address_name
+				target.shipping_address_display = source.shipping_address
+			else:
+				target.shipping_address = source.customer_address
+				target.shipping_address_display = source.address_display
+
+			target.customer_contact_person = source.contact_person
+			target.customer_contact_display = source.contact_display
+			target.customer_contact_mobile = source.contact_mobile
+			target.customer_contact_email = source.contact_email
+
+		else:
+			target.customer = ""
+			target.customer_name = ""
+
+		target.run_method("set_missing_values")
+		target.run_method("calculate_taxes_and_totals")
+
+	def update_item(source, target, source_parent):
+		target.schedule_date = source.delivery_date
+		target.qty = flt(source.qty) - (flt(source.ordered_qty) / flt(source.conversion_factor))
+		target.stock_qty = flt(source.stock_qty) - flt(source.ordered_qty)
+		target.project = source_parent.project
+
+	suppliers = [item.get("supplier") for item in selected_items if item.get("supplier")]
+	suppliers = list(dict.fromkeys(suppliers))  # remove duplicates while preserving order
+
+	items_to_map = [item.get("item_code") for item in selected_items if item.get("item_code")]
+	items_to_map = list(set(items_to_map))
+
+	if not suppliers:
+		frappe.throw(
+			_("Please set a Supplier against the Items to be considered in the Purchase Order.")
+		)
+
+	purchase_orders = []
+	for supplier in suppliers:
+		doc = get_mapped_doc(
+			"Sales Order",
+			source_name,
+			{
+				"Sales Order": {
+					"doctype": "Purchase Order",
+					"field_no_map": [
+						"address_display",
+						"contact_display",
+						"contact_mobile",
+						"contact_email",
+						"contact_person",
+						"taxes_and_charges",
+						"shipping_address",
+						"terms",
+					],
+					"validation": {"docstatus": ["=", 1]},
+				},
+				"Sales Order Item": {
+					"doctype": "Purchase Order Item",
+					"field_map": [
+						["name", "sales_order_item"],
+						["parent", "sales_order"],
+						["stock_uom", "stock_uom"],
+						["uom", "uom"],
+						["conversion_factor", "conversion_factor"],
+						["delivery_date", "schedule_date"],
+					],
+					"field_no_map": [
+						"rate",
+						"price_list_rate",
+						"item_tax_template",
+						"discount_percentage",
+						"discount_amount",
+						"pricing_rules",
+					],
+					"postprocess": update_item,
+					"condition": lambda doc: doc.ordered_qty < doc.stock_qty
+					and doc.supplier == supplier
+					and doc.item_code in items_to_map,
+				},
+			},
+			target_doc,
+			set_missing_values,
+		)
+
+		doc.insert()
+		frappe.db.commit()
+		purchase_orders.append(doc)
+
+	return purchase_orders
+
+
+@frappe.whitelist()
+def make_purchase_order(source_name, selected_items=None, target_doc=None):
+	if not selected_items:
+		return
+
+	if isinstance(selected_items, string_types):
+		selected_items = json.loads(selected_items)
+
+	items_to_map = [
+		item.get("item_code")
+		for item in selected_items
+		if item.get("item_code") and item.get("item_code")
+	]
+	items_to_map = list(set(items_to_map))
+
+	def is_drop_ship_order(target):
+		drop_ship = True
+		for item in target.items:
+			if not item.delivered_by_supplier:
+				drop_ship = False
+				break
+
+		return drop_ship
+
+	def set_missing_values(source, target):
+		target.supplier = ""
+		target.apply_discount_on = ""
+		target.additional_discount_percentage = 0.0
+		target.discount_amount = 0.0
+		target.inter_company_order_reference = ""
+		target.shipping_rule = ""
+
+		if is_drop_ship_order(target):
+			target.customer = source.customer
+			target.customer_name = source.customer_name
+			target.shipping_address = source.shipping_address_name
+		else:
+			target.customer = target.customer_name = target.shipping_address = None
+
+		target.run_method("set_missing_values")
+		target.run_method("calculate_taxes_and_totals")
+
+	def update_item(source, target, source_parent):
+		target.schedule_date = source.delivery_date
+		target.qty = flt(source.qty) - (flt(source.ordered_qty) / flt(source.conversion_factor))
+		target.stock_qty = flt(source.stock_qty) - flt(source.ordered_qty)
+		target.project = source_parent.project
+		target.rate = source.einkaufspreis
+		target.price_list_rate = source.einkaufspreis
+
+	def update_item_for_packed_item(source, target, source_parent):
+		target.qty = flt(source.qty) - flt(source.ordered_qty)
+
+	# po = frappe.get_list("Purchase Order", filters={"sales_order":source_name, "supplier":supplier, "docstatus": ("<", "2")})
+	doc = get_mapped_doc(
+		"Sales Order",
+		source_name,
+		{
+			"Sales Order": {
+				"doctype": "Purchase Order",
+				"field_no_map": [
+					"address_display",
+					"contact_display",
+					"contact_mobile",
+					"contact_email",
+					"contact_person",
+					"taxes_and_charges",
+					"shipping_address",
+					"terms",
+				],
+				"validation": {"docstatus": ["=", 1]},
+			},
+			"Sales Order Item": {
+				"doctype": "Purchase Order Item",
+				"field_map": [
+					["name", "sales_order_item"],
+					["parent", "sales_order"],
+					["stock_uom", "stock_uom"],
+					["uom", "uom"],
+					["conversion_factor", "conversion_factor"],
+					["delivery_date", "schedule_date"],
+				],
+				"field_no_map": [
+					"rate",
+					"price_list_rate",
+					"item_tax_template",
+					"discount_percentage",
+					"discount_amount",
+					"supplier",
+					"pricing_rules",
+				],
+				"postprocess": update_item,
+				"condition": lambda doc: doc.ordered_qty < doc.stock_qty
+				and doc.item_code in items_to_map
+				and not is_product_bundle(doc.item_code),
+			},
+			"Packed Item": {
+				"doctype": "Purchase Order Item",
+				"field_map": [
+					["name", "sales_order_packed_item"],
+					["parent", "sales_order"],
+					["uom", "uom"],
+					["conversion_factor", "conversion_factor"],
+					["parent_item", "product_bundle"],
+					["rate", "rate"],
+				],
+				"field_no_map": [
+					"price_list_rate",
+					"item_tax_template",
+					"discount_percentage",
+					"discount_amount",
+					"supplier",
+					"pricing_rules",
+				],
+				"postprocess": update_item_for_packed_item,
+				"condition": lambda doc: doc.parent_item in items_to_map,
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	set_delivery_date(doc.items, source_name)
+
+	return doc
+
+
+def is_product_bundle(item_code):
+	return frappe.db.exists("Product Bundle", item_code)
+
+
+def set_delivery_date(items, sales_order):
+	delivery_dates = frappe.get_all(
+		"Sales Order Item", filters={"parent": sales_order}, fields=["delivery_date", "item_code"]
+	)
+
+	delivery_by_item = frappe._dict()
+	for date in delivery_dates:
+		delivery_by_item[date.item_code] = date.delivery_date
+
+	for item in items:
+		if item.product_bundle:
+			item.schedule_date = delivery_by_item[item.product_bundle]

@@ -135,9 +135,10 @@ scheduler_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "simpatec.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order_for_default_supplier": "simpatec.events.sales_order.make_purchase_order_for_default_supplier",
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order": "simpatec.events.sales_order.make_purchase_order"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
