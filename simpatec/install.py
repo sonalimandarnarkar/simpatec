@@ -563,6 +563,14 @@ def get_custom_fields():
 			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
 			"insert_after": "item_description_de",
 		},
+		{
+			"label": "Einkaufspreis",
+			"fieldname": "einkaufspreis",
+			"fieldtype": "Currency",
+			"description": "Preis welcher schon beim erstellen des Angebots bekannt war",
+			"insert_after": "sec_break1",
+		},
+
 	]
 
 
