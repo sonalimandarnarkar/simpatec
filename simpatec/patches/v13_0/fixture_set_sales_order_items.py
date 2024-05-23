@@ -7,7 +7,6 @@ def execute():
     try:
         """Query for removing all previous Software maintenance Items"""
         frappe.db.sql("DELETE FROM `tabSoftware Maintenance Item`")
-        frappe.db.commit()
         software_maintenances = frappe.get_all("Software Maintenance", fields=["sales_order", "name"], filters=[["sales_order","is","set"]])
         for s_m in software_maintenances:
             so_items = frappe.get_all("Sales Order Item", filters={"parent": s_m.sales_order}, fields=["*"])
@@ -56,7 +55,7 @@ def execute():
                 frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale")
                 frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance', `modified` = '{modified}', `modified_by` = '{modified_by}' where `sales_order_type` = 'Follow Up Maintenance' """.format(modified= now(), modified_by= modified_by))
                 frappe.db.commit()
-        return """<h3>The script has run and had updated all Software Maintenance:</h3>
+        return {"message":"""<h3>The script has run and had updated all Software Maintenance:</h3>
                 <ul>
                     <li>existing items table have been cleared from all Software Maintenance</li>
                     <li>the linked Sales Invoice in Software Maintenance has been updated to "First Sale"</li>
@@ -64,8 +63,8 @@ def execute():
                     <li>all Sales Orders with sales_order_type "Follow-Up Maintenance have been updated to "Reoccurring Maintenance"</li>
                 </ul>
                 <p>The script has ignored missing date like start/end dates, rates, etc.</p>
-                <p>For further information check in SimpaTec Settings page and consult your project manager.</p> """       
+                <p>For further information check in SimpaTec Settings page and consult your project manager.</p> """, "title": "Success"}   
     except Exception as ex:
         frappe.db.rollback()
         frappe.log_error(ex)
-        return "There was some error occured in the process, Please check error logs."
+        return {"message":"There was some error occured in the process, Please check error logs.", "title":"Error" }
