@@ -3,8 +3,9 @@ from datetime import timedelta
 from frappe.utils import now
 
 @frappe.whitelist()
-def execute():
+def execute(update_timestamp=None):
     try:
+        update_timestamp = int(update_timestamp)
         """Query for removing all previous Software maintenance Items"""
         frappe.db.sql("DELETE FROM `tabSoftware Maintenance Item`")
         software_maintenances = frappe.get_all("Software Maintenance", fields=["sales_order", "name"], filters=[["sales_order","is","set"]])
@@ -51,10 +52,13 @@ def execute():
                     software_maintenance_items.insert(ignore_permissions=True)
                 modified_by = frappe.session.user
                 # frappe.db.set_value("Software Maintenance", s_m.name, "assign_to", frappe.db.get_value("Sales Order", s_m.sales_order, "assigned_to"), update_modified=False)
-                frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where `name` = '{sm_name}'""".format(modified= now(), modified_by= modified_by, sm_name=s_m.name))
-                frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale")
-                frappe.db.set_value("Sales Order", s_m.sales_order, "software_maintenance", s_m.name)
-                frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance', `modified` = '{modified}', `modified_by` = '{modified_by}' where `sales_order_type` = 'Follow Up Maintenance' """.format(modified= now(), modified_by= modified_by))
+                frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale", update_modified=update_timestamp)
+                frappe.db.set_value("Sales Order", s_m.sales_order, "software_maintenance", s_m.name, update_modified=update_timestamp)
+                if update_timestamp:
+                    frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where `name` = '{sm_name}'""".format(modified= now(), modified_by= modified_by, sm_name=s_m.name))
+                    frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance', `modified` = '{modified}', `modified_by` = '{modified_by}' where `sales_order_type` = 'Follow Up Maintenance' """.format(modified= now(), modified_by= modified_by))
+                else:
+                    frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance' where `sales_order_type` = 'Follow Up Maintenance' """)
                 frappe.db.commit()
         return {"message":"""<h3>The script has run and had updated all Software Maintenance:</h3>
                 <ul>
