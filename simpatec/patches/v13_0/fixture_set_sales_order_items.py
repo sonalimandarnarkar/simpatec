@@ -22,12 +22,12 @@ def execute():
                             days_diff = item.end_date - item.start_date
                             if days_diff == 365:
                                 item.end_date = item.end_date - timedelta(days=1)
-                    # if item.item_type == "Maintenance Item":
-                    #     item.rate = item.reoccuring_maintenance_amount
-                    #     item.reoccuring_maintenance_amount = item.reoccuring_maintenance_amount
-                    # else:
-                    #     item.rate = 0
-                    #     item.reoccuring_maintenance_amount = 0
+                    if item.item_type == "Maintenance Item":
+                        item.rate = item.reoccurring_maintenance_amount
+                        item.reoccurring_maintenance_amount = item.reoccurring_maintenance_amount
+                    else:
+                        item.rate = 0
+                        item.reoccurring_maintenance_amount = 0
 
                     software_maintenance_items.update({
                         "idx": item.idx,
@@ -36,8 +36,8 @@ def execute():
                         "description": item.description,
                         "conversion_factor": item.conversion_factor,
                         "qty": item.qty,
-                        "rate": item.reoccuring_maintenance_amount,
-                        "reoccuring_maintenance_amount": item.reoccuring_maintenance_amount,
+                        "rate": item.reoccurring_maintenance_amount,
+                        "reoccurring_maintenance_amount": item.reoccurring_maintenance_amount,
                         "uom": item.uom,
                         "item_language": item.item_language,
                         "delivery_date": frappe.db.get_value("Sales Order", s_m.sales_order, "transaction_date"),
@@ -53,6 +53,7 @@ def execute():
                 # frappe.db.set_value("Software Maintenance", s_m.name, "assign_to", frappe.db.get_value("Sales Order", s_m.sales_order, "assigned_to"), update_modified=False)
                 frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where `name` = '{sm_name}'""".format(modified= now(), modified_by= modified_by, sm_name=s_m.name))
                 frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale")
+                frappe.db.set_value("Sales Order", s_m.sales_order, "software_maintenance", s_m.name)
                 frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance', `modified` = '{modified}', `modified_by` = '{modified_by}' where `sales_order_type` = 'Follow Up Maintenance' """.format(modified= now(), modified_by= modified_by))
                 frappe.db.commit()
         return {"message":"""<h3>The script has run and had updated all Software Maintenance:</h3>

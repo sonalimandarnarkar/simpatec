@@ -62,11 +62,11 @@ def make_software_maintenance(source_name, target_doc=None):
 					item.end_date = item.end_date - timedelta(days=1)
 				so_item = source.items[item.idx-1]
 				if so_item.item_type == "Maintenance Item":
-					item.rate = so_item.reoccuring_maintenance_amount
-					item.reoccuring_maintenance_amount = so_item.reoccuring_maintenance_amount
+					item.rate = so_item.reoccurring_maintenance_amount
+					item.reoccurring_maintenance_amount = so_item.reoccurring_maintenance_amount
 				else:
 					item.rate = 0
-					item.reoccuring_maintenance_amount = 0
+					item.reoccurring_maintenance_amount = 0
 		doc.assign_to = source.assigned_to
 
 	doc = get_mapped_doc(
@@ -110,7 +110,7 @@ def update_software_maintenance(doc, method=None):
 		software_maintenance.sale_order = doc.name
 		for item in doc.items:
 			item_rate = item.rate
-			item_reoccuring_maintenance_amount = item.reoccuring_maintenance_amount
+			item_reoccurring_maintenance_amount = item.reoccurring_maintenance_amount
 			item_start_date = item.start_date
 			item_end_date = item.end_date
 
@@ -119,7 +119,7 @@ def update_software_maintenance(doc, method=None):
 				item_end_date = software_maintenance.performance_period_end
 
 			if item.item_type == "Maintenance Item":
-				item_rate = item.reoccuring_maintenance_amount
+				item_rate = item.reoccurring_maintenance_amount
 			else:
 				item_rate = 0
 				item_reoccuring_maintenance_amount = 0
@@ -165,7 +165,7 @@ def update_software_maintenance(doc, method=None):
 				"conversion_factor": item.conversion_factor,
 				"item_language": item.item_language,
 				"rate": item_rate,
-				"reoccuring_maintenance_amount": item_reoccuring_maintenance_amount,
+				"reoccurring_maintenance_amount": item_reoccurring_maintenance_amount,
 				"qty": item.qty,
 				"uom": item.uom,
 				"einkaufspreis": item.einkaufspreis

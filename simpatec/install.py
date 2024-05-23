@@ -304,8 +304,8 @@ def get_custom_fields():
 			"insert_after": "item_type",
 		},
 		{
-			"label": "Reoccuring Maintenance Amount",
-			"fieldname": "reoccuring_maintenance_amount",
+			"label": "Reoccurring Maintenance Amount",
+			"fieldname": "reoccurring_maintenance_amount",
 			"fieldtype": "Currency",
 			"description": "The grand total of the reoccurring maintenance cost",
 			"depends_on": "eval: doc.item_type == \"Maintenance Item\"",
@@ -314,7 +314,7 @@ def get_custom_fields():
 		{
 			"fieldname": "section_break_kiny4",
 			"fieldtype": "Section Break",
-			"insert_after": "reoccuring_maintenance_amount"
+			"insert_after": "reoccurring_maintenance_amount"
 		},
 		{
 			"label": "Item Language",
