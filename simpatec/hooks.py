@@ -219,7 +219,6 @@ fixtures = [
 			"Quotation-ignore_cover_language",
 			"Item-simpatec",
 			"Item-item_type",
-			"Sales Order Item-reccuring_maintenance_amount"
 
                 ),
             ]
