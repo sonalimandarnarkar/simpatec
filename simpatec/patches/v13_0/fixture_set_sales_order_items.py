@@ -1,5 +1,6 @@
 import frappe
 from datetime import timedelta
+from frappe.utils import now
 
 @frappe.whitelist()
 def execute():
@@ -49,11 +50,21 @@ def execute():
                         'parenttype': "Software Maintenance"
                     })
                     software_maintenance_items.insert(ignore_permissions=True)
+                modified_by = frappe.session.user
                 # frappe.db.set_value("Software Maintenance", s_m.name, "assign_to", frappe.db.get_value("Sales Order", s_m.sales_order, "assigned_to"), update_modified=False)
-                frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale", update_modified=False)
-                frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance' where `sales_order_type` = 'Follow Up Maintenance' """)
+                frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where `name` = '{sm_name}'""".format(modified= now(), modified_by= modified_by, sm_name=s_m.name))
+                frappe.db.set_value("Sales Order", s_m.sales_order, "sales_order_type", "First Sale")
+                frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance', `modified` = '{modified}', `modified_by` = '{modified_by}' where `sales_order_type` = 'Follow Up Maintenance' """.format(modified= now(), modified_by= modified_by))
                 frappe.db.commit()
-        return "Process Completed Successfully. All Items in Software Maintenance Has been updated"        
+        return """<h3>The script has run and had updated all Software Maintenance:</h3>
+                <ul>
+                    <li>existing items table have been cleared from all Software Maintenance</li>
+                    <li>the linked Sales Invoice in Software Maintenance has been updated to "First Sale"</li>
+                    <li>the items from that Sales Invoice have been fetched into the Software Maintenance item table</li>
+                    <li>all Sales Orders with sales_order_type "Follow-Up Maintenance have been updated to "Reoccurring Maintenance"</li>
+                </ul>
+                <p>The script has ignored missing date like start/end dates, rates, etc.</p>
+                <p>For further information check in SimpaTec Settings page and consult your project manager.</p> """       
     except Exception as ex:
         frappe.db.rollback()
         frappe.log_error(ex)
