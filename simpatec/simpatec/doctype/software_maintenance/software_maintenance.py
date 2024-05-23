@@ -67,7 +67,7 @@ def make_reoccuring_sales_order(software_maintenance, is_background_job=True):
 			"conversion_factor": item.conversion_factor,
 			"qty": item.qty,
 			"rate": item.rate,
-			"reoccuring_maintenance_amount": item.reoccuring_maintenance_amount,
+			"reoccurring_maintenance_amount": item.reoccurring_maintenance_amount,
 			"uom": item.uom,
 			"item_language": item.item_language,
 			"delivery_date": sales_order.transaction_date,
