@@ -13,6 +13,16 @@ class SimpaTecSettings(Document):
 @frappe.whitelist()
 def update_software_maintenance_items(update_timestamp=None):
     try:
+
+        # Remove Wrong field of reccuring_maintenance_amount and reoccuring_maintenance_amount if exist
+        if frappe.db.exists("Custom Field", "Sales Order Item-reoccuring_maintenance_amount"):
+            frappe.delete_doc("Custom Field", "Sales Order Item-reoccuring_maintenance_amount", force=1)
+        if frappe.db.exists("Custom Field", "Sales Order Item-reccuring_maintenance_amount"):
+            # First set the value of wrong `reoccurring_maintenance_amount` field into `reoccurring_maintenance_amount`
+            frappe.db.sql("update `tabSales Order Item` set `reoccurring_maintenance_amount` = `reccuring_maintenance_amount` where item_type = 'Maintenance Item'")
+            # Now removing the field
+            frappe.delete_doc("Custom Field", "Sales Order Item-reccuring_maintenance_amount", force=1)
+        
         update_timestamp = int(update_timestamp)
         """Query for removing all previous Software maintenance Items"""
         frappe.db.sql("DELETE FROM `tabSoftware Maintenance Item`")
