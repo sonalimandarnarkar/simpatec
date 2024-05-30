@@ -7,8 +7,7 @@ from datetime import timedelta
 from frappe.utils import now
 
 class SimpaTecSettings(Document):
-	pass
-
+    pass
 
 @frappe.whitelist()
 def update_software_maintenance_items(update_timestamp=None):
@@ -22,6 +21,12 @@ def update_software_maintenance_items(update_timestamp=None):
             frappe.db.sql("update `tabSales Order Item` set `reoccurring_maintenance_amount` = `reccuring_maintenance_amount` where item_type = 'Maintenance Item'")
             # Now removing the field
             frappe.delete_doc("Custom Field", "Sales Order Item-reccuring_maintenance_amount", force=1)
+        if frappe.db.exists("Custom Field", "Sales Order Item-einkaufspreis"):
+            # first update the field value into new one
+            frappe.db.sql("update `tabSales Order Item` set `purchase_price` = `einkaufspreis` ")
+            # now remove the field and its section
+            frappe.delete_doc("Custom Field", "Sales Order Item-einkauf", force=1) # section
+            frappe.delete_doc("Custom Field", "Sales Order Item-einkaufspreis", force=1) # field
         
         update_timestamp = int(update_timestamp)
         """Query for removing all previous Software maintenance Items"""
@@ -62,7 +67,7 @@ def update_software_maintenance_items(update_timestamp=None):
                         "delivery_date": frappe.db.get_value("Sales Order", s_m.sales_order, "transaction_date"),
                         "start_date": item.start_date,
                         "end_date": item.end_date,
-                        # "einkaufspreis": item.einkaufspreis,
+                        "purchase_price": item.purchase_price,
                         'parent': s_m.name,
                         'parentfield': 'items',
                         'parenttype': "Software Maintenance"
