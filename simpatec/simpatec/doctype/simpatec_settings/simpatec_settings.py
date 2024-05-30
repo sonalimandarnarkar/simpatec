@@ -7,21 +7,7 @@ from datetime import timedelta
 from frappe.utils import now
 
 class SimpaTecSettings(Document):
-    def start_import(self, file_url, bank_account, company):
-        frappe.publish_progress(0, title='Importing Bank Transaction', description='Starting import...')
-        for index, row in enumerate(csv_reader):
-            if encoding == 'utf-8':
-                self.create_new_doc_utf8(row, bank_account, company, index, total_rows)
-            elif encoding == 'IS0-8859-1':
-                self.create_new_doc_iso(row, bank_account, company, index, total_rows)
-            else:
-                frappe.msgprint("Unsupported file format. Only utf-8 and ISO-8859-1 formats are supported currently.")
-                self.update_status('Error')
-                return
-            index += 1
-            progress = int( (index / total_rows) * 100)
-            frappe.publish_progress(progress, title='Importing Bank Transaction', description=f'Processing row {index}/{total_rows}')
-
+    pass
 
 @frappe.whitelist()
 def update_software_maintenance_items(update_timestamp=None):
