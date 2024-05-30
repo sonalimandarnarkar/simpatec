@@ -391,7 +391,7 @@ def get_custom_fields():
 			"insert_after": "id_de",
 		},
 		{
-			"label": "Purchase Section",
+			"label": "Purchase",
 			"fieldname": "purchase_section",
 			"insert_after": "transaction_date",
 			"fieldtype": "Section Break",
