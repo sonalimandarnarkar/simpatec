@@ -73,7 +73,7 @@ def make_reoccuring_sales_order(software_maintenance, is_background_job=True):
 			"delivery_date": sales_order.transaction_date,
 			"start_date": item.start_date,
 			"end_date": item.end_date,
-			"einkaufspreis": item.einkaufspreis
+			"purchase_price": item.purchase_price
 		})
 
 	sales_order.insert()

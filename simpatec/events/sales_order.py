@@ -168,7 +168,7 @@ def update_software_maintenance(doc, method=None):
 				"reoccurring_maintenance_amount": item_reoccurring_maintenance_amount,
 				"qty": item.qty,
 				"uom": item.uom,
-				"einkaufspreis": item.einkaufspreis
+				"purchase_price": item.purchase_price
 			})
 
 		software_maintenance.save()
@@ -458,8 +458,8 @@ def make_purchase_order(source_name, selected_items=None, target_doc=None):
 		target.qty = flt(source.qty) - (flt(source.ordered_qty) / flt(source.conversion_factor))
 		target.stock_qty = flt(source.stock_qty) - flt(source.ordered_qty)
 		target.project = source_parent.project
-		target.rate = source.einkaufspreis
-		target.price_list_rate = source.einkaufspreis
+		target.rate = source.purchase_price
+		target.price_list_rate = source.purchase_price
 
 	def update_item_for_packed_item(source, target, source_parent):
 		target.qty = flt(source.qty) - flt(source.ordered_qty)

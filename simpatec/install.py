@@ -4,7 +4,7 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 def after_migrate():
 	create_custom_fields(get_custom_fields())
-
+	set_poi_einkaufspreis_to_purchase_price()
 
 def before_uninstall():
 	delete_custom_fields(get_custom_fields())
@@ -20,6 +20,14 @@ def delete_custom_fields(custom_fields):
 				frappe.delete_doc("Custom Field", custom_field_name)
 
 		frappe.clear_cache(doctype=doctype)
+
+
+def set_poi_einkaufspreis_to_purchase_price():
+	if frappe.db.exists("Custom Field", "Purchase Order Item-einkaufspreis"):
+		# First set the value of wrong `reoccurring_maintenance_amount` field into `reoccurring_maintenance_amount`
+		frappe.db.sql("update `tabPurchase Order Item` set `purchase_price` = `einkaufspreis`")
+		# Now removing the field
+		frappe.delete_doc("Custom Field", "Purchase Order Item-einkaufspreis", force=1)
 
 
 def get_custom_fields():
@@ -564,8 +572,8 @@ def get_custom_fields():
 			"insert_after": "item_description_de",
 		},
 		{
-			"label": "Einkaufspreis",
-			"fieldname": "einkaufspreis",
+			"label": "Purchase Price",
+			"fieldname": "purchase_price",
 			"fieldtype": "Currency",
 			"description": "Preis welcher schon beim erstellen des Angebots bekannt war",
 			"insert_after": "sec_break1",
