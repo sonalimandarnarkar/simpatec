@@ -391,15 +391,15 @@ def get_custom_fields():
 			"insert_after": "id_de",
 		},
 		{
-			"label": "Einkauf",
-			"fieldname": "einkauf",
+			"label": "Purchase",
+			"fieldname": "purchase_section",
 			"insert_after": "transaction_date",
 			"fieldtype": "Section Break",
 		},
-		{
-			"label": "Einkaufspreis",
-			"fieldname": "einkaufspreis",
-			"insert_after": "einkauf",
+  		{
+			"label": "Purchase Price",
+			"fieldname": "purchase_price",
+			"insert_after": "purchase_section",
 			"fieldtype": "Currency",
 			"allow_on_submit": 1,
 		}
