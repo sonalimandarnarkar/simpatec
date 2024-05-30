@@ -18,19 +18,39 @@ frappe.ui.form.on('Software Maintenance', {
 
         frm.add_custom_button('Reoccuring Software Maintenance', function () {
             frappe.call({
-                method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_sales_order",
+                method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order",
                 args: {
                     software_maintenance: frm.doc.name,
-                    is_background_job: 0,
-                    is_reoccuring: 1
+                    is_background_job: 0
                 },
                 callback: function (r) {
                 },
             });
-        }, __("Create Sales Order"));
+        });
 
 
         //hide all + in the connection
         $('.form-documents button').hide();
     }
+});
+
+frappe.ui.form.on('Software Maintenance Item', {
+    item_code(frm, cdt, cdn){
+        var item = frappe.get_doc(cdt, cdn);
+        item.pricing_rules = ''
+        if (item.item_code && item.uom) {
+            return frm.call({
+                method: "erpnext.stock.get_item_details.get_conversion_factor",
+                args: {
+                    item_code: item.item_code,
+                    uom: item.uom
+                },
+                callback: function (r) {
+                    if (!r.exc) {
+                        frappe.model.set_value(cdt, cdn, 'conversion_factor', r.message.conversion_factor);
+                    }
+                }
+            });
+        }
+    },
 });

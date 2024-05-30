@@ -4,7 +4,7 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 def after_migrate():
 	create_custom_fields(get_custom_fields())
-
+	set_poi_einkaufspreis_to_purchase_price()
 
 def before_uninstall():
 	delete_custom_fields(get_custom_fields())
@@ -20,6 +20,14 @@ def delete_custom_fields(custom_fields):
 				frappe.delete_doc("Custom Field", custom_field_name)
 
 		frappe.clear_cache(doctype=doctype)
+
+
+def set_poi_einkaufspreis_to_purchase_price():
+	if frappe.db.exists("Custom Field", "Purchase Order Item-einkaufspreis"):
+		# First set the value of wrong `reoccurring_maintenance_amount` field into `reoccurring_maintenance_amount`
+		frappe.db.sql("update `tabPurchase Order Item` set `purchase_price` = `einkaufspreis`")
+		# Now removing the field
+		frappe.delete_doc("Custom Field", "Purchase Order Item-einkaufspreis", force=1)
 
 
 def get_custom_fields():
@@ -304,8 +312,8 @@ def get_custom_fields():
 			"insert_after": "item_type",
 		},
 		{
-			"label": "Reoccuring Maintenance Amount",
-			"fieldname": "reoccuring_maintenance_amount",
+			"label": "Reoccurring Maintenance Amount",
+			"fieldname": "reoccurring_maintenance_amount",
 			"fieldtype": "Currency",
 			"description": "The grand total of the reoccurring maintenance cost",
 			"depends_on": "eval: doc.item_type == \"Maintenance Item\"",
@@ -314,7 +322,7 @@ def get_custom_fields():
 		{
 			"fieldname": "section_break_kiny4",
 			"fieldtype": "Section Break",
-			"insert_after": "reoccuring_maintenance_amount"
+			"insert_after": "reoccurring_maintenance_amount"
 		},
 		{
 			"label": "Item Language",
@@ -365,7 +373,7 @@ def get_custom_fields():
 
 		{
 			"label": "Item Description EN",
-			"fieldname": "id_de",
+			"fieldname": "id_en",
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
@@ -379,17 +387,30 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'de'",
-			"insert_after": "id_de",
+			"insert_after": "id_en",
 		},
 		{
 			"label": "Item Description FR",
-			"fieldname": "id_de",
+			"fieldname": "id_fr",
 			"fieldtype": "Text Editor",
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'fr'",
 			"insert_after": "id_de",
 		},
+		{
+			"label": "Purchase",
+			"fieldname": "purchase_section",
+			"insert_after": "transaction_date",
+			"fieldtype": "Section Break",
+		},
+  		{
+			"label": "Purchase Price",
+			"fieldname": "purchase_price",
+			"insert_after": "purchase_section",
+			"fieldtype": "Currency",
+			"allow_on_submit": 1,
+		}
 	]
 
 	custom_fields_item = [
@@ -467,6 +488,99 @@ def get_custom_fields():
 		},
 	]
 
+	custom_fields_poi = [
+		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_sec_br",
+			"fieldtype": "Section Break",
+			"insert_after": "",
+		},
+		{
+			"label": "Print Options",
+			"fieldname": "print_options",
+			"fieldtype": "Select",
+			"options": "\nItem Name\nItem Name and Description\nDescription\nHide Both",
+			"default": "Item Name and Description",
+			"insert_after": "simpatec_sec_br",
+		},
+		{
+			"label": "",
+			"fieldname": "sec_br_",
+			"fieldtype": "Section Break",
+			"insert_after": "print_options",
+		},
+		{
+			"label": "Item Language",
+			"fieldname": "item_language",
+			"fieldtype": "Link",
+			"options": "Language",
+			"depends_on": "eval: [\"Item Name\",\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+			"insert_after": "column_break_4",
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "item_name_en",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
+			"insert_after": "item_name",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "item_name_de",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
+			"insert_after": "item_name_en",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "item_name_fr",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name\",\"Item Name and Description\"].includes(doc.print_options)",
+			"insert_after": "item_name_de",
+		},
+		{
+			"label": "Item Description EN",
+			"fieldname": "item_description_en",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "item_description_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+			"insert_after": "item_description_en",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "item_description_fr",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+			"insert_after": "item_description_de",
+		},
+		{
+			"label": "Purchase Price",
+			"fieldname": "purchase_price",
+			"fieldtype": "Currency",
+			"description": "Preis welcher schon beim erstellen des Angebots bekannt war",
+			"insert_after": "sec_break1",
+		},
+
+	]
+
 
 	return {
 		"Customer": custom_fields_customer,
@@ -476,4 +590,5 @@ def get_custom_fields():
 		"Sales Invoice": custom_fields_si,
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
+		"Purchase Order Item": custom_fields_poi,
 	}

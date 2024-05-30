@@ -40,7 +40,7 @@ doctype_js = {
 	"Purchase Order" : "public/js/purchase_order.js",
 	"Sales Invoice" : "public/js/sales_invoice.js",
 }
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {"Purchase Order" : "public/js/purchase_order_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -135,9 +135,10 @@ scheduler_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "simpatec.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order_for_default_supplier": "simpatec.events.sales_order.make_purchase_order_for_default_supplier",
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order": "simpatec.events.sales_order.make_purchase_order"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -218,7 +219,6 @@ fixtures = [
 			"Quotation-ignore_cover_language",
 			"Item-simpatec",
 			"Item-item_type",
-			"Sales Order Item-reccuring_maintenance_amount"
 
                 ),
             ]

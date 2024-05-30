@@ -1,5 +1,8 @@
 frappe.ui.form.on('Purchase Order', {
-	
+	refresh: function(frm){
+		frm.events.print_settings(frm)
+	},
+
 	setup: function(frm){
 		frm.copy_from_previous_row = function(parentfield, current_row, fieldnames){
 			
@@ -36,6 +39,53 @@ frappe.ui.form.on('Purchase Order', {
 			return arr.filter(
 				(ele) => ele.item_language == element
 			).length;
+		}
+	},
+
+	print_settings: function (frm) {
+		if(frm.doc.docstatus == 0){
+			let btn = frm.fields_dict.items.grid.add_custom_button("Item Print Settings", function () {
+				let d = new frappe.ui.Dialog({
+					title: __('Print Settings'),
+					fields: [
+						{
+							fieldtype: 'Select',
+							fieldname: 'default_printing_option',
+							label: __('Select Default Print Option'),
+							options: [
+								"Item Name", "Item Name and Description", "Description", "Hide Both"
+							],
+
+						},
+
+					],
+					primary_action_label: __('Update'),
+					primary_action: (values) => {
+						if (frm.doc.docstatus == 0) {
+							frappe.call({
+								method: "simpatec.events.purchase_order.set_default_print_options",
+								args: {
+									docname: frm.doc.name,
+									default_print_value: values.default_printing_option
+								},
+								callback: (r) => {
+									frappe.msgprint("Print Options updated")
+									d.hide();
+									frm.reload_doc()
+								}
+							})
+						}
+					},
+				});
+				d.show()
+			})
+			btn.addClass("btn-primary")
+			btn.addClass("item-print-settings")
+			btn.removeClass("btn-default")
+			btn.css("margin-right", "4px")
+		}
+		else{
+			$('.item-print-settings').remove()
 		}
 	}
 });
@@ -89,9 +139,13 @@ frappe.ui.form.on('Purchase Order Item',{
 					}
 				)
 			}
-		}
-		
-		
+		}	
 	},
+
+	schedule_date: function(frm, cdt, cdn){
+		let cur_row = locals[cdt][cdn]
+		frm.auto_fill_all_empty_rows(frm.doc, cdt, cdn, "items", "schedule_date");
+		frm.set_value("schedule_date", cur_row.schedule_date)
+	}
 	
 });
