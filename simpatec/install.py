@@ -4,7 +4,10 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 def after_migrate():
 	create_custom_fields(get_custom_fields())
+ 
+	# Remove Custom Fields
 	set_poi_einkaufspreis_to_purchase_price()
+	set_quoi_einkaufspreis_to_purchase_price()
 
 def before_uninstall():
 	delete_custom_fields(get_custom_fields())
@@ -28,6 +31,14 @@ def set_poi_einkaufspreis_to_purchase_price():
 		frappe.db.sql("update `tabPurchase Order Item` set `purchase_price` = `einkaufspreis`")
 		# Now removing the field
 		frappe.delete_doc("Custom Field", "Purchase Order Item-einkaufspreis", force=1)
+
+def set_quoi_einkaufspreis_to_purchase_price():
+	if frappe.db.exists("Custom Field", "Quotation Item-einkaufspreis"):
+		# First set the value of wrong `reoccurring_maintenance_amount` field into `reoccurring_maintenance_amount`
+		frappe.db.sql("update `tabQuotation Item` set `purchase_price` = `einkaufspreis`")
+		# Now removing the field and its section
+		frappe.delete_doc("Custom Field", "Quotation Item-einkauf", force=1)
+		frappe.delete_doc("Custom Field", "Quotation Item-einkaufspreis", force=1)
 
 
 def get_custom_fields():
@@ -580,6 +591,22 @@ def get_custom_fields():
 		},
 
 	]
+ 
+	custom_fields_quoi = [
+		{
+			"label": "Purchase",
+			"fieldname": "purchase_section",
+			"fieldtype": "Section Break",
+			"insert_after": "page_break",
+		},
+  		{
+			"label": "Purchase Price",
+			"fieldname": "purchase_price",
+			"fieldtype": "Currency",
+			"allow_on_submit": 1,
+			"insert_after": "purchase_section",
+		}
+	]
 
 
 	return {
@@ -591,4 +618,5 @@ def get_custom_fields():
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
 		"Purchase Order Item": custom_fields_poi,
+		"Quotation Item": custom_fields_quoi
 	}
