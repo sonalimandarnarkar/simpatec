@@ -12,7 +12,7 @@ class SimpaTecSettings(Document):
 @frappe.whitelist()
 def update_software_maintenance_items(update_timestamp=None):
     try:
-
+        frappe.publish_progress(0, title='Updating Software Maintenances', description='Starting update...')
         # Remove Wrong field of reccuring_maintenance_amount and reoccuring_maintenance_amount if exist
         if frappe.db.exists("Custom Field", "Sales Order Item-reoccuring_maintenance_amount"):
             frappe.delete_doc("Custom Field", "Sales Order Item-reoccuring_maintenance_amount", force=1)
@@ -32,7 +32,8 @@ def update_software_maintenance_items(update_timestamp=None):
         """Query for removing all previous Software maintenance Items"""
         frappe.db.sql("DELETE FROM `tabSoftware Maintenance Item`")
         software_maintenances = frappe.get_all("Software Maintenance", fields=["sales_order", "name"], filters=[["sales_order","is","set"]])
-        for s_m in software_maintenances:
+        total_rows = len(software_maintenances)
+        for index, s_m in enumerate(software_maintenances):
             so_items = frappe.get_all("Sales Order Item", filters={"parent": s_m.sales_order}, fields=["*"])
             if len(so_items) > 0:
                 for item in so_items:   
@@ -83,6 +84,9 @@ def update_software_maintenance_items(update_timestamp=None):
                 else:
                     frappe.db.sql("""update `tabSales Order` set `sales_order_type` = 'Reoccuring Maintenance' where `sales_order_type` = 'Follow Up Maintenance' """)
                 frappe.db.commit()
+            index += 1
+            progress = int( (index / total_rows) * 100)
+            frappe.publish_progress(progress, title='Updating Software Maintenances', description=f'Processing row {index}/{total_rows}')
         return {"message":"""<h3>The script has run and had updated all Software Maintenance:</h3>
                 <ul>
                     <li>existing items table have been cleared from all Software Maintenance</li>
