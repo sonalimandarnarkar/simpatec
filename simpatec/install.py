@@ -179,11 +179,19 @@ def get_custom_fields():
 			"insert_after": "uid"
 		},
 		{
+			"label": "Payment Term",
+			"fieldname": "payment_term",
+			"fieldtype": "Link",
+			"options": "Payment Term",
+			"fetch_from": "customer_subsidiary.payment_term",
+			"insert_after": "customer_subsidiary"
+		},
+		{
 			"label": "Performance Period End",
 			"fieldname": "performance_period_end",
 			"fieldtype": "Date",
 			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
-			"insert_after": "customer_subsidiary",
+			"insert_after": "payment_term",
 		},
 		{
 			"label": "Assigned to",
@@ -477,6 +485,21 @@ def get_custom_fields():
 			"options": "Software Maintenance",
 			"insert_after": "accounting_dimensions_section",
 		},
+  		{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "customer_name",
+		},
+    	{
+			"label": "Payment Term",
+			"fieldname": "payment_term",
+			"fieldtype": "Link",
+			"options": "Payment Term",
+			"fetch_from": "customer_subsidiary.payment_term",
+			"insert_after": "customer_subsidiary"
+		},
 	]
 
 	custom_fields_po = [
@@ -592,6 +615,24 @@ def get_custom_fields():
 
 	]
  
+	custom_fields_quo = [
+		{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "party_name",
+		},
+    	{
+			"label": "Payment Term",
+			"fieldname": "payment_term",
+			"fieldtype": "Link",
+			"options": "Payment Term",
+			"fetch_from": "customer_subsidiary.payment_term",
+			"insert_after": "customer_subsidiary"
+		},
+	]
+ 
 	custom_fields_quoi = [
 		{
 			"label": "Purchase",
@@ -618,5 +659,6 @@ def get_custom_fields():
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
 		"Purchase Order Item": custom_fields_poi,
+  		"Quotation": custom_fields_quo,
 		"Quotation Item": custom_fields_quoi
 	}

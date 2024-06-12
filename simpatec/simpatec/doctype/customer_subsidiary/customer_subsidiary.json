@@ -16,6 +16,7 @@
   "simpatec_section",
   "assigned_to",
   "column_break_7",
+  "payment_term",
   "sales_section",
   "accounting_section",
   "billing_user_simpatec",
@@ -132,6 +133,12 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "refresh"
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Payment Term"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -167,9 +174,9 @@
    "link_fieldname": "customer_subsidiary"
   }
  ],
- "modified": "2024-01-11 10:31:43.627509",
+ "modified": "2024-06-12 13:50:56.137766",
  "modified_by": "Administrator",
- "module": "SimpaTec",
+ "module": "Simpatec",
  "name": "Customer Subsidiary",
  "naming_rule": "Set by user",
  "owner": "Administrator",
@@ -188,6 +195,5 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+ "sort_order": "DESC"
 }
