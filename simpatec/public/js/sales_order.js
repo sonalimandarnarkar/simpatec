@@ -233,10 +233,11 @@ frappe.ui.form.on("Sales Order Clearances", {
         if (!is_null(item_row)){
             var formatted_currency = frappe.format(cur_row.net_total, { fieldtype: "Currency", currency: frm.doc.currency });
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            frappe.model.set_value(item_row.doctype, item_row.name, "description", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
-            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
-            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
-            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_fr", `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text() } `)
+            let row_description = `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text()} <br>Period Start Date: ${cur_row.start_date} - Period End Date: ${cur_row.end_date} `
+            frappe.model.set_value(item_row.doctype, item_row.name, "description", row_description)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", row_description)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", row_description)
+            frappe.model.set_value(item_row.doctype, item_row.name, "item_description_fr", row_description)
             frappe.model.set_value(item_row.doctype, item_row.name, "rate", cur_row.clearance_amount)
         }
         refresh_field("items");
