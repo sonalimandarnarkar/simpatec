@@ -38,14 +38,15 @@ frappe.ui.form.on('Quotation', {
                 });
             }
         }
-
-
-        // $.each(frm.fields_dict, function(fieldname, field) {
-            
-		// 	if (fieldname == 'anschreiben_vorlage') {
-        //         addClearIconToField(field);
-        //     }
-        // });
+		
+		if(frm.doc.docstatus == 0){
+			$.each(frm.fields_dict, function(fieldname, field) {
+				
+				if (fieldname == 'anschreiben_vorlage') {
+					addClearIconToField(field);
+				}
+			});
+		}
     },
 	setup: function(frm){
 		frm.set_query("anschreiben_vorlage", () => {
