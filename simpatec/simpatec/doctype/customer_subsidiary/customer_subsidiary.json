@@ -138,7 +138,7 @@
    "fieldname": "payment_term",
    "fieldtype": "Link",
    "label": "Payment Term",
-   "options": "Payment Term"
+   "options": "Payment Terms Template"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -174,7 +174,7 @@
    "link_fieldname": "customer_subsidiary"
   }
  ],
- "modified": "2024-06-12 13:50:56.137766",
+ "modified": "2024-06-13 11:34:05.460507",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Customer Subsidiary",

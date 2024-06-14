@@ -179,19 +179,11 @@ def get_custom_fields():
 			"insert_after": "uid"
 		},
 		{
-			"label": "Payment Term",
-			"fieldname": "payment_term",
-			"fieldtype": "Link",
-			"options": "Payment Term",
-			"fetch_from": "customer_subsidiary.payment_term",
-			"insert_after": "customer_subsidiary"
-		},
-		{
 			"label": "Performance Period End",
 			"fieldname": "performance_period_end",
 			"fieldtype": "Date",
 			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
-			"insert_after": "payment_term",
+			"insert_after": "customer_subsidiary",
 		},
 		{
 			"label": "Assigned to",
@@ -492,14 +484,6 @@ def get_custom_fields():
 			"options": "Customer Subsidiary",
 			"insert_after": "customer_name",
 		},
-    	{
-			"label": "Payment Term",
-			"fieldname": "payment_term",
-			"fieldtype": "Link",
-			"options": "Payment Term",
-			"fetch_from": "customer_subsidiary.payment_term",
-			"insert_after": "customer_subsidiary"
-		},
 	]
 
 	custom_fields_po = [
@@ -622,14 +606,6 @@ def get_custom_fields():
 			"fieldtype": "Link",
 			"options": "Customer Subsidiary",
 			"insert_after": "party_name",
-		},
-    	{
-			"label": "Payment Term",
-			"fieldname": "payment_term",
-			"fieldtype": "Link",
-			"options": "Payment Term",
-			"fetch_from": "customer_subsidiary.payment_term",
-			"insert_after": "customer_subsidiary"
 		},
 	]
  
