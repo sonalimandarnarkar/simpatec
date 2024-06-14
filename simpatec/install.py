@@ -477,6 +477,13 @@ def get_custom_fields():
 			"options": "Software Maintenance",
 			"insert_after": "accounting_dimensions_section",
 		},
+  		{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "customer_name",
+		},
 	]
 
 	custom_fields_po = [
@@ -592,6 +599,16 @@ def get_custom_fields():
 
 	]
  
+	custom_fields_quo = [
+		{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "party_name",
+		},
+	]
+ 
 	custom_fields_quoi = [
 		{
 			"label": "Purchase",
@@ -618,5 +635,6 @@ def get_custom_fields():
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
 		"Purchase Order Item": custom_fields_poi,
+  		"Quotation": custom_fields_quo,
 		"Quotation Item": custom_fields_quoi
 	}
