@@ -123,7 +123,7 @@ doc_events = {
 
 scheduler_events = {
 	"daily": [
-		"simpatec.events.sales_order.create_followup_software_maintenance_sales_order"
+		"simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order"
 	]
 }
 

@@ -4,20 +4,36 @@
 frappe.ui.form.on('Software Maintenance', {
     refresh(frm) {
         frm.add_custom_button('Sales Order (Reoccurring Maintenance)', function () {
-            frappe.call({
-                method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order",
-                args: {
-                    software_maintenance: frm.doc.name,
-                    is_background_job: 0
-                },
-                callback: function (r) {
-                },
-            });
+            if (frm.doc.licence_renewal_via == "Sales Order"){
+                frm.events.make_reoccurring(frm)
+            }else{
+                frappe.msgprint("Licence Renewal should be Sales Order to perform action")
+            }
+        }, __("Create"));
+
+        frm.add_custom_button('Quotation (Reoccurring Maintenance)', function () {
+            if (frm.doc.licence_renewal_via == "Quotation") {
+                frm.events.make_reoccurring(frm)
+            } else {
+                frappe.msgprint("Licence Renewal should be Quotation to perform action")
+            }
         }, __("Create"));
 
 
         //hide all + in the connection
         $('.form-documents button').hide();
+    },
+    make_reoccurring(frm){
+        frappe.call({
+            method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order",
+            args: {
+                software_maintenance: frm.doc.name,
+                is_background_job: 0,
+                licence_renewal_via: frm.doc.licence_renewal_via
+            },
+            callback: function (r) {
+            },
+        });
     }
 });
 
