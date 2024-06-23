@@ -8,6 +8,9 @@
  "field_order": [
   "sales_section",
   "clearance_item",
+  "background_jobs_section",
+  "auto_reoccurring_maintenance",
+  "html_3",
   "danger_zone_section",
   "html_1",
   "update_software_maintenance_items",
@@ -51,12 +54,28 @@
    "fieldname": "update_timestamp",
    "fieldtype": "Check",
    "label": "Update Timestamp"
+  },
+  {
+   "fieldname": "background_jobs_section",
+   "fieldtype": "Section Break",
+   "label": "Background Jobs"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_reoccurring_maintenance",
+   "fieldtype": "Check",
+   "label": "Auto Reoccurring Maintenance "
+  },
+  {
+   "fieldname": "html_3",
+   "fieldtype": "HTML",
+   "options": "This checkbox will control the behaviour of Reoccurring Maintenance background job if needs to run or not"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-23 12:21:01.488112",
+ "modified": "2024-06-23 22:39:36.302055",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "SimpaTec Settings",

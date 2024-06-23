@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import cint, add_days, add_years, getdate
+from frappe.utils import cint, add_days, add_years, getdate, today
 from datetime import timedelta
 
 class SoftwareMaintenance(Document):
@@ -28,7 +28,7 @@ class SoftwareMaintenance(Document):
 
 
 @frappe.whitelist()
-def make_reoccuring_sales_order(software_maintenance, is_background_job=True, licence_renewal_via=None):
+def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, is_background_job=True):
 	if licence_renewal_via == None or licence_renewal_via == "":
 		frappe.throw("Select Licence Renewal before creating Reoccurring Maintenance")
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
@@ -88,3 +88,27 @@ def make_reoccuring_sales_order(software_maintenance, is_background_job=True, li
 		frappe.msgprint("Maintenance Duration (Years): {}".format(software_maintenance.maintenance_duration))
 		frappe.msgprint("Maintenance Duration (Days): {}".format(total_days.days))
 		frappe.msgprint(_("New {} Created").format(frappe.get_desk_link(licence_renewal_via, reoccurring_order.name)))
+  
+  
+@frappe.whitelist()
+def reoccurring_maintenance_cronjob(date=None):
+	simpatec_settings = frappe.get_single("SimpaTec Settings")
+	if simpatec_settings.auto_reoccurring_maintenance:
+		if not date:
+			date = today()
+
+		software_maintenance_list = frappe.db.sql("""
+			SELECT name 
+			FROM `tabSoftware Maintenance`
+			WHERE DATE_SUB(performance_period_end, INTERVAL lead_time DAY) = %s
+		""", date, as_dict=1)
+		print(software_maintenance_list)
+		for software_maintenance in software_maintenance_list:
+			try:
+				sm_doc = frappe.get_doc("Software Maintenance", software_maintenance.name)
+				make_reoccuring_sales_order(sm_doc.name, sm_doc.licence_renewal_via)
+			except Exception as e:
+				error_message = frappe.get_traceback()+"{0}\n".format(str(e))
+				frappe.log_error(error_message, 'Error occured While automatically Software Maintenance Sales Order for {0}'.format(software_maintenance))
+			finally:
+				frappe.db.commit()
