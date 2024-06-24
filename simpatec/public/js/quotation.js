@@ -92,6 +92,32 @@ frappe.ui.form.on('Quotation', {
 				(ele) => ele.item_language == element
 			).length;
 		}
+
+		frm.set_query("customer_subsidiary", () => {
+			return {
+				filters: {
+					customer: frm.doc.party_name
+				}
+			}
+		});
+	},
+
+	customer_subsidiary: function(frm){
+		frappe.call({
+			'method': 'frappe.client.get',
+			args: {
+				doctype: 'Customer Subsidiary',
+				name: frm.doc.customer_subsidiary
+			},
+			callback: function (data) {
+				let values = {
+					'payment_terms_template': data.message.payment_term,
+				};
+				if(is_null(frm.doc.payment_terms_template)){
+					frm.set_value(values);
+				}
+			}
+		});
 	}
 });
 
