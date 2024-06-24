@@ -265,9 +265,14 @@
    "group": "Purchase",
    "link_doctype": "Purchase Invoice",
    "link_fieldname": "software_maintenance"
+  },
+  {
+   "group": "Sales",
+   "link_doctype": "Quotation",
+   "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-05-10 07:23:42.539083",
+ "modified": "2024-06-21 12:27:48.171029",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
