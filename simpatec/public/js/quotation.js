@@ -1,6 +1,8 @@
 frappe.ui.form.on('Quotation', {
 	refresh: function(frm) {
-
+		frm.toggle_reqd("item_group", 1);
+		frm.toggle_reqd("quotation_label", 1);
+		
         function addClearIconToField(field) {
             if (!field.$clear_icon_appended) {
                 field.$clear_icon_appended = true;
