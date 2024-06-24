@@ -3,20 +3,9 @@
 
 frappe.ui.form.on('Software Maintenance', {
     refresh(frm) {
-        frm.add_custom_button('Sales Order (Reoccurring Maintenance)', function () {
-            if (frm.doc.licence_renewal_via == "Sales Order"){
-                frm.events.make_reoccurring(frm)
-            }else{
-                frappe.msgprint("Licence Renewal should be Sales Order to perform action")
-            }
-        }, __("Create"));
-
-        frm.add_custom_button('Quotation (Reoccurring Maintenance)', function () {
-            if (frm.doc.licence_renewal_via == "Quotation") {
-                frm.events.make_reoccurring(frm)
-            } else {
-                frappe.msgprint("Licence Renewal should be Quotation to perform action")
-            }
+        var reoccurring_label = __(`${frm.doc.licence_renewal_via} (Reoccurring Maintenance)`)
+        frm.add_custom_button(reoccurring_label, function () {
+            frm.events.make_reoccurring(frm)
         }, __("Create"));
 
 
