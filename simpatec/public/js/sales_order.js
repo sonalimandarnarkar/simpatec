@@ -258,7 +258,7 @@ frappe.ui.form.on("Sales Order Clearances", {
             if (!is_null(cur_row.end_date)) {
                 row_description += `Period End Date: ${ frappe.format(cur_row.end_date, { fieldtype: "Date" }) }`
             }
-            row_description = trim_string(row_description, "-")
+            // row_description = trim_string(row_description, "-")
 
             frappe.model.set_value(item_row.doctype, item_row.name, "description", row_description)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", row_description)
