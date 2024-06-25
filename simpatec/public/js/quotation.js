@@ -1,6 +1,8 @@
 frappe.ui.form.on('Quotation', {
 	refresh: function(frm) {
-
+		frm.toggle_reqd("item_group", 1);
+		frm.toggle_reqd("quotation_label", 1);
+		
         function addClearIconToField(field) {
             if (!field.$clear_icon_appended) {
                 field.$clear_icon_appended = true;
@@ -38,14 +40,15 @@ frappe.ui.form.on('Quotation', {
                 });
             }
         }
-
-
-        // $.each(frm.fields_dict, function(fieldname, field) {
-            
-		// 	if (fieldname == 'anschreiben_vorlage') {
-        //         addClearIconToField(field);
-        //     }
-        // });
+		
+		if(frm.doc.docstatus == 0){
+			$.each(frm.fields_dict, function(fieldname, field) {
+				
+				if (fieldname == 'anschreiben_vorlage') {
+					addClearIconToField(field);
+				}
+			});
+		}
     },
 	setup: function(frm){
 		frm.set_query("anschreiben_vorlage", () => {
@@ -91,6 +94,32 @@ frappe.ui.form.on('Quotation', {
 				(ele) => ele.item_language == element
 			).length;
 		}
+
+		frm.set_query("customer_subsidiary", () => {
+			return {
+				filters: {
+					customer: frm.doc.party_name
+				}
+			}
+		});
+	},
+
+	customer_subsidiary: function(frm){
+		frappe.call({
+			'method': 'frappe.client.get',
+			args: {
+				doctype: 'Customer Subsidiary',
+				name: frm.doc.customer_subsidiary
+			},
+			callback: function (data) {
+				let values = {
+					'payment_terms_template': data.message.payment_term,
+				};
+				if(is_null(frm.doc.payment_terms_template)){
+					frm.set_value(values);
+				}
+			}
+		});
 	}
 });
 

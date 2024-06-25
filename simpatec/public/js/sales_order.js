@@ -233,7 +233,33 @@ frappe.ui.form.on("Sales Order Clearances", {
         if (!is_null(item_row)){
             var formatted_currency = frappe.format(cur_row.net_total, { fieldtype: "Currency", currency: frm.doc.currency });
             frappe.model.set_value(item_row.doctype, item_row.name, "start_date", cur_row.date)
-            let row_description = `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text()} <br>Period Start Date: ${cur_row.start_date} - Period End Date: ${cur_row.end_date} `
+            // let row_description = `${cur_row.customer_name} - ${cur_row.quotation_label} - ${cur_row.sales_order} - ${cur_row.clearance_details} - ${$(formatted_currency).text()} <br>Period Start Date: ${cur_row.start_date} - Period End Date: ${cur_row.end_date} `
+            let row_description = ``
+            if (!is_null(cur_row.customer_name)){
+                row_description += ` ${cur_row.customer_name} -`
+            }
+            if (!is_null(cur_row.quotation_label)) {
+                row_description += ` ${cur_row.quotation_label} -`
+            }
+            if (!is_null(cur_row.sales_order)) {
+                row_description += ` ${cur_row.sales_order} -`
+            }
+            if (!is_null(cur_row.clearance_details)) {
+                row_description += ` ${cur_row.clearance_details} -`
+            }
+            if (!is_null(formatted_currency)) {
+                row_description += ` ${$(formatted_currency).text()} -`
+            }
+            row_description = trim_string(row_description, "-")
+            row_description += ` <br>`
+            if (!is_null(cur_row.start_date)) {
+                row_description += `Period Start Date: ${ frappe.format(cur_row.start_date, { fieldtype: "Date"}) } - `
+            }
+            if (!is_null(cur_row.end_date)) {
+                row_description += `Period End Date: ${ frappe.format(cur_row.end_date, { fieldtype: "Date" }) }`
+            }
+            // row_description = trim_string(row_description, "-")
+
             frappe.model.set_value(item_row.doctype, item_row.name, "description", row_description)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_en", row_description)
             frappe.model.set_value(item_row.doctype, item_row.name, "item_description_de", row_description)
@@ -244,6 +270,14 @@ frappe.ui.form.on("Sales Order Clearances", {
     },
 
 })
+
+
+function trim_string(string, character){
+    let trim_idx = string.lastIndexOf(character);
+    string = string.substring(0, trim_idx)
+    return string
+}
+
 
 frappe.ui.form.on('Sales Order Item',{
     item_code: function (frm, cdt, cdn) {

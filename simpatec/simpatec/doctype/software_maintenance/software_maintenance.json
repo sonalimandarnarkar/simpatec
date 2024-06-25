@@ -152,7 +152,7 @@
    "fieldname": "licence_renewal_via",
    "fieldtype": "Select",
    "label": "Licence Renewal via",
-   "options": "\nQuotation\nSales Order"
+   "options": "Quotation\nSales Order"
   },
   {
    "default": "45",
@@ -248,6 +248,11 @@
  "links": [
   {
    "group": "Sales",
+   "link_doctype": "Quotation",
+   "link_fieldname": "software_maintenance"
+  },
+  {
+   "group": "Sales",
    "link_doctype": "Sales Order",
    "link_fieldname": "software_maintenance"
   },
@@ -267,7 +272,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-05-10 07:23:42.539083",
+ "modified": "2024-06-24 13:01:45.689928",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",

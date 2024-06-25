@@ -477,6 +477,13 @@ def get_custom_fields():
 			"options": "Software Maintenance",
 			"insert_after": "accounting_dimensions_section",
 		},
+  		{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "customer_name",
+		},
 	]
 
 	custom_fields_po = [
@@ -591,8 +598,196 @@ def get_custom_fields():
 		},
 
 	]
+ 	
+	custom_fields_quo = [
+     	{
+			"label": "Customer Subsidiary",
+			"fieldname": "customer_subsidiary",
+			"fieldtype": "Link",
+			"options": "Customer Subsidiary",
+			"insert_after": "party_name",
+		},
+		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_section",
+			"fieldtype": "Section Break",
+		},	
+		{
+			"label": "Sales Order Type",
+			"fieldname": "sales_order_type",
+			"fieldtype": "Select",
+			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
+			"default": "",
+			"insert_after": "simpatec_section"
+		},
+		{
+			"label": "Item Group",
+			"fieldname": "item_group",
+			"fieldtype": "Link",
+			"options": "Item Group",
+			"insert_after": "sales_order_type"
+		},
+		{
+			"label": "Quotation Label",
+			"fieldname": "quotation_label",
+			"fieldtype": "Link",
+			"options": "Angebotsvorlage",
+			"insert_after": "item_group"
+		},
+		{
+			"label": "Performance Period Start",
+			"fieldname": "performance_period_start",
+			"fieldtype": "Date",
+			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
+			"insert_after": "quotation_label",
+		},
+		{
+			"fieldname": "column_break_fdgxg",
+			"fieldtype": "Column Break",
+			"insert_after": "performance_period_start",
+		},
+  		{
+			"label": "Software Maintenance",
+			"fieldname": "software_maintenance",
+			"fieldtype": "Link",
+			"options": "Software Maintenance",
+			"insert_after": "column_break_fdgxg",
+		},
+		{
+			"label": "Performance Period End",
+			"fieldname": "performance_period_end",
+			"fieldtype": "Date",
+			"description": "Muss gefüllt werden wenn Wartungspositionen in Auftrag gehen.",
+			"insert_after": "software_maintenance",
+		},
+  		{
+			"label": "Assigned to",
+			"fieldname": "assigned_to",
+			"fieldtype": "Link",
+			"options": "User",
+			"fetch_from": "customer_subsidiary.assigned_to",
+			"fetch_if_empty":1,
+			"insert_after": "performance_period_end"
+		},
+		{
+			"label": "Ihr Ansprechpartner",
+			"fieldname": "ihr_ansprechpartner",
+			"fieldtype": "Link",
+			"options": "Employee",
+			"reqd":1,
+			"insert_after": "assigned_to"
+		},
+		
+	]
  
 	custom_fields_quoi = [
+		{
+			"label": "SimpaTec",
+			"fieldname": "simpatec_section",
+			"fieldtype": "Section Break",
+			"insert_after": ""
+		},	
+		{
+			"label": "Item Type",
+			"fieldname": "item_type",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.item_type",
+			"read_only": 1,
+			"fetch_if_empty": 1,
+			"insert_after": "simpatec_section",
+		},
+		{
+			"fieldname": "column_break_vh0vp",
+			"fieldtype": "Column Break",
+			"insert_after": "item_type",
+		},
+		{
+			"label": "Reoccurring Maintenance Amount",
+			"fieldname": "reoccurring_maintenance_amount",
+			"fieldtype": "Currency",
+			"description": "The grand total of the reoccurring maintenance cost",
+			"depends_on": "eval: doc.item_type == \"Maintenance Item\"",
+			"insert_after": "column_break_vh0vp"
+		},
+  		{
+			"fieldname": "section_break_kiny4",
+			"fieldtype": "Section Break",
+			"insert_after": "reoccurring_maintenance_amount"
+		},
+		{
+			"label": "Item Language",
+			"fieldname": "item_language",
+			"fieldtype": "Link",
+			"options": "Language",
+			"insert_after": "col_break1",
+		},
+  		{
+			"label": "Start Date",
+			"fieldname": "start_date",
+			"fieldtype": "Date",
+			"insert_after": "item_language",
+		},
+		{
+			"label": "End Date",
+			"fieldname": "end_date",
+			"fieldtype": "Date",
+			"insert_after": "start_date",
+		},
+		{
+			"label": "Item Name EN",
+			"fieldname": "item_name_en",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "item_name",
+		},
+		{
+			"label": "Item Name DE",
+			"fieldname": "item_name_de",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_name_en",
+		},
+		{
+			"label": "Item Name FR",
+			"fieldname": "item_name_fr",
+			"fieldtype": "Data",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_name_de",
+		},
+
+		{
+			"label": "Item Description EN",
+			"fieldname": "id_en",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "id_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "id_en",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "id_fr",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "id_de",
+		},
 		{
 			"label": "Purchase",
 			"fieldname": "purchase_section",
@@ -618,5 +813,6 @@ def get_custom_fields():
 		"Purchase Invoice": custom_fields_pi,
 		"Purchase Order": custom_fields_po,
 		"Purchase Order Item": custom_fields_poi,
+		"Quotation": custom_fields_quo,
 		"Quotation Item": custom_fields_quoi
 	}

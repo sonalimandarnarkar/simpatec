@@ -3,34 +3,26 @@
 
 frappe.ui.form.on('Software Maintenance', {
     refresh(frm) {
-        frm.add_custom_button('Software Maintenance', function () { 
-            frappe.call({
-                method: "simpatec.events.sales_order.make_sales_order",
-                args: {
-                    software_maintenance: frm.doc.name,
-                    is_background_job: 0
-                },
-                callback: function (r) {
-                },
-            });
-        }, __("Create Sales Order"));
-
-
-        frm.add_custom_button('Reoccuring Software Maintenance', function () {
-            frappe.call({
-                method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order",
-                args: {
-                    software_maintenance: frm.doc.name,
-                    is_background_job: 0
-                },
-                callback: function (r) {
-                },
-            });
-        });
+        var reoccurring_label = __(`${frm.doc.licence_renewal_via} (Reoccurring Maintenance)`)
+        frm.add_custom_button(reoccurring_label, function () {
+            frm.events.make_reoccurring(frm)
+        }, __("Create"));
 
 
         //hide all + in the connection
         $('.form-documents button').hide();
+    },
+    make_reoccurring(frm){
+        frappe.call({
+            method: "simpatec.simpatec.doctype.software_maintenance.software_maintenance.make_reoccuring_sales_order",
+            args: {
+                software_maintenance: frm.doc.name,
+                is_background_job: 0,
+                licence_renewal_via: frm.doc.licence_renewal_via
+            },
+            callback: function (r) {
+            },
+        });
     }
 });
 
