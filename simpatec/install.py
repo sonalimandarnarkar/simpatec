@@ -126,7 +126,7 @@ def get_custom_fields():
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
+			"options": "\nFirst Sale\nFollow-Up Sale\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
 		},
@@ -616,7 +616,7 @@ def get_custom_fields():
 			"label": "Sales Order Type",
 			"fieldname": "sales_order_type",
 			"fieldtype": "Select",
-			"options": "\nFirst Sale\nFollow-Up Sale\nFollow Up Maintenance\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
+			"options": "\nFirst Sale\nFollow-Up Sale\nReoccuring Maintenance\nRTO\nSubscription Annual\nInternal Clearance\nOther",
 			"default": "",
 			"insert_after": "simpatec_section"
 		},
