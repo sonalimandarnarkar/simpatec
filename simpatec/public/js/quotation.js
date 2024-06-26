@@ -49,6 +49,48 @@ frappe.ui.form.on('Quotation', {
 				}
 			});
 		}
+
+
+		// GET ITEMS FROM 
+		if (frm.doc.docstatus === 0) {
+			frm.add_custom_button(__('Quotation'), function () {
+				erpnext.utils.map_current_doc({
+					method: "simpatec.events.quotation.make_quotation",
+					source_doctype: "Quotation",
+					target: frm,
+					size: "extra-large",
+					setters: [
+						{
+							label: "Customer",
+							fieldname: "party_name",
+							fieldtype: "Link",
+							options: "Customer",
+							default: frm.doc.party_name || undefined
+						},
+						{
+							label: "Quotation Label",
+							fieldname: "quotation_label",
+							fieldtype: "Link",
+							options: "Angebotsvorlage",
+							default: frm.doc.quotation_label || undefined
+						},
+						{
+							label: "Item Group",
+							fieldname: "item_group",
+							fieldtype: "Link",
+							options: "Item Group",
+							default: frm.doc.item_group || undefined
+						},
+
+					],
+					get_query_filters: {
+						company: frm.doc.company,
+						docstatus: 1,
+						status: ["!=", "Lost"]
+					}
+				})
+			}, __("Get Items From"));
+		}
     },
 	setup: function(frm){
 		frm.set_query("anschreiben_vorlage", () => {
