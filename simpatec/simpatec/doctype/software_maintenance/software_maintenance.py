@@ -5,6 +5,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, add_days, add_years, getdate, today
+import json
 from datetime import timedelta
 
 class SoftwareMaintenance(Document):
@@ -28,7 +29,7 @@ class SoftwareMaintenance(Document):
 
 
 @frappe.whitelist()
-def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, is_background_job=True):
+def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, mandatory_fields=None, is_background_job=True):
 	if licence_renewal_via == None or licence_renewal_via == "":
 		frappe.throw("Select Licence Renewal before creating Reoccurring Maintenance")
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
@@ -64,6 +65,9 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 	reoccurring_order.ihr_ansprechpartner = employee
 	reoccurring_order.transaction_date = transaction_date
 	reoccurring_order.order_type = "Sales"
+	if mandatory_fields:
+		mandatory_fields = json.loads(mandatory_fields)
+		reoccurring_order.update(mandatory_fields)
 
 	for item in software_maintenance.items:
 		reoccurring_order.append("items", {
