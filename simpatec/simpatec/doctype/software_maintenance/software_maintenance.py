@@ -70,6 +70,9 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 		reoccurring_order.update(mandatory_fields)
 
 	for item in software_maintenance.items:
+		item_type = frappe.db.get_value("Item", item.item_code, "item_type")
+		if item_type != "Maintenance Item":
+			item.price_list_rate = 0
 		reoccurring_order.append("items", {
 			"item_code": item.item_code,
 			"item_name": item.item_name,
