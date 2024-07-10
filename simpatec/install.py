@@ -467,6 +467,13 @@ def get_custom_fields():
 			"fieldtype": "Text Editor",
 			"insert_after": "in_fr",
 		},
+		{
+			"label": "Item Type",
+			"fieldname": "item_type",
+			"fieldtype": "Select",
+			"options":  "\nMaintenance Item\nInflation Item",
+			"insert_after": "simpatec",
+		},
 	]
 
 	custom_fields_si = [
