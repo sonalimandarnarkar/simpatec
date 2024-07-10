@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{inflation_rate}%-{valid_from}",
+ "creation": "2024-07-09 09:18:24.720907",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "inflation_rate",
+  "valid_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "inflation_rate",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Inflation Rate",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid From",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-10 16:56:42.328200",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Inflation Rate",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
