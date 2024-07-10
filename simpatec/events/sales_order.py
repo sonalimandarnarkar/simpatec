@@ -108,6 +108,8 @@ def update_software_maintenance(doc, method=None):
 					software_maintenance.performance_period_end = doc.performance_period_end
 			
 		software_maintenance.sale_order = doc.name
+		if doc.sales_order_type == "Reoccuring Maintenance":
+			software_maintenance.items = []
 		for item in doc.items:
 			item_rate = item.rate
 			item_reoccurring_maintenance_amount = item.reoccurring_maintenance_amount
@@ -168,7 +170,8 @@ def update_software_maintenance(doc, method=None):
 				"reoccurring_maintenance_amount": item_reoccurring_maintenance_amount,
 				"qty": item.qty,
 				"uom": item.uom,
-				"purchase_price": item.purchase_price
+				"purchase_price": item.purchase_price,
+				"sales_order": doc.name
 			})
 
 		software_maintenance.save()

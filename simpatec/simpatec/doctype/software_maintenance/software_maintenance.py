@@ -83,7 +83,8 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 			"delivery_date": reoccurring_order.transaction_date,
 			"start_date": item.start_date,
 			"end_date": item.end_date,
-			"purchase_price": item.purchase_price
+			"purchase_price": item.purchase_price,
+   			"price_list_rate": item.price_list_rate
 		})
 
 	reoccurring_order.insert()

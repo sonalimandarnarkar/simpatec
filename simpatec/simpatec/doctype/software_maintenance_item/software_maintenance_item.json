@@ -22,7 +22,9 @@
   "rate",
   "price_list_rate",
   "purchase_section",
-  "purchase_price"
+  "purchase_price",
+  "references_section",
+  "sales_order"
  ],
  "fields": [
   {
@@ -162,11 +164,22 @@
    "fieldname": "purchase_price",
    "fieldtype": "Currency",
    "label": "Purchase Price"
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-05-30 10:10:55.722159",
+ "modified": "2024-07-08 12:28:26.586468",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance Item",
