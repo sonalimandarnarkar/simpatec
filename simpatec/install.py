@@ -389,6 +389,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'en'",
+   			"hidden": 1,
 			"insert_after": "description",
 		},
 		{
@@ -398,6 +399,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'de'",
+   			"hidden": 1,
 			"insert_after": "id_en",
 		},
 		{
@@ -407,6 +409,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'fr'",
+   			"hidden": 1,
 			"insert_after": "id_de",
 		},
 		{
@@ -569,6 +572,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'en' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+   			"hidden": 1,
 			"insert_after": "description",
 		},
 		{
@@ -578,6 +582,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'de' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+   			"hidden": 1,
 			"insert_after": "item_description_en",
 		},
 		{
@@ -587,6 +592,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'fr' && [\"Item Name and Description\", \"Description\"].includes(doc.print_options)",
+   			"hidden": 1,
 			"insert_after": "item_description_de",
 		},
 		{
@@ -768,6 +774,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_en",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'en'",
+   			"hidden": 1,
 			"insert_after": "description",
 		},
 		{
@@ -777,6 +784,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.id_de",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'de'",
+   			"hidden": 1,
 			"insert_after": "id_en",
 		},
 		{
@@ -786,6 +794,7 @@ def get_custom_fields():
 			"fetch_from": "item_code.in_fr",
 			"fetch_if_empty": 1,
 			"depends_on": "eval:doc.item_language == 'fr'",
+   			"hidden": 1,
 			"insert_after": "id_de",
 		},
 		{
