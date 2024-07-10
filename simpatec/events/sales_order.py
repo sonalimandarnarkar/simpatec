@@ -126,6 +126,7 @@ def update_software_maintenance(doc, method=None):
 				item_rate = item.reoccurring_maintenance_amount
 			else:
 				item_rate = 0
+				item.price_list_rate = 0
 				item_reoccuring_maintenance_amount = 0
 			if type(item_start_date) == str:
 				item_start_date = datetime.strptime(item_start_date, "%Y-%m-%d").date()
