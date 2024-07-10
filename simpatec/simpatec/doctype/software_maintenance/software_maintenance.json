@@ -251,7 +251,7 @@
   {
    "fieldname": "inflation_section",
    "fieldtype": "Section Break",
-   "label": "Inflation"
+   "label": "INFLATION"
   },
   {
    "fieldname": "inflation_rate",
@@ -301,7 +301,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-07-10 18:16:05.588661",
+ "modified": "2024-07-10 18:21:46.392160",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
