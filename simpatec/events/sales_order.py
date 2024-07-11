@@ -111,6 +111,8 @@ def update_software_maintenance(doc, method=None):
 		if doc.sales_order_type == "Reoccuring Maintenance":
 			software_maintenance.items = []
 		for item in doc.items:
+			if item.item_type == "Inflation Item":
+				continue
 			item_rate = item.rate
 			item_reoccurring_maintenance_amount = item.reoccurring_maintenance_amount
 			item_start_date = item.start_date
