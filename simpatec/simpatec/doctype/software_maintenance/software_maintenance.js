@@ -83,9 +83,16 @@ frappe.ui.form.on('Software Maintenance', {
                     $.each(frm.doc.items, function (k, v) {
                         if (v.item_type == "Maintenance Item") {
                             // Inflation Rate calculation
-                            var inflation_rate = frm.doc.inflation_rate
-                            var inflation_amount = (v.reoccurring_maintenance_amount * inflation_rate) / 100
-                            var increased_reoccurring_amount = v.reoccurring_maintenance_amount + inflation_amount
+                            var inflation_rate = 0
+                            var inflation_amount = 0
+                            var increased_reoccurring_amount = 0
+                            
+                            if(v.start_date > frm.doc.inflation_valid_from){
+                                var inflation_rate = frm.doc.inflation_rate
+                                var inflation_amount = (v.reoccurring_maintenance_amount * inflation_rate) / 100
+                                var increased_reoccurring_amount = v.reoccurring_maintenance_amount + inflation_amount
+                            }
+
                             // Add inflation Item next to Maintenance Item
                             let item_row = cur_frm.add_child("items");
                             frappe.model.set_value(item_row.doctype, item_row.name, "item_code", r.message.name);
@@ -98,6 +105,7 @@ frappe.ui.form.on('Software Maintenance', {
                             
                             // New Increase Reoccurring Amount 
                             frappe.model.set_value(v.doctype, v.name, "reoccurring_maintenance_amount", increased_reoccurring_amount)
+                            
                             frm.doc.items.splice(k+1, 0, item_row);
                             frm.doc.items.pop()
                         }
