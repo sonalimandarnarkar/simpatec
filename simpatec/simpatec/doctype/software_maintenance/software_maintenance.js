@@ -62,6 +62,42 @@ frappe.ui.form.on('Software Maintenance', {
             callback: function (r) {
             },
         });
+    },
+
+    set_inflation(frm){
+        var inflation_item = frappe.call({
+            method: 'frappe.client.get_value',
+            args: {
+                'doctype': 'Item',
+                'filters': { 'item_type': "Inflation Item" },
+                'fieldname': [
+                    'name',
+                    'item_name',
+                    'stock_uom'                 
+                ]
+            },
+            async: false,
+            callback: function (r) {
+                if (!r.exc) { 
+                    $.each(frm.doc.items, function (k, v) {
+                        if (v.item_type == "Maintenance Item") {
+                            // Add inflation Item next to Maintenance Item
+                            let item_row = cur_frm.add_child("items");
+                            frappe.model.set_value(item_row.doctype, item_row.name, "item_code", r.message.name);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "item_name", r.message.item_name);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "uom", r.message.stock_uom);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "description", `Adding ${frm.doc.inflation_rate}% Inflation Rate from the ${frm.doc.inflation_valid_from}`);
+                            frm.doc.items.splice(k+1, 0, item_row);
+                            frm.doc.items.pop()
+                        }
+                    })
+                    frm.refresh_field("items");
+                    frm.fields_dict["items"].grid.renumber_based_on_dom()
+                    frm.refresh_field("items");  
+                }
+            }
+        });
+        
     }
 });
 
