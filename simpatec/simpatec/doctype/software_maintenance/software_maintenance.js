@@ -73,7 +73,8 @@ frappe.ui.form.on('Software Maintenance', {
                 'fieldname': [
                     'name',
                     'item_name',
-                    'stock_uom'                 
+                    'stock_uom',
+                    'item_type'                
                 ]
             },
             async: false,
@@ -81,12 +82,30 @@ frappe.ui.form.on('Software Maintenance', {
                 if (!r.exc) { 
                     $.each(frm.doc.items, function (k, v) {
                         if (v.item_type == "Maintenance Item") {
+                            // Inflation Rate calculation
+                            var inflation_rate = 0
+                            var inflation_amount = 0
+                            var increased_reoccurring_amount = 0
+                            
+                            if(v.start_date > frm.doc.inflation_valid_from){
+                                var inflation_rate = frm.doc.inflation_rate
+                                var inflation_amount = (v.reoccurring_maintenance_amount * inflation_rate) / 100
+                                var increased_reoccurring_amount = v.reoccurring_maintenance_amount + inflation_amount
+                            }
+
                             // Add inflation Item next to Maintenance Item
                             let item_row = cur_frm.add_child("items");
                             frappe.model.set_value(item_row.doctype, item_row.name, "item_code", r.message.name);
                             frappe.model.set_value(item_row.doctype, item_row.name, "item_name", r.message.item_name);
                             frappe.model.set_value(item_row.doctype, item_row.name, "uom", r.message.stock_uom);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "item_type", r.message.item_type);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "rate", inflation_amount);
+                            frappe.model.set_value(item_row.doctype, item_row.name, "price_list_rate", inflation_amount);
                             frappe.model.set_value(item_row.doctype, item_row.name, "description", `Adding ${frm.doc.inflation_rate}% Inflation Rate from the ${frm.doc.inflation_valid_from}`);
+                            
+                            // New Increase Reoccurring Amount 
+                            frappe.model.set_value(v.doctype, v.name, "reoccurring_maintenance_amount", increased_reoccurring_amount)
+                            
                             frm.doc.items.splice(k+1, 0, item_row);
                             frm.doc.items.pop()
                         }
