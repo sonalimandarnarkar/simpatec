@@ -9,6 +9,7 @@
  "field_order": [
   "item_code",
   "item_name",
+  "item_type",
   "description",
   "item_group",
   "item_language",
@@ -175,11 +176,18 @@
    "fieldtype": "Link",
    "label": "Sales Order",
    "options": "Sales Order"
+  },
+  {
+   "fetch_from": "item_code.item_type",
+   "fieldname": "item_type",
+   "fieldtype": "Data",
+   "label": "Item Type",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-07-08 12:28:26.586468",
+ "modified": "2024-07-11 09:14:09.080755",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance Item",
