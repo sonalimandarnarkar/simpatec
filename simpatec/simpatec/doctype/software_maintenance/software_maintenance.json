@@ -26,6 +26,7 @@
   "licence_renewal_via",
   "maintenance_duration",
   "lead_time",
+  "apply_inflation_rate",
   "licence_section_section",
   "software_maintenance_contacts",
   "section_break_oqvv5",
@@ -249,6 +250,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval: doc.apply_inflation_rate == 1",
    "fieldname": "inflation_section",
    "fieldtype": "Section Break",
    "label": "Inflation"
@@ -272,6 +274,12 @@
   {
    "fieldname": "column_break_zc7bq",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_inflation_rate",
+   "fieldtype": "Check",
+   "label": "Apply Inflation Rate"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -302,7 +310,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-07-11 11:30:44.529117",
+ "modified": "2024-07-12 06:41:50.401584",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",
