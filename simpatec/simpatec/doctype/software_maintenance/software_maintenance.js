@@ -122,6 +122,8 @@ frappe.ui.form.on('Software Maintenance', {
 
 frappe.ui.form.on('Software Maintenance Item', {
     item_code(frm, cdt, cdn){
+        set_right_translation(frm, cdt, cdn)
+
         var item = frappe.get_doc(cdt, cdn);
         item.pricing_rules = ''
         if (item.item_code && item.uom) {
@@ -139,4 +141,35 @@ frappe.ui.form.on('Software Maintenance Item', {
             });
         }
     },
+    item_language(frm, cdt, cdn){
+        set_right_translation(frm, cdt, cdn)
+    }
 });
+
+var set_right_translation = function(frm, cdt, cdn){
+    var item_language = frappe.model.get_value(cdt, cdn, "item_language")
+    var grid = frm.fields_dict['items'].grid;
+    if (item_language === "en"){
+        grid.update_docfield_property("item_name_en", "hidden", 0)
+        grid.update_docfield_property("description_en", "hidden", 0)
+        grid.update_docfield_property("item_name_de", "hidden", 1)
+        grid.update_docfield_property("description_de", "hidden", 1)
+        grid.update_docfield_property("item_name_fr", "hidden", 1)
+        grid.update_docfield_property("description_fr", "hidden", 1)
+    } else if (item_language === "de"){
+        grid.update_docfield_property("item_name_en", "hidden", 1)
+        grid.update_docfield_property("description_en", "hidden", 1)
+        grid.update_docfield_property("item_name_de", "hidden", 0)
+        grid.update_docfield_property("description_de", "hidden", 0)
+        grid.update_docfield_property("item_name_fr", "hidden", 1)
+        grid.update_docfield_property("description_fr", "hidden", 1)
+    } else if (item_language === "fr"){
+        grid.update_docfield_property("item_name_en", "hidden", 1)
+        grid.update_docfield_property("description_en", "hidden", 1)
+        grid.update_docfield_property("item_name_de", "hidden", 1)
+        grid.update_docfield_property("description_de", "hidden", 1)
+        grid.update_docfield_property("item_name_fr", "hidden", 0)
+        grid.update_docfield_property("description_fr", "hidden", 0)
+    }
+    grid.refresh();
+}
