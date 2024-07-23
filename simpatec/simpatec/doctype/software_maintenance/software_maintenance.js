@@ -172,4 +172,14 @@ var set_right_translation = function(frm, cdt, cdn){
         grid.update_docfield_property("description_fr", "hidden", 0)
     }
     grid.refresh();
+
+    var item_code = frappe.model.get_value(cdt, cdn, "item_code")
+    frappe.db.get_value("Item", item_code, ["in_en", "id_en", "in_de", "id_de", "in_fr", "id_fr"]).then((r) => {
+        frappe.model.set_value(cdt, cdn, "item_name_en", r.message.in_en)
+        frappe.model.set_value(cdt, cdn, "description_en", r.message.id_en)
+        frappe.model.set_value(cdt, cdn, "item_name_de", r.message.in_de)
+        frappe.model.set_value(cdt, cdn, "description_de", r.message.id_de)
+        frappe.model.set_value(cdt, cdn, "item_name_fr", r.message.in_fr)
+        frappe.model.set_value(cdt, cdn, "description_fr", r.message.id_fr)
+    })
 }
