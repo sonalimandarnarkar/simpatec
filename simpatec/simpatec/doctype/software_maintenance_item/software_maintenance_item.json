@@ -48,7 +48,6 @@
    "width": "150px"
   },
   {
-   "fetch_from": "item_code.in_en",
    "fieldname": "item_name_en",
    "fieldtype": "Data",
    "in_global_search": 1,
@@ -61,7 +60,6 @@
    "width": "150"
   },
   {
-    "fetch_from": "item_code.id_en",
     "fieldname": "description_en",
     "fieldtype": "Text Editor",
     "label": "Description EN",
@@ -72,7 +70,6 @@
     "width": "300px"
   },
   {
-    "fetch_from": "item_code.in_de",
     "fieldname": "item_name_de",
     "fieldtype": "Data",
     "in_global_search": 1,
@@ -85,7 +82,6 @@
     "width": "150"
   },
   {
-    "fetch_from": "item_code.id_de",
     "fieldname": "description_de",
     "fieldtype": "Text Editor",
     "label": "Description DE",
@@ -96,7 +92,6 @@
     "width": "300px"
   },
   {
-    "fetch_from": "item_code.in_fr",
     "fieldname": "item_name_fr",
     "fieldtype": "Data",
     "in_global_search": 1,
@@ -109,7 +104,6 @@
     "width": "150"
   },
   {
-    "fetch_from": "item_code.id_fr",
     "fieldname": "description_fr",
     "fieldtype": "Text Editor",
     "label": "Description FR",
