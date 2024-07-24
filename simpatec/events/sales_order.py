@@ -68,7 +68,6 @@ def make_software_maintenance(source_name, target_doc=None):
 					item.rate = 0
 					item.reoccurring_maintenance_amount = 0
 		doc.assign_to = source.assigned_to
-		doc = set_translated_description(doc)
 
 	doc = get_mapped_doc(
 		"Sales Order",
@@ -88,15 +87,6 @@ def make_software_maintenance(source_name, target_doc=None):
 		postprocess,
 	)
 
-	return doc
-
-def set_translated_description(doc):
-	for item in doc.items:
-		description_en, description_de, description_fr = frappe.db.get_value("Item", item.item_code, ["id_en", "id_de", "id_fr"])
-
-		item.description_en = description_en
-		item.description_de = description_de
-		item.description_fr = description_fr
 	return doc
 
 @frappe.whitelist()
