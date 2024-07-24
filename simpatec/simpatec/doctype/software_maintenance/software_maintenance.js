@@ -34,7 +34,6 @@ frappe.ui.form.on('Software Maintenance', {
 
                     ],
                     primary_action: function (data) {
-                        debugger;
                         frm.events.make_reoccurring(frm, data)
                         d.hide();
                     },
