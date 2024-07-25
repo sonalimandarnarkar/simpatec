@@ -231,8 +231,10 @@ fixtures = [
 				"name",
     			"in",
 				(
-					"Sales Order-payment_terms_template-fetch_from", "Quotation-payment_terms_template-fetch_from",
-					"Sales Invoice-payment_terms_template-fetch_from"     
+					"Sales Order-payment_terms_template-fetch_from",
+                    "Quotation-payment_terms_template-fetch_from",
+					"Sales Invoice-payment_terms_template-fetch_from",
+                    "Sales Order-software_maintenance-no_copy"
 				)
 			]
 		]
