@@ -34,7 +34,6 @@ frappe.ui.form.on('Software Maintenance', {
 
                     ],
                     primary_action: function (data) {
-                        debugger;
                         frm.events.make_reoccurring(frm, data)
                         d.hide();
                     },
@@ -122,7 +121,7 @@ frappe.ui.form.on('Software Maintenance', {
 
 frappe.ui.form.on('Software Maintenance Item', {
     item_code(frm, cdt, cdn){
-        set_right_translation(frm, cdt, cdn)
+        // set_right_translation(frm, cdt, cdn)
 
         var item = frappe.get_doc(cdt, cdn);
         item.pricing_rules = ''
@@ -141,9 +140,6 @@ frappe.ui.form.on('Software Maintenance Item', {
             });
         }
     },
-    item_language(frm, cdt, cdn){
-        set_right_translation(frm, cdt, cdn)
-    }
 });
 
 var set_right_translation = function(frm, cdt, cdn){
