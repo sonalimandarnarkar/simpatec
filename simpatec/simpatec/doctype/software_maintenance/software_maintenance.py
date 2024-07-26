@@ -91,9 +91,9 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 			"item_name_en": item.item_name_en,
 			"item_name_de": item.item_name_de,
 			"item_name_fr": item.item_name_fr,
-			"item_description_en": item.id_en,
-			"item_description_de": item.id_de,
-			"item_description_fr": item.id_fr,
+			"item_description_en": item.item_description_en,
+			"item_description_de": item.item_description_de,
+			"item_description_fr": item.item_description_fr,
 		})
 
 	reoccurring_order.insert()
