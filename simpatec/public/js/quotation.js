@@ -48,6 +48,48 @@ frappe.ui.form.on('Quotation', {
 					addClearIconToField(field);
 				}
 			});
+			
+			// GET ITEMS FROM 
+			frm.add_custom_button(__('Quotation'), function () {
+				erpnext.utils.map_current_doc({
+					method: "simpatec.events.quotation.make_quotation",
+					source_doctype: "Quotation",
+					target: frm,
+					size: "extra-large",
+					setters: [
+						{
+							label: "Customer",
+							fieldname: "party_name",
+							fieldtype: "Link",
+							options: "Customer",
+							default: frm.doc.party_name || undefined
+						},
+						{
+							label: "Quotation Label",
+							fieldname: "quotation_label",
+							fieldtype: "Link",
+							options: "Angebotsvorlage",
+							default: frm.doc.quotation_label || undefined
+						},
+						{
+							label: "Item Group",
+							fieldname: "item_group",
+							fieldtype: "Link",
+							options: "Item Group",
+							default: frm.doc.item_group || undefined
+						},
+
+					],
+					get_query_filters: {
+						company: frm.doc.company,
+						docstatus: 1,
+						status: ["!=", "Lost"]
+					}
+				})
+			}, __("Get Items From"));
+
+			// Add Conditional Mandatory On Start/End Dates
+			frm.events.start_end_date_conditional_mandatory(frm)
 		}
     },
 	setup: function(frm){
@@ -120,7 +162,23 @@ frappe.ui.form.on('Quotation', {
 				}
 			}
 		});
-	}
+	},
+
+	sales_order_type: function(frm){
+		// Add Conditional Mandatory On Start/End Dates
+		frm.events.start_end_date_conditional_mandatory(frm)
+	},
+
+	start_end_date_conditional_mandatory: function (frm) {
+		if (["Reoccuring Maintenance"].includes(frm.doc.sales_order_type)) {
+			frm.toggle_reqd("performance_period_start", 1)
+			frm.toggle_reqd("performance_period_end", 1)
+		}
+		else {
+			frm.toggle_reqd("performance_period_start", 0)
+			frm.toggle_reqd("performance_period_end", 0)
+		}
+	},
 });
 
 frappe.ui.form.on('Quotation Item',{

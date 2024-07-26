@@ -26,10 +26,16 @@
   "licence_renewal_via",
   "maintenance_duration",
   "lead_time",
+  "apply_inflation_rate",
   "licence_section_section",
   "software_maintenance_contacts",
   "section_break_oqvv5",
   "items",
+  "inflation_section",
+  "inflation_rate",
+  "column_break_zc7bq",
+  "inflation_valid_from",
+  "set_inflation",
   "accounting_section",
   "billing_user_simpatec",
   "billing_type",
@@ -242,6 +248,38 @@
    "label": "Maintenance Duration",
    "non_negative": 1,
    "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.apply_inflation_rate == 1",
+   "fieldname": "inflation_section",
+   "fieldtype": "Section Break",
+   "label": "Inflation"
+  },
+  {
+   "fieldname": "inflation_rate",
+   "fieldtype": "Percent",
+   "label": "Inflation Rate"
+  },
+  {
+   "fieldname": "inflation_valid_from",
+   "fieldtype": "Date",
+   "label": "Valid from"
+  },
+  {
+   "depends_on": "eval: doc.inflation_rate > 0 && doc.docstatus == 0",
+   "fieldname": "set_inflation",
+   "fieldtype": "Button",
+   "label": "Set Inflation"
+  },
+  {
+   "fieldname": "column_break_zc7bq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_inflation_rate",
+   "fieldtype": "Check",
+   "label": "Apply Inflation Rate"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -272,7 +310,7 @@
    "link_fieldname": "software_maintenance"
   }
  ],
- "modified": "2024-06-24 13:01:45.689928",
+ "modified": "2024-07-12 06:41:50.401584",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance",

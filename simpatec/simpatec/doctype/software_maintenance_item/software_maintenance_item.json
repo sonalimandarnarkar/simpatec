@@ -9,20 +9,35 @@
  "field_order": [
   "item_code",
   "item_name",
-  "description",
-  "item_group",
+  "item_name_en",
+  "item_name_de",
+  "item_name_fr",
+  "item_type",
+  "column_break_wxxmm",
   "item_language",
   "start_date",
   "end_date",
-  "column_break_wxxmm",
+  "description_section",
+  "description",
+  "id_en",
+  "id_de",
+  "id_fr",
+  "item_description_en",
+  "item_description_de",
+  "item_description_fr",
+  "item_group",
+  "quantity_and_rate_section",
   "qty",
+  "rate",
+  "price_list_rate",
+  "column_break_owrf3",
   "uom",
   "conversion_factor",
   "reoccurring_maintenance_amount",
-  "rate",
-  "price_list_rate",
   "purchase_section",
-  "purchase_price"
+  "purchase_price",
+  "references_section",
+  "sales_order"
  ],
  "fields": [
   {
@@ -41,11 +56,13 @@
    "width": "150px"
   },
   {
-   "fetch_from": "item_code.item_name",
-   "fieldname": "item_name",
+   "depends_on": "eval: doc.item_language == \"en\"",
+   "fetch_from": "item_code.in_en",
+   "fetch_if_empty": 1,
+   "fieldname": "item_name_en",
    "fieldtype": "Data",
    "in_global_search": 1,
-   "label": "Item Name",
+   "label": "Item Name EN",
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
    "print_hide": 1,
@@ -54,10 +71,68 @@
    "width": "150"
   },
   {
-   "fetch_from": "item_code.description",
-   "fieldname": "description",
+   "depends_on": "eval: doc.item_language == \"en\"",
+   "fetch_from": "item_code.id_en",
+   "fetch_if_empty": 1,
+   "fieldname": "id_en",
    "fieldtype": "Text Editor",
-   "label": "Description",
+   "label": "Description EN",
+   "oldfieldname": "description",
+   "oldfieldtype": "Small Text",
+   "print_width": "300px",
+   "reqd": 1,
+   "width": "300px"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"de\"",
+   "fetch_from": "item_code.in_de",
+   "fetch_if_empty": 1,
+   "fieldname": "item_name_de",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Item Name DE",
+   "oldfieldname": "item_name",
+   "oldfieldtype": "Data",
+   "print_hide": 1,
+   "print_width": "150",
+   "reqd": 1,
+   "width": "150"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"de\"",
+   "fetch_from": "item_code.id_de",
+   "fetch_if_empty": 1,
+   "fieldname": "id_de",
+   "fieldtype": "Text Editor",
+   "label": "Description DE",
+   "oldfieldname": "description",
+   "oldfieldtype": "Small Text",
+   "print_width": "300px",
+   "reqd": 1,
+   "width": "300px"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"fr\"",
+   "fetch_from": "item_code.in_fr",
+   "fetch_if_empty": 1,
+   "fieldname": "item_name_fr",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Item Name FR",
+   "oldfieldname": "item_name",
+   "oldfieldtype": "Data",
+   "print_hide": 1,
+   "print_width": "150",
+   "reqd": 1,
+   "width": "150"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"fr\"",
+   "fetch_from": "item_code.id_fr",
+   "fetch_if_empty": 1,
+   "fieldname": "id_fr",
+   "fieldtype": "Text Editor",
+   "label": "Description FR",
    "oldfieldname": "description",
    "oldfieldtype": "Small Text",
    "print_width": "300px",
@@ -162,17 +237,104 @@
    "fieldname": "purchase_price",
    "fieldtype": "Currency",
    "label": "Purchase Price"
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fetch_from": "item_code.item_type",
+   "fieldname": "item_type",
+   "fieldtype": "Data",
+   "label": "Item Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Item Name",
+   "print_hide": 1,
+   "print_width": "150",
+   "reqd": 1,
+   "width": "150"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"en\"",
+   "fetch_from": "item_code.id_en",
+   "fetch_if_empty": 1,
+   "fieldname": "item_description_en",
+   "fieldtype": "Text Editor",
+   "label": "Description EN",
+   "print_width": "300px",
+   "reqd": 1,
+   "width": "300px"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"de\"",
+   "fetch_from": "item_code.id_de",
+   "fetch_if_empty": 1,
+   "fieldname": "item_description_de",
+   "fieldtype": "Text Editor",
+   "label": "Description DE",
+   "print_width": "300px",
+   "reqd": 1,
+   "width": "300px"
+  },
+  {
+   "depends_on": "eval: doc.item_language == \"fr\"",
+   "fetch_from": "item_code.id_fr",
+   "fetch_if_empty": 1,
+   "fieldname": "item_description_fr",
+   "fieldtype": "Text Editor",
+   "label": "Description FR",
+   "print_width": "300",
+   "reqd": 1,
+   "width": "300"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "quantity_and_rate_section",
+   "fieldtype": "Section Break",
+   "label": "Quantity and Rate"
+  },
+  {
+   "fieldname": "column_break_owrf3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "item_code.description",
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description",
+   "print_width": "300px",
+   "reqd": 1,
+   "width": "300px"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-05-30 10:10:55.722159",
+ "modified": "2024-07-26 19:53:51.607232",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance Item",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

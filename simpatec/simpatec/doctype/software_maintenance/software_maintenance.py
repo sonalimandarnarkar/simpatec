@@ -5,6 +5,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, add_days, add_years, getdate, today
+import json
 from datetime import timedelta
 
 class SoftwareMaintenance(Document):
@@ -28,7 +29,7 @@ class SoftwareMaintenance(Document):
 
 
 @frappe.whitelist()
-def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, is_background_job=True):
+def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, mandatory_fields=None, is_background_job=True):
 	if licence_renewal_via == None or licence_renewal_via == "":
 		frappe.throw("Select Licence Renewal before creating Reoccurring Maintenance")
 	software_maintenance = frappe.get_doc("Software Maintenance", software_maintenance)
@@ -64,8 +65,14 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 	reoccurring_order.ihr_ansprechpartner = employee
 	reoccurring_order.transaction_date = transaction_date
 	reoccurring_order.order_type = "Sales"
+	if mandatory_fields:
+		mandatory_fields = json.loads(mandatory_fields)
+		reoccurring_order.update(mandatory_fields)
 
 	for item in software_maintenance.items:
+		item_type = frappe.db.get_value("Item", item.item_code, "item_type")
+		if item_type != "Maintenance Item":
+			item.price_list_rate = 0
 		reoccurring_order.append("items", {
 			"item_code": item.item_code,
 			"item_name": item.item_name,
@@ -79,7 +86,14 @@ def make_reoccuring_sales_order(software_maintenance, licence_renewal_via=None, 
 			"delivery_date": reoccurring_order.transaction_date,
 			"start_date": item.start_date,
 			"end_date": item.end_date,
-			"purchase_price": item.purchase_price
+			"purchase_price": item.purchase_price,
+   			"price_list_rate": item.price_list_rate,
+			"item_name_en": item.item_name_en,
+			"item_name_de": item.item_name_de,
+			"item_name_fr": item.item_name_fr,
+			"item_description_en": item.item_description_en,
+			"item_description_de": item.item_description_de,
+			"item_description_fr": item.item_description_fr,
 		})
 
 	reoccurring_order.insert()

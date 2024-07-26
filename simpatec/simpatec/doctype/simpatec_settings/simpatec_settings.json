@@ -8,7 +8,7 @@
  "field_order": [
   "sales_section",
   "clearance_item",
-  "background_jobs_section",
+  "software_maintenance_section",
   "auto_reoccurring_maintenance",
   "html_3",
   "danger_zone_section",
@@ -37,7 +37,8 @@
   {
    "fieldname": "update_software_maintenance_items",
    "fieldtype": "Button",
-   "label": "Update Software Maintenance Items"
+   "label": "Update Software Maintenance Items",
+   "permlevel": 1
   },
   {
    "fieldname": "html_1",
@@ -47,18 +48,15 @@
   {
    "fieldname": "html_2",
    "fieldtype": "HTML",
-   "options": "Hitting this button will remove all the items from all the Software Maintenance records and renew them from the Sales Order that is linked in each Software Maintenance Record. Also that record is updated by setting the sales_order_type to \"First Sale\"."
+   "options": "Hitting this button will remove all the items from all the Software Maintenance records and renew them from the Sales Order that is linked in each Software Maintenance Record. Also that record is updated by setting the sales_order_type to \"First Sale\".",
+   "permlevel": 1
   },
   {
    "default": "0",
    "fieldname": "update_timestamp",
    "fieldtype": "Check",
-   "label": "Update Timestamp"
-  },
-  {
-   "fieldname": "background_jobs_section",
-   "fieldtype": "Section Break",
-   "label": "Background Jobs"
+   "label": "Update Timestamp",
+   "permlevel": 1
   },
   {
    "default": "0",
@@ -70,12 +68,17 @@
    "fieldname": "html_3",
    "fieldtype": "HTML",
    "options": "This checkbox will control the behaviour of Reoccurring Maintenance background job if needs to run or not"
+  },
+  {
+   "fieldname": "software_maintenance_section",
+   "fieldtype": "Section Break",
+   "label": "Software Maintenance"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-06-23 22:39:36.302055",
+ "modified": "2024-06-26 21:09:55.626594",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "SimpaTec Settings",
