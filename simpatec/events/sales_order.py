@@ -163,6 +163,9 @@ def update_software_maintenance(doc, method=None):
 			software_maintenance.append("items", {
 				"item_code": item.item_code,
 				"item_name": item.item_name,
+				"item_name_en": item.item_name_en,
+				"item_name_de": item.item_name_de,
+				"item_name_fr": item.item_name_fr,
 				"description": item.description,
 				"item_language": item.item_language,
 				"item_description_en": item.item_description_en,
