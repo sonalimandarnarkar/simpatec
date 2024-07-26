@@ -81,6 +81,11 @@ def make_software_maintenance(source_name, target_doc=None):
 			},
 			"Sales Order Item": {
 				"doctype": "Software Maintenance Item",
+				"field_map": {
+					"item_description_en": "id_en",
+					"item_description_de": "id_de",
+					"item_description_fr": "id_fr",
+				},
 			},
 		},
 		target_doc,

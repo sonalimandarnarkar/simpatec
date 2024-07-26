@@ -210,16 +210,18 @@ fixtures = [
                 "name",
                 "in",
                 (
-			"Quotation-anrede",
-			"Quotation-anschreiben_vorlage",
-			"Quotation-anschreiben",
-			"Quotation-cover_letter_en",
-			"Quotation-cover_letter_de",
-			"Quotation-cover_letter_fr"
-			"Quotation-ignore_cover_language",
-			"Item-simpatec",
-			"Item-item_type",
-
+					"Quotation-anrede",
+					"Quotation-anschreiben_vorlage",
+					"Quotation-anschreiben",
+					"Quotation-cover_letter_en",
+					"Quotation-cover_letter_de",
+					"Quotation-cover_letter_fr"
+					"Quotation-ignore_cover_language",
+					"Item-simpatec",
+					"Item-item_type",
+					"Sales Order Item-item_description_en",
+                    "Sales Order Item-item_description_de",
+                    "Sales Order Item-item_description_fr",
                 ),
             ]
         ],
@@ -231,8 +233,10 @@ fixtures = [
 				"name",
     			"in",
 				(
-					"Sales Order-payment_terms_template-fetch_from", "Quotation-payment_terms_template-fetch_from",
-					"Sales Invoice-payment_terms_template-fetch_from"     
+					"Sales Order-payment_terms_template-fetch_from",
+                    "Quotation-payment_terms_template-fetch_from",
+					"Sales Invoice-payment_terms_template-fetch_from",
+                    "Sales Order-software_maintenance-no_copy"
 				)
 			]
 		]
