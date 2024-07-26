@@ -800,7 +800,35 @@ def get_custom_fields():
 			"depends_on": "eval:doc.item_language == 'fr'",
 			"insert_after": "item_name_de",
 		},
-
+		# NEW ITEM DESCRIPTION FIELDS
+		{
+			"label": "Item Description EN",
+			"fieldname": "item_description_en",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_en",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'en'",
+			"insert_after": "description",
+		},
+		{
+			"label": "Item Description DE",
+			"fieldname": "item_description_de",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.id_de",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'de'",
+			"insert_after": "item_description_en",
+		},
+		{
+			"label": "Item Description FR",
+			"fieldname": "item_description_fr",
+			"fieldtype": "Text Editor",
+			"fetch_from": "item_code.in_fr",
+			"fetch_if_empty": 1,
+			"depends_on": "eval:doc.item_language == 'fr'",
+			"insert_after": "item_description_de",
+		},
+		# END NEW ITEM DESCRIPTION FIELDS
 		{
 			"label": "Item Description EN",
 			"fieldname": "id_en",
