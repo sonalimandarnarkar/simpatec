@@ -76,11 +76,11 @@
    "fetch_if_empty": 1,
    "fieldname": "id_en",
    "fieldtype": "Text Editor",
+   "hidden": 1,
    "label": "Description EN",
    "oldfieldname": "description",
    "oldfieldtype": "Small Text",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   },
   {
@@ -104,11 +104,11 @@
    "fetch_if_empty": 1,
    "fieldname": "id_de",
    "fieldtype": "Text Editor",
+   "hidden": 1,
    "label": "Description DE",
    "oldfieldname": "description",
    "oldfieldtype": "Small Text",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   },
   {
@@ -132,11 +132,11 @@
    "fetch_if_empty": 1,
    "fieldname": "id_fr",
    "fieldtype": "Text Editor",
+   "hidden": 1,
    "label": "Description FR",
    "oldfieldname": "description",
    "oldfieldtype": "Small Text",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   },
   {
@@ -326,15 +326,13 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-07-26 19:53:51.607232",
+ "modified": "2024-07-30 15:51:14.285139",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "Software Maintenance Item",
- "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
  "track_changes": 1
 }
