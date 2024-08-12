@@ -14,31 +14,87 @@ class SimpaTecSettings(Document):
             # Update item descriptions data from old field id_xx to new field item_description_xx
             
             # SOFTWARE MAINTENANCE ITEM
+            # UPDATE DESCRIPTIONS
             frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `id_en`, `item_description_fr` = `id_fr`,`item_description_de` = `id_de`")
-                
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `description` where item_description_en is null;")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_fr` = `description` where item_description_fr is null;")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_de` = `description` where item_description_de is null;")
+            
+            # UPDATE ITEM NAMES
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_en` = `item_name` where item_name_en is null;")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_de` = `item_name` where item_name_de is null;")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+            
+            
             # SALES ORDER ITEM
+            # UPDATE DESCRIPTIONS
             if frappe.db.exists("Custom Field", "Sales Order Item-id_en"):
                 frappe.db.sql("update `tabSales Order Item` set `item_description_en` = `id_en`")
+                frappe.db.sql("update `tabSales Order Item` set `item_description_en` = `description` where item_description_en is null;")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_en", force=1)
             if frappe.db.exists("Custom Field", "Sales Order Item-id_fr"):
                 frappe.db.sql("update `tabSales Order Item` set `item_description_fr` = `id_fr`")
+                frappe.db.sql("update `tabSales Order Item` set `item_description_fr` = `description` where item_description_fr is null;")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_fr", force=1)
             if frappe.db.exists("Custom Field", "Sales Order Item-id_de"):
                 frappe.db.sql("update `tabSales Order Item` set `item_description_de` = `id_de`")
+                frappe.db.sql("update `tabSales Order Item` set `item_description_de` = `description` where item_description_de is null;")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_de", force=1)
+            
+            # UPDATE ITEM NAMES
+            if frappe.db.exists("Custom Field", "Sales Order Item-item_name_en"):
+                frappe.db.sql("update `tabSales Order Item` set `item_name_en` = `item_name` where item_name_en is null;")
                 
+            if frappe.db.exists("Custom Field", "Sales Order Item-item_name_de"):
+                frappe.db.sql("update `tabSales Order Item` set `item_name_de` = `item_name` where item_name_de is null;")
+
+            if frappe.db.exists("Custom Field", "Sales Order Item-item_name_fr"):
+                frappe.db.sql("update `tabSales Order Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+
+
 
             # QUOTATION ITEM
+            # UPDATE DESCRIPTIONS
             if frappe.db.exists("Custom Field", "Quotation Item-id_en"):
                 frappe.db.sql("update `tabQuotation Item` set `item_description_en` = `id_en`")
+                frappe.db.sql("update `tabQuotation Item` set `item_description_en` = `description` where item_description_de is null;")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_en", force=1)
             if frappe.db.exists("Custom Field", "Quotation Item-id_fr"):
                 frappe.db.sql("update `tabQuotation Item` set `item_description_fr` = `id_fr`")
+                frappe.db.sql("update `tabQuotation Item` set `item_description_fr` = `description` where item_description_fr is null;")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_fr", force=1)
             if frappe.db.exists("Custom Field", "Quotation Item-id_de"):
                 frappe.db.sql("update `tabQuotation Item` set `item_description_de` = `id_de`")
+                frappe.db.sql("update `tabQuotation Item` set `item_description_de` = `description` where item_description_de is null;")
                 # frappe.delete_doc("Custom Field", "Quotation Item-id_fr", force=1)
             
+            # UPDATE ITEM NAMES
+            if frappe.db.exists("Custom Field", "Quotation Item-item_name_en"):
+                frappe.db.sql("update `tabQuotation Item` set `item_name_en` = `item_name` where item_name_en is null;")
+                
+            if frappe.db.exists("Custom Field", "Quotation Item-item_name_de"):
+                frappe.db.sql("update `tabQuotation Item` set `item_name_de` = `item_name` where item_name_de is null;")
+
+            if frappe.db.exists("Custom Field", "Quotation Item-item_name_fr"):
+                frappe.db.sql("update `tabQuotation Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+
+            # PURCHASE ORDER ITEM
+            # UPDATE DESCRIPTIONS
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_en"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_description_en` = `description` where item_description_en is null;")
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_de"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_description_de` = `description` where item_description_de is null;")
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_fr"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_description_fr` = `description` where item_description_fr is null;")
+                
+            # UPDATE ITEM NAMES
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_en"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_name_en` = `item_name` where item_name_en is null;")
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_de"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_name_de` = `item_name` where item_name_de is null;")
+            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_fr"):
+                frappe.db.sql("update `tabPurchase Order Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+                
             modified_by = frappe.session.user
             update_timestamp = int(self.update_timestamp)
             
@@ -46,10 +102,12 @@ class SimpaTecSettings(Document):
                 frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2""".format(modified= now(), modified_by= modified_by))
                 frappe.db.sql("""update `tabSales Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
                 frappe.db.sql("""update `tabQuotation` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
+                frappe.db.sql("""update `tabPurchase Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
                 
-            return {"message":"""<h3>The script has run and had updated all Item Descriptions in Software Maintenance, Sales Order and Quotation:</h3>
+            return {"message":"""<h3>The script has run and had updated all Item Name and Item Descriptions in Software Maintenance, Sales Order, Quotation and Purchase Order:</h3>
                     <ul>
                         <li>Copied the old item description data from id_xx field to item_description_xx</li>
+                        <li>Copied the old item_name data from item_name field to item_name_xx/li>
                     </ul>
                     <p>For further information check in SimpaTec Settings page and consult your project manager.</p> """, "title": "Success"}   
         except Exception as ex:
