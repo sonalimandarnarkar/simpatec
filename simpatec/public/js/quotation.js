@@ -78,21 +78,18 @@ frappe.ui.form.on('Quotation', {
 						fieldname: "party_name",
 						fieldtype: "Link",
 						options: "Customer",
-						default: frm.doc.party_name || undefined
 					},
 					{
 						label: "Quotation Label",
 						fieldname: "quotation_label",
 						fieldtype: "Link",
 						options: "Angebotsvorlage",
-						default: frm.doc.quotation_label || undefined
 					},
 					{
 						label: "Item Group",
 						fieldname: "item_group",
 						fieldtype: "Link",
 						options: "Item Group",
-						default: frm.doc.item_group || undefined
 					},
 
 				],
