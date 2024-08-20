@@ -17,7 +17,7 @@
   "update_timestamp",
   "html_2",
   "html_4",
-  "update_item_fieds"
+  "update_item_fields"
  ],
  "fields": [
   {
@@ -77,20 +77,20 @@
    "label": "Software Maintenance"
   },
   {
-   "fieldname": "update_item_fieds",
-   "fieldtype": "Button",
-   "label": "Update Item Fieds"
-  },
-  {
    "fieldname": "html_4",
    "fieldtype": "HTML",
    "options": "<p style=\"color: red;\">Careful: Clicking this button will execute a script that transfers data from old fields to new fields and makes significant alterations to the field contents, potentially causing irreversible changes. Please consult higher management before proceeding with this action.</p>\n"
+  },
+  {
+   "fieldname": "update_item_fields",
+   "fieldtype": "Button",
+   "label": "Apply Changes to Item Fields"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-30 13:24:07.745835",
+ "modified": "2024-08-19 13:38:48.000138",
  "modified_by": "Administrator",
  "module": "Simpatec",
  "name": "SimpaTec Settings",
