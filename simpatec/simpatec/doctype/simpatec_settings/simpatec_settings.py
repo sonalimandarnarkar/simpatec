@@ -15,10 +15,65 @@ class SimpaTecSettings(Document):
             
             # SOFTWARE MAINTENANCE ITEM
             # UPDATE DESCRIPTIONS
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `id_en`, `item_description_fr` = `id_fr`,`item_description_de` = `id_de`")
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `description` where item_description_en is null;")
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_fr` = `description` where item_description_fr is null;")
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_de` = `description` where item_description_de is null;")
+            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `id_en`, `item_description_fr` = `id_fr`,`item_description_de` = `id_de`")
+            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `description` where item_description_en is null;")
+            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_fr` = `description` where item_description_fr is null;")
+            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_de` = `description` where item_description_de is null;")
+            frappe.db.sql("""UPDATE `tabSoftware Maintenance Item`
+                                    SET `item_description_en` = 
+                                        CASE
+                                            -- If `item_description_en` is null, empty, or contains the specific HTML pattern
+                                            WHEN `item_description_en` IS NULL 
+                                                OR `item_description_en` = ''	
+                                                OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                            THEN 
+                                                -- If `id_en` is null, empty, or contains the specific HTML pattern
+                                                CASE 
+                                                    WHEN `id_en` IS NULL 
+                                                        OR `id_en` = '' 
+                                                        OR `id_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                                    THEN `description` -- If `id_en` also doesn't have valid content, use `description`
+                                                    ELSE `id_en` -- Otherwise, use `id_en`
+                                                END
+                                            ELSE `item_description_en` -- If `item_description_en` does not match the conditions, do nothing
+                                        END""")
+            frappe.db.sql("""UPDATE `tabSoftware Maintenance Item`
+                                    SET `item_description_fr` = 
+                                        CASE
+                                            -- If `item_description_fr` is null, empty, or contains the specific HTML pattern
+                                            WHEN `item_description_fr` IS NULL 
+                                                OR `item_description_fr` = ''	
+                                                OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                            THEN 
+                                                -- If `id_fr` is null, empty, or contains the specific HTML pattern
+                                                CASE 
+                                                    WHEN `id_fr` IS NULL 
+                                                        OR `id_fr` = '' 
+                                                        OR `id_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                                    THEN `description` -- If `id_fr` also doesn't have valid content, use `description`
+                                                    ELSE `id_fr` -- Otherwise, use `id_fr`
+                                                END
+                                            ELSE `item_description_fr` -- If `item_description_fr` does not match the conditions, do nothing
+                                        END""")
+            
+            frappe.db.sql("""UPDATE `tabSoftware Maintenance Item`
+                                    SET `item_description_de` = 
+                                        CASE
+                                            -- If `item_description_de` is null, empty, or contains the specific HTML pattern
+                                            WHEN `item_description_de` IS NULL 
+                                                OR `item_description_de` = ''	
+                                                OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                            THEN 
+                                                -- If `id_de` is null, empty, or contains the specific HTML pattern
+                                                CASE 
+                                                    WHEN `id_de` IS NULL 
+                                                        OR `id_de` = '' 
+                                                        OR `id_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%'
+                                                    THEN `description` -- If `id_de` also doesn't have valid content, use `description`
+                                                    ELSE `id_de` -- Otherwise, use `id_de`
+                                                END
+                                            ELSE `item_description_de` -- If `item_description_de` does not match the conditions, do nothing
+                                        END""")
             
             # UPDATE ITEM NAMES
             frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_en` = `item_name` where item_name_en is null;")
