@@ -15,10 +15,6 @@ class SimpaTecSettings(Document):
             
             # SOFTWARE MAINTENANCE ITEM
             # UPDATE DESCRIPTIONS
-            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `id_en`, `item_description_fr` = `id_fr`,`item_description_de` = `id_de`")
-            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_en` = `description` where item_description_en is null;")
-            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_fr` = `description` where item_description_fr is null;")
-            # frappe.db.sql("update `tabSoftware Maintenance Item` set `item_description_de` = `description` where item_description_de is null;")
             frappe.db.sql("""UPDATE `tabSoftware Maintenance Item`
                                     SET `item_description_en` = 
                                         CASE
@@ -84,8 +80,6 @@ class SimpaTecSettings(Document):
             # SALES ORDER ITEM
             # UPDATE DESCRIPTIONS
             if frappe.db.exists("Custom Field", "Sales Order Item-id_en"):
-                # frappe.db.sql("update `tabSales Order Item` set `item_description_en` = `id_en`")
-                # frappe.db.sql("update `tabSales Order Item` set `item_description_en` = `description` where item_description_en is null;")
                 frappe.db.sql("""UPDATE `tabSales Order Item`
                                     SET `item_description_en` = 
                                         CASE
