@@ -16,7 +16,7 @@ frappe.ui.form.on('SimpaTec Settings', {
 			}
 		})
 	},
-	update_item_fieds: function(frm){
+	update_item_fields: function(frm){
 		frm.call({
 			method: "update_item_details",
 			doc: frm.doc,
