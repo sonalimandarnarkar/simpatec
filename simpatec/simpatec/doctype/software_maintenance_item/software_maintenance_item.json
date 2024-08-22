@@ -67,7 +67,6 @@
    "oldfieldtype": "Data",
    "print_hide": 1,
    "print_width": "150",
-   "reqd": 1,
    "width": "150"
   },
   {
@@ -95,7 +94,6 @@
    "oldfieldtype": "Data",
    "print_hide": 1,
    "print_width": "150",
-   "reqd": 1,
    "width": "150"
   },
   {
@@ -123,7 +121,6 @@
    "oldfieldtype": "Data",
    "print_hide": 1,
    "print_width": "150",
-   "reqd": 1,
    "width": "150"
   },
   {
@@ -264,7 +261,6 @@
    "label": "Item Name",
    "print_hide": 1,
    "print_width": "150",
-   "reqd": 1,
    "width": "150"
   },
   {
@@ -275,7 +271,6 @@
    "fieldtype": "Text Editor",
    "label": "Description EN",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   },
   {
@@ -286,7 +281,6 @@
    "fieldtype": "Text Editor",
    "label": "Description DE",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   },
   {
@@ -297,7 +291,6 @@
    "fieldtype": "Text Editor",
    "label": "Description FR",
    "print_width": "300",
-   "reqd": 1,
    "width": "300"
   },
   {
@@ -320,7 +313,6 @@
    "fieldtype": "Text Editor",
    "label": "Description",
    "print_width": "300px",
-   "reqd": 1,
    "width": "300px"
   }
  ],
