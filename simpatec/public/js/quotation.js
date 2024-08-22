@@ -40,7 +40,24 @@ frappe.ui.form.on('Quotation', {
                 });
             }
         }
-		
+
+		function get_child_tables(frm, s_cd_name, fields, t_cd_name) {
+			for (var n = 0; n < s_cd_name.length; n++) {
+				var item = s_cd_name[n];
+				var child = {};
+				// child['prevdoc_doctype'] = "Quotation"
+				// child['prevdoc_docname'] = item["parent"]
+				child['against_quotation'] = item["parent"]
+				
+				for (var m = 0; m < fields.length; m++) {
+					child[fields[m]] = item[fields[m]];
+				}
+
+				frm.add_child(String(t_cd_name), child);
+				frm.refresh_fields(String(t_cd_name));
+			}
+		}
+
 		if(frm.doc.docstatus == 0){
 			$.each(frm.fields_dict, function(fieldname, field) {
 				
@@ -51,41 +68,63 @@ frappe.ui.form.on('Quotation', {
 			
 			// GET ITEMS FROM 
 			frm.add_custom_button(__('Quotation'), function () {
-				erpnext.utils.map_current_doc({
-					method: "simpatec.events.quotation.make_quotation",
-					source_doctype: "Quotation",
-					target: frm,
-					size: "extra-large",
-					setters: [
-						{
-							label: "Customer",
-							fieldname: "party_name",
-							fieldtype: "Link",
-							options: "Customer",
-							default: frm.doc.party_name || undefined
-						},
-						{
-							label: "Quotation Label",
-							fieldname: "quotation_label",
-							fieldtype: "Link",
-							options: "Angebotsvorlage",
-							default: frm.doc.quotation_label || undefined
-						},
-						{
-							label: "Item Group",
-							fieldname: "item_group",
-							fieldtype: "Link",
-							options: "Item Group",
-							default: frm.doc.item_group || undefined
-						},
+			
+			const d = new frappe.ui.form.MultiSelectDialog({
+				doctype: "Quotation",
+				target: frm,
+				setters: [
+					{
+						label: "Customer",
+						fieldname: "party_name",
+						fieldtype: "Link",
+						options: "Customer",
+					},
+					{
+						label: "Quotation Label",
+						fieldname: "quotation_label",
+						fieldtype: "Link",
+						options: "Angebotsvorlage",
+					},
+					{
+						label: "Item Group",
+						fieldname: "item_group",
+						fieldtype: "Link",
+						options: "Item Group",
+					},
 
-					],
-					get_query_filters: {
-						company: frm.doc.company,
-						docstatus: 1,
-						status: ["!=", "Lost"]
+				],
+				get_query() {
+					return {
+						filters: {
+							company: frm.doc.company,
+							docstatus: 1,
+							status: ["!=", "Lost"]
+						},
 					}
-				})
+				},
+				size: "extra-large",
+				action: function (selections, args) {
+					let values = selections;
+					if (values.length === 0) {
+						frappe.msgprint(__("Please select {0}", ["Quotation"]))
+						return;
+					}
+					frappe.call({
+						method: "simpatec.events.quotation.get_quotation_items",
+						args: {"quotations":selections},
+						async: false,
+						callback: function (r) {
+							var map_fields = ["item_code", "item_language", "item_name", , "item_name_en", "item_name_de", "item_name_fr", "description", "item_description_en", "item_description_fr", "item_description_de", "start_date", "end_date", "qty", "rate", "uom", "amount", "reoccurring_maintenance_amount", "purhase_price"];
+							get_child_tables(frm, r.message, map_fields, "items");
+							refresh_field("items");
+							
+						}
+					})
+					d.dialog.hide();
+					
+				},
+			});
+			
 			}, __("Get Items From"));
 
 			// Add Conditional Mandatory On Start/End Dates

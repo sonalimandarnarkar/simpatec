@@ -871,7 +871,16 @@ def get_custom_fields():
 			"fieldtype": "Currency",
 			"allow_on_submit": 1,
 			"insert_after": "purchase_section",
-		}
+		},
+    	# Added Quotation Reference
+		{
+			"label": "Against Quotation",
+			"fieldname": "against_quotation",
+			"fieldtype": "Link",
+			"options": "Quotation",
+			"insert_after": "prevdoc_docname",
+			"read_only": 1
+		},
 	]
 
 

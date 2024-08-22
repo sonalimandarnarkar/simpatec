@@ -38,3 +38,15 @@ def _make_quotation(source_name, target_doc=None, ignore_permissions=False):
 	)
 
 	return doclist
+
+
+@frappe.whitelist()
+def get_quotation_items(quotations=None):
+	if quotations:
+		quotations = json.loads(quotations)
+		quotation_item_list = frappe.db.get_list(
+			"Quotation Item",
+			filters={"parent": ["in", quotations]},
+			fields=["*"],
+		)
+		return quotation_item_list
