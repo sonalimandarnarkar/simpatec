@@ -434,7 +434,7 @@ class SimpaTecSettings(Document):
                 if updated_record_ids_quo:
                     frappe.db.sql("""update `tabQuotation` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_quo_ids})""".format(modified= now(), modified_by= modified_by, updated_quo_ids=updated_record_ids_quo))
                 if updated_record_ids_po:
-                    frappe.db.sql("""update `tabPurchase Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_po_ids}) """.format(modified= now(), modified_by= modified_by, updated_quo_ids=updated_record_ids_po))
+                    frappe.db.sql("""update `tabPurchase Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_po_ids}) """.format(modified= now(), modified_by= modified_by, updated_po_ids=updated_record_ids_po))
             frappe.db.commit()
             return {"message":"""<h3>The script has run and had updated all Item Name and Item Descriptions in Software Maintenance, Sales Order, Quotation and Purchase Order:</h3>
                     <ul>
