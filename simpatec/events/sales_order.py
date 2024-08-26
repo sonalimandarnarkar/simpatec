@@ -493,4 +493,4 @@ def validate_maintenance_amount(doc):
 	if len(row) > 0:
 		row = "".join(row)
 		msg = f"The maintenance amount cannot be zero or less. Please review and correct the maintenance prices in the following rows:<ul >{row}</ul>"
-		frappe.throw(msg, title="Error: Invalid Maintenance Amount")
+		frappe.msgprint(msg, title="Error: Invalid Maintenance Amount")
