@@ -19,6 +19,7 @@ def validate(doc, handler=None):
 		if doc.sales_order_type == "First Sale" and frappe.db.exists("Sales Order", {"sales_order_type": "First Sale", "software_maintenance": doc.software_maintenance}):
 			frappe.throw("First Sales for {0} Exist<br>Select Follow-up Sales or Follow-up Maintenance".format(frappe.get_desk_link("Software Maintenance", doc.software_maintenance)))
 	validate_duplicate_linked_internal_clearance(doc)
+	validate_maintenance_amount(doc)
 
 
 @frappe.whitelist()
@@ -481,3 +482,15 @@ def set_delivery_date(items, sales_order):
 	for item in items:
 		if item.product_bundle:
 			item.schedule_date = delivery_by_item[item.product_bundle]
+
+
+@frappe.whitelist()
+def validate_maintenance_amount(doc):
+	row = []
+	for item in doc.items:
+		if item.reoccurring_maintenance_amount <= 0 and item.item_type == "Maintenance Item":
+			row.append(f"<li>Row {item.idx}</li>")
+	if len(row) > 0:
+		row = "".join(row)
+		msg = f"The maintenance amount cannot be zero or less. Please review and correct the maintenance prices in the following rows:<ul >{row}</ul>"
+		frappe.throw(msg, title="Error: Invalid Maintenance Amount")
