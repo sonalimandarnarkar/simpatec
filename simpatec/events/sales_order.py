@@ -490,8 +490,8 @@ def validate_maintenance_amount(doc):
 		row = []
 		for item in doc.items:
 			if item.reoccurring_maintenance_amount <= 0 and item.item_type == "Maintenance Item":
-				row.append(f"<li>Row {item.idx}</li>")
+				row.append(_(f"<li>{_('Row')} {item.idx}</li>"))
 		if len(row) > 0:
 			row = "".join(row)
-			msg = f"One or more maintenance items in the Sales Order Item table have an amount that is less than or equal to 0.00. Please review these items to ensure this is correct.<ul >{row}</ul>"
-			frappe.msgprint(msg, title="Warning: Invalid Maintenance Amount")
+			msg = f"{_('One or more maintenance items in the Sales Order Item table have an amount that is less than or equal to 0.00. Please review these items to ensure this is correct.')} <ul >{row}</ul>"
+			frappe.msgprint(msg, title=_("Warning: Invalid Maintenance Amount"))

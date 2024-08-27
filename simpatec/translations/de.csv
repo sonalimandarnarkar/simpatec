@@ -1,0 +1,3 @@
+Row,Reihe
+Warning: Invalid Maintenance Amount,Achtung: Ungültiger Unterhaltsbetrag
+One or more maintenance items in the Sales Order Item table have an amount that is less than or equal to 0.00. Please review these items to ensure this is correct.,"Ein oder mehrere Wartungsartikel in der Tabelle „Verkaufsauftragsartikel“ weisen einen Betrag auf, der kleiner oder gleich 0,00 ist. Bitte überprüfen Sie diese Artikel, um sicherzustellen, dass dies korrekt ist."
