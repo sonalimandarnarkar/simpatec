@@ -119,10 +119,7 @@ def update_software_maintenance(doc, method=None):
 			item_start_date = item.start_date
 			item_end_date = item.end_date
 
-			if doc.sales_order_type == "Reoccuring Maintenance":
-				item_start_date = software_maintenance.performance_period_start
-				item_end_date = software_maintenance.performance_period_end
-
+			
 			if item.item_type == "Maintenance Item":
 				item_rate = item.reoccurring_maintenance_amount
 			else:
@@ -135,7 +132,11 @@ def update_software_maintenance(doc, method=None):
 				item_end_date = datetime.strptime(item_end_date, "%Y-%m-%d").date()
 			item_start_date = item_start_date + timedelta(days=365)
 			item_end_date = item_end_date + timedelta(days=365)
-			if doc.sales_order_type == "Follow-Up Sale":
+
+			if doc.sales_order_type == "Reoccuring Maintenance":
+				item_start_date = software_maintenance.performance_period_start
+				item_end_date = software_maintenance.performance_period_end
+			elif doc.sales_order_type == "Follow-Up Sale":
 				item_end_date = software_maintenance.performance_period_end + timedelta(days=365)
 				
 				# Initialize a counter for months
