@@ -486,11 +486,12 @@ def set_delivery_date(items, sales_order):
 
 @frappe.whitelist()
 def validate_maintenance_amount(doc):
-	row = []
-	for item in doc.items:
-		if item.reoccurring_maintenance_amount <= 0 and item.item_type == "Maintenance Item":
-			row.append(f"<li>Row {item.idx}</li>")
-	if len(row) > 0:
-		row = "".join(row)
-		msg = f"The maintenance amount cannot be zero or less. Please review and correct the maintenance prices in the following rows:<ul >{row}</ul>"
-		frappe.msgprint(msg, title="Error: Invalid Maintenance Amount")
+	if doc.docstatus == 0:
+		row = []
+		for item in doc.items:
+			if item.reoccurring_maintenance_amount <= 0 and item.item_type == "Maintenance Item":
+				row.append(f"<li>Row {item.idx}</li>")
+		if len(row) > 0:
+			row = "".join(row)
+			msg = f"One or more maintenance items in the Sales Order Item table have an amount that is less than or equal to 0.00. Please review these items to ensure this is correct.<ul >{row}</ul>"
+			frappe.msgprint(msg, title="Warning: Invalid Maintenance Amount")
