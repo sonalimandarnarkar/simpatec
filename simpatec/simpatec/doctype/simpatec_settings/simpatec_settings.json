@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-13 00:46:52.905219",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_section",
+  "clearance_item",
+  "software_maintenance_section",
+  "auto_reoccurring_maintenance",
+  "html_3",
+  "danger_zone_section",
+  "html_1",
+  "update_software_maintenance_items",
+  "update_timestamp",
+  "html_2",
+  "html_4",
+  "update_item_fields"
+ ],
+ "fields": [
+  {
+   "fieldname": "clearance_item",
+   "fieldtype": "Link",
+   "label": "Clearance Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "sales_section",
+   "fieldtype": "Section Break",
+   "label": "Sales"
+  },
+  {
+   "fieldname": "danger_zone_section",
+   "fieldtype": "Section Break",
+   "label": "\u26a0\ufe0f Danger Zone \u26a0\ufe0f"
+  },
+  {
+   "fieldname": "update_software_maintenance_items",
+   "fieldtype": "Button",
+   "label": "Update Software Maintenance Items",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "html_1",
+   "fieldtype": "HTML",
+   "options": "<p style=\"color: red;\">In this section you will find options like scripts that can heavily influence the data of the system and lead to severe data loss. Please consult the documentation and your project manager before triggering anything in this section!!</p>"
+  },
+  {
+   "fieldname": "html_2",
+   "fieldtype": "HTML",
+   "options": "Hitting this button will remove all the items from all the Software Maintenance records and renew them from the Sales Order that is linked in each Software Maintenance Record. Also that record is updated by setting the sales_order_type to \"First Sale\".\n<hr>",
+   "permlevel": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "update_timestamp",
+   "fieldtype": "Check",
+   "label": "Update Timestamp",
+   "permlevel": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_reoccurring_maintenance",
+   "fieldtype": "Check",
+   "label": "Auto Reoccurring Maintenance "
+  },
+  {
+   "fieldname": "html_3",
+   "fieldtype": "HTML",
+   "options": "This checkbox will control the behaviour of Reoccurring Maintenance background job if needs to run or not"
+  },
+  {
+   "fieldname": "software_maintenance_section",
+   "fieldtype": "Section Break",
+   "label": "Software Maintenance"
+  },
+  {
+   "fieldname": "html_4",
+   "fieldtype": "HTML",
+   "options": "<p style=\"color: red;\">Careful: Clicking this button will execute a script that transfers data from old fields to new fields and makes significant alterations to the field contents, potentially causing irreversible changes. Please consult higher management before proceeding with this action.</p>\n"
+  },
+  {
+   "fieldname": "update_item_fields",
+   "fieldtype": "Button",
+   "label": "Apply Changes to Item Fields"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-08-19 13:38:48.000138",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "SimpaTec Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

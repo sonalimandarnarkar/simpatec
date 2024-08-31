@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-12 16:24:50.835012",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_order",
+  "customer_name",
+  "quotation_label",
+  "date",
+  "start_date",
+  "end_date",
+  "column_break_jnsc7",
+  "clearance_details",
+  "clearance_amount",
+  "net_total"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fetch_from": "sales_order.transaction_date",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.internal_clearance_details",
+   "fieldname": "clearance_details",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Clearance Details",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.clearance_amount",
+   "fieldname": "clearance_amount",
+   "fieldtype": "Currency",
+   "label": "Clearance Amount",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_jnsc7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sales_order.total",
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.quotation_label",
+   "fieldname": "quotation_label",
+   "fieldtype": "Data",
+   "label": "Quotation Label",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.performance_period_start",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.performance_period_end",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-06-10 07:29:47.263169",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Sales Order Clearances",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
