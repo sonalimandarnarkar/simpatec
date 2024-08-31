@@ -31,8 +31,16 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_js = {
+    "Customer" : "public/js/customer.js",
+    "Issue" : "public/js/issue.js",
+    "Sales Order" : "public/js/sales_order.js",
+	"Quotation" : "public/js/quotation.js",
+	"Opportunity": "public/js/opportunity.js",
+	"Purchase Order" : "public/js/purchase_order.js",
+	"Sales Invoice" : "public/js/sales_invoice.js",
+}
+doctype_list_js = {"Purchase Order" : "public/js/purchase_order_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -56,13 +64,13 @@ app_license = "MIT"
 # Installation
 # ------------
 
-# before_install = "simpatec.install.before_install"
-# after_install = "simpatec.install.after_install"
+after_migrate = "simpatec.install.after_migrate"
+after_install = "simpatec.install.after_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "simpatec.uninstall.before_uninstall"
+before_uninstall = "simpatec.install.before_uninstall"
 # after_uninstall = "simpatec.uninstall.after_uninstall"
 
 # Desk Notifications
@@ -95,34 +103,29 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Order": {
+        "validate": "simpatec.events.sales_order.validate",
+		"on_submit": [
+            "simpatec.events.sales_order.update_software_maintenance", 
+			"simpatec.events.sales_order.update_internal_clearance_status"
+            ],
+		"on_cancel": "simpatec.events.sales_order.reset_internal_clearance_status"
+	},
+    "Purchase Order": {
+        "on_submit": "simpatec.events.purchase_order.on_submit",
+        "validate": "simpatec.events.purchase_order.validate",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"simpatec.tasks.all"
-#	],
-#	"daily": [
-#		"simpatec.tasks.daily"
-#	],
-#	"hourly": [
-#		"simpatec.tasks.hourly"
-#	],
-#	"weekly": [
-#		"simpatec.tasks.weekly"
-#	]
-#	"monthly": [
-#		"simpatec.tasks.monthly"
-#	]
-# }
+scheduler_events = {
+	"daily": [
+		"simpatec.simpatec.doctype.software_maintenance.software_maintenance.reoccurring_maintenance_cronjob"
+	]
+}
 
 # Testing
 # -------
@@ -132,9 +135,10 @@ app_license = "MIT"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "simpatec.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order_for_default_supplier": "simpatec.events.sales_order.make_purchase_order_for_default_supplier",
+	"erpnext.selling.doctype.sales_order.sales_order.make_purchase_order": "simpatec.events.sales_order.make_purchase_order"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -188,3 +192,53 @@ user_data_fields = [
 #	"simpatec.auth.validate"
 # ]
 
+standard_queries = {
+	"Contact": "simpatec.custom_queries.custom_contact_query"
+}
+
+
+fixtures = [
+# 	{
+# 		'dt': 'DocType Link',
+# 		"filters": [["parent", "=", "Contact"], ["parenttype", "=", "Customize Form"], ["custom", "=", "1"]]
+# 	}
+	
+	{
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                (
+					"Quotation-anrede",
+					"Quotation-anschreiben_vorlage",
+					"Quotation-anschreiben",
+					"Quotation-cover_letter_en",
+					"Quotation-cover_letter_de",
+					"Quotation-cover_letter_fr"
+					"Quotation-ignore_cover_language",
+					"Item-simpatec",
+					"Item-item_type",
+					"Sales Order Item-item_description_en",
+                    "Sales Order Item-item_description_de",
+                    "Sales Order Item-item_description_fr",
+                ),
+            ]
+        ],
+    },
+	{
+		"doctype": "Property Setter",
+		"filters": [
+			[
+				"name",
+    			"in",
+				(
+					"Sales Order-payment_terms_template-fetch_from",
+                    "Quotation-payment_terms_template-fetch_from",
+					"Sales Invoice-payment_terms_template-fetch_from",
+                    "Sales Order-software_maintenance-no_copy"
+				)
+			]
+		]
+	}
+]

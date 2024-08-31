@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:titel",
+ "creation": "2024-04-09 10:46:00.239378",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "titel",
+  "angebotsvorlage_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "titel",
+   "fieldtype": "Data",
+   "label": "Titel",
+   "translatable": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "angebotsvorlage_item",
+   "fieldtype": "Table",
+   "label": "Angebotsvorlage Item",
+   "options": "Angebotsvorlage Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-04-09 10:46:00.239378",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Angebotsvorlage",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

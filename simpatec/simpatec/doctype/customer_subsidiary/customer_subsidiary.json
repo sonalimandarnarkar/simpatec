@@ -1,0 +1,199 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "Prompt",
+ "creation": "2023-11-30 20:06:04.188829",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "customer_name",
+  "column_break_3",
+  "main_customer_contact",
+  "subsidiary_address",
+  "simpatec_section",
+  "assigned_to",
+  "column_break_7",
+  "payment_term",
+  "sales_section",
+  "accounting_section",
+  "billing_user_simpatec",
+  "billing_type",
+  "column_break_11",
+  "billing_email_id",
+  "billing_address",
+  "supplier_portal",
+  "refresh"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "main_customer_contact",
+   "fieldtype": "Link",
+   "label": "Main Customer Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "subsidiary_address",
+   "fieldtype": "Link",
+   "label": "Subsidiary Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "simpatec_section",
+   "fieldtype": "Section Break",
+   "label": "SimpaTec"
+  },
+  {
+   "fetch_from": "customer.account_manager",
+   "fetch_if_empty": 1,
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned to",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_section",
+   "fieldtype": "Section Break",
+   "label": "Sales"
+  },
+  {
+   "fieldname": "accounting_section",
+   "fieldtype": "Section Break",
+   "label": "Accounting"
+  },
+  {
+   "fieldname": "billing_user_simpatec",
+   "fieldtype": "Link",
+   "label": "Billing User SimpaTec",
+   "mandatory_depends_on": "eval:doc.workflow_state == 'Approved'",
+   "options": "User"
+  },
+  {
+   "fieldname": "billing_type",
+   "fieldtype": "Select",
+   "label": "Billing Type",
+   "mandatory_depends_on": "eval:doc.workflow_state==\"Approved\"",
+   "options": "\nPaper Mail\nE-Mail\nSupplier Portal"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Works with comma seperated addresses. E.g. billing1@asdf.de,billing2@trgd.de",
+   "fieldname": "billing_email_id",
+   "fieldtype": "Data",
+   "label": "Billing Email ID",
+   "mandatory_depends_on": "eval:doc.billing_type==\"E-Mail\"",
+   "options": "Email"
+  },
+  {
+   "fieldname": "billing_address",
+   "fieldtype": "Link",
+   "label": "Billing Address",
+   "mandatory_depends_on": "eval:doc.billing_type==\"Paper Mail\"",
+   "options": "Address"
+  },
+  {
+   "depends_on": "eval:doc.billing_type==\"Supplier Portal\"",
+   "description": "Add here the link to the Supplier Portal if necessary for invoicing",
+   "fieldname": "supplier_portal",
+   "fieldtype": "Data",
+   "label": "Supplier Portal",
+   "mandatory_depends_on": "eval:doc.billing_type==\"Supplier Portal\""
+  },
+  {
+   "default": "0",
+   "fieldname": "refresh",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "refresh"
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Payment Terms Template"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "group": "Sales",
+   "link_doctype": "Opportunity",
+   "link_fieldname": "customer_subsidiary"
+  },
+  {
+   "group": "Sales",
+   "link_doctype": "Quotation",
+   "link_fieldname": "customer_subsidiary"
+  },
+  {
+   "group": "Sales",
+   "link_doctype": "Sales Order",
+   "link_fieldname": "customer_subsidiary"
+  },
+  {
+   "group": "Accounting",
+   "link_doctype": "Sales Invoice",
+   "link_fieldname": "customer_subsidiary"
+  },
+  {
+   "group": "Support",
+   "link_doctype": "Software Maintenance",
+   "link_fieldname": "customer_subsidiary"
+  },
+  {
+   "group": "Legal",
+   "link_doctype": "Contract",
+   "link_fieldname": "customer_subsidiary"
+  }
+ ],
+ "modified": "2024-06-13 11:34:05.460507",
+ "modified_by": "Administrator",
+ "module": "Simpatec",
+ "name": "Customer Subsidiary",
+ "naming_rule": "Set by user",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
