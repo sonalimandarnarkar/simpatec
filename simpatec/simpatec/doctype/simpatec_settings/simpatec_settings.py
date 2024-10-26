@@ -10,11 +10,27 @@ class SimpaTecSettings(Document):
     @frappe.whitelist()
     def update_item_details(self):
         try:
-            
+            updated_record_ids_sm = []
             # Update item descriptions data from old field id_xx to new field item_description_xx
             
             # SOFTWARE MAINTENANCE ITEM
             # UPDATE DESCRIPTIONS
+            records_to_update_sm = frappe.db.sql("""SELECT `name`, parent, item_language 
+                    FROM `tabSoftware Maintenance Item`
+                    WHERE (`item_description_en` IS NULL 
+                        OR `item_description_en` = ''
+                        OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%') or (`item_description_fr` IS NULL 
+                        OR `item_description_fr` = ''
+                        OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%') or (`item_description_de` IS NULL 
+                        OR `item_description_de` = ''
+                        OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%') or 
+                        (`item_name_en` IS NULL OR `item_name_en` = '') or 
+                        (`item_name_fr` IS NULL OR `item_name_fr` = '') or 
+                        (`item_name_de` IS NULL OR `item_name_de` = '')
+            """, as_dict=True)
+            # The list of IDs of the updated records
+            updated_record_ids_sm += [f"'{record['parent']}'" for record in records_to_update_sm]
+            
             frappe.db.sql("""UPDATE `tabSoftware Maintenance Item`
                                     SET `item_description_en` = 
                                         CASE
@@ -72,14 +88,24 @@ class SimpaTecSettings(Document):
                                         END""")
             
             # UPDATE ITEM NAMES
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_en` = `item_name` where item_name_en is null;")
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_de` = `item_name` where item_name_de is null;")
-            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_en` = `item_name` where (`item_name_en` IS NULL OR `item_name_en` = '')")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_de` = `item_name` where (`item_name_de` IS NULL OR `item_name_de` = '')")
+            frappe.db.sql("update `tabSoftware Maintenance Item` set `item_name_fr` = `item_name` where (`item_name_fr` IS NULL OR `item_name_fr` = '')")
             
             
             # SALES ORDER ITEM
             # UPDATE DESCRIPTIONS
+            updated_record_ids_so = []
             if frappe.db.exists("Custom Field", "Sales Order Item-id_en"):
+                records_to_update_so_en = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE (`item_description_en` IS NULL 
+                            OR `item_description_en` = ''	
+                            OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_en]
+                
                 frappe.db.sql("""UPDATE `tabSales Order Item`
                                     SET `item_description_en` = 
                                         CASE
@@ -100,6 +126,14 @@ class SimpaTecSettings(Document):
                                         END""")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_en", force=1)
             if frappe.db.exists("Custom Field", "Sales Order Item-id_fr"):
+                records_to_update_so_fr = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE (`item_description_fr` IS NULL 
+                            OR `item_description_fr` = ''	
+                            OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_fr]
                 frappe.db.sql("""UPDATE `tabSales Order Item`
                                     SET `item_description_fr` = 
                                         CASE
@@ -120,6 +154,14 @@ class SimpaTecSettings(Document):
                                         END""")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_fr", force=1)
             if frappe.db.exists("Custom Field", "Sales Order Item-id_de"):
+                records_to_update_so_de = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE (`item_description_de` IS NULL 
+                            OR `item_description_de` = ''	
+                            OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_de]
                 frappe.db.sql("""UPDATE `tabSales Order Item`
                                     SET `item_description_de` = 
                                         CASE
@@ -142,20 +184,49 @@ class SimpaTecSettings(Document):
             
             # UPDATE ITEM NAMES
             if frappe.db.exists("Custom Field", "Sales Order Item-item_name_en"):
+                records_to_update_so_item_en = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE `item_name_en` IS NULL 
+                            OR `item_name_en` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_item_en]
                 frappe.db.sql("update `tabSales Order Item` set `item_name_en` = `item_name` where item_name_en is null;")
                 
             if frappe.db.exists("Custom Field", "Sales Order Item-item_name_de"):
+                records_to_update_so_item_de = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE `item_name_de` IS NULL 
+                            OR `item_name_de` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_item_de]
                 frappe.db.sql("update `tabSales Order Item` set `item_name_de` = `item_name` where item_name_de is null;")
 
             if frappe.db.exists("Custom Field", "Sales Order Item-item_name_fr"):
+                records_to_update_so_item_fr = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabSales Order Item`
+                        WHERE `item_name_fr` IS NULL 
+                            OR `item_name_fr` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_so += [f"'{record['parent']}'" for record in records_to_update_so_item_fr]
                 frappe.db.sql("update `tabSales Order Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
 
 
 
             # QUOTATION ITEM
             # UPDATE DESCRIPTIONS
+            updated_record_ids_quo = []
             if frappe.db.exists("Custom Field", "Quotation Item-id_en"):
-                
+                records_to_update_quo_en = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE (`item_description_en` IS NULL 
+                            OR `item_description_en` = ''	
+                            OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_en]
                 frappe.db.sql("""UPDATE `tabQuotation Item`
                                     SET `item_description_en` = 
                                         CASE
@@ -176,7 +247,14 @@ class SimpaTecSettings(Document):
                                         END""")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_en", force=1)
             if frappe.db.exists("Custom Field", "Quotation Item-id_fr"):
-                
+                records_to_update_quo_fr = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE (`item_description_fr` IS NULL 
+                            OR `item_description_fr` = ''	
+                            OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_fr]
                 frappe.db.sql("""UPDATE `tabQuotation Item`
                                     SET `item_description_fr` = 
                                         CASE
@@ -197,6 +275,14 @@ class SimpaTecSettings(Document):
                                         END""")
                 # frappe.delete_doc("Custom Field", "Sales Order Item-id_fr", force=1)
             if frappe.db.exists("Custom Field", "Quotation Item-id_de"):
+                records_to_update_quo_de = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE (`item_description_de` IS NULL 
+                            OR `item_description_de` = ''	
+                            OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_de]
                 
                 frappe.db.sql("""UPDATE `tabQuotation Item`
                                     SET `item_description_de` = 
@@ -220,47 +306,140 @@ class SimpaTecSettings(Document):
             
             # UPDATE ITEM NAMES
             if frappe.db.exists("Custom Field", "Quotation Item-item_name_en"):
-                frappe.db.sql("update `tabQuotation Item` set `item_name_en` = `item_name` where item_name_en is null;")
+                records_to_update_quo_item_en = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE `item_name_en` IS NULL 
+                            OR `item_name_en` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_item_en]
+                frappe.db.sql("""update `tabQuotation Item` set `item_name_en` = `item_name` where `item_name_en` IS NULL 
+                            OR `item_name_en` = '' """)
                 
             if frappe.db.exists("Custom Field", "Quotation Item-item_name_de"):
-                frappe.db.sql("update `tabQuotation Item` set `item_name_de` = `item_name` where item_name_de is null;")
+                records_to_update_quo_item_de = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE `item_name_de` IS NULL 
+                            OR `item_name_de` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_item_de]
+                frappe.db.sql("""update `tabQuotation Item` set `item_name_de` = `item_name` where `item_name_de` IS NULL 
+                            OR `item_name_de` = ''""")
 
             if frappe.db.exists("Custom Field", "Quotation Item-item_name_fr"):
-                frappe.db.sql("update `tabQuotation Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+                records_to_update_quo_item_fr = frappe.db.sql("""SELECT `name`, parent, item_language 
+                        FROM `tabQuotation Item`
+                        WHERE `item_name_fr` IS NULL 
+                            OR `item_name_fr` = ''
+                """, as_dict=True)
+                # The list of IDs of the updated records
+                updated_record_ids_quo += [f"'{record['parent']}'" for record in records_to_update_quo_item_fr]
+                frappe.db.sql("""update `tabQuotation Item` set `item_name_fr` = `item_name` where `item_name_fr` IS NULL 
+                            OR `item_name_fr` = ''""")
 
             # PURCHASE ORDER ITEM
             # UPDATE DESCRIPTIONS
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_en"):
-                frappe.db.sql("""update `tabPurchase Order Item` set `item_description_en` = `description` 
-                              where 
-                              `item_description_en` IS NULL 
-                                OR `item_description_en` = ''
-                                OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_de"):
-                frappe.db.sql("""update `tabPurchase Order Item` set `item_description_de` = `description` where `item_description_de` IS NULL 
-                                                OR `item_description_de` = ''	
-                                                OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_fr"):
-                frappe.db.sql("""update `tabPurchase Order Item` set `item_description_fr` = `description` where `item_description_fr` IS NULL 
-                                                OR `item_description_fr` = ''	
-                                                OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
+
+            #disabled on request as mentioned on Gitlab on issue 110
+
+            #updated_record_ids_po = []
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_en"):
+            #     records_to_update_po_en = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE (`item_description_en` IS NULL 
+            #                 OR `item_description_en` = ''	
+            #                 OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_en]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_description_en` = `description` 
+            #                   where 
+            #                   `item_description_en` IS NULL 
+            #                     OR `item_description_en` = ''
+            #                     OR `item_description_en` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
                 
-            # UPDATE ITEM NAMES
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_en"):
-                frappe.db.sql("update `tabPurchase Order Item` set `item_name_en` = `item_name` where item_name_en is null;")
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_de"):
-                frappe.db.sql("update `tabPurchase Order Item` set `item_name_de` = `item_name` where item_name_de is null;")
-            if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_fr"):
-                frappe.db.sql("update `tabPurchase Order Item` set `item_name_fr` = `item_name` where item_name_fr is null;")
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_de"):
+            #     records_to_update_po_de = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE (`item_description_de` IS NULL 
+            #                 OR `item_description_de` = ''	
+            #                 OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_de]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_description_de` = `description` where `item_description_de` IS NULL 
+            #                                     OR `item_description_de` = ''	
+            #                                     OR `item_description_de` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
+
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_description_fr"):
+            #     records_to_update_po_fr = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE (`item_description_fr` IS NULL 
+            #                 OR `item_description_fr` = ''	
+            #                 OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%')
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_fr]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_description_fr` = `description` where `item_description_fr` IS NULL 
+            #                                     OR `item_description_fr` = ''	
+            #                                     OR `item_description_fr` LIKE '%<div class="ql-editor read-mode"><p><br></p></div>%';""")
                 
+            # # UPDATE ITEM NAMES
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_en"):
+            #     records_to_update_po_item_en = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE `item_name_en` IS NULL 
+            #                 OR `item_name_en` = ''
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_item_en]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_name_en` = `item_name` where `item_name_en` IS NULL 
+            #                 OR `item_name_en` = ''""")
+                
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_de"):
+            #     records_to_update_po_item_de = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE `item_name_de` IS NULL 
+            #                 OR `item_name_de` = ''
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_item_de]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_name_de` = `item_name` where `item_name_de` IS NULL 
+            #                 OR `item_name_de` = ''""")
+                
+            # if frappe.db.exists("Custom Field", "Purchase Order Item-item_name_fr"):
+            #     records_to_update_po_item_fr = frappe.db.sql("""SELECT `name`, parent
+            #             FROM `tabPurchase Order Item`
+            #             WHERE `item_name_fr` IS NULL 
+            #                 OR `item_name_fr` = ''
+            #     """, as_dict=True)
+            #     # The list of IDs of the updated records
+            #     updated_record_ids_po += [f"'{record['parent']}'" for record in records_to_update_po_item_fr]
+            #     frappe.db.sql("""update `tabPurchase Order Item` set `item_name_fr` = `item_name` where `item_name_fr` IS NULL 
+            #                 OR `item_name_fr` = ''""")
+                
+                
+            # # Join the list into a comma-separated string
+            updated_record_ids_sm = ", ".join(updated_record_ids_sm)
+            updated_record_ids_so = ", ".join(updated_record_ids_so)
+            updated_record_ids_quo = ", ".join(updated_record_ids_quo)
+            #disabled on request as mentioned on Gitlab on issue 110
+            #updated_record_ids_po = ", ".join(updated_record_ids_po)
+            
             modified_by = frappe.session.user
             update_timestamp = int(self.update_timestamp)
             
             if update_timestamp:
-                frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2""".format(modified= now(), modified_by= modified_by))
-                frappe.db.sql("""update `tabSales Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
-                frappe.db.sql("""update `tabQuotation` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
-                frappe.db.sql("""update `tabPurchase Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where docstatus != 2 """.format(modified= now(), modified_by= modified_by))
+                if updated_record_ids_sm:
+                    frappe.db.sql("""update `tabSoftware Maintenance` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_sm_ids})""".format(modified= now(), modified_by= modified_by, updated_sm_ids=updated_record_ids_sm))
+                if updated_record_ids_so:
+                    frappe.db.sql("""update `tabSales Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_so_ids}) """.format(modified= now(), modified_by= modified_by, updated_so_ids=updated_record_ids_so))
+                if updated_record_ids_quo:
+                    frappe.db.sql("""update `tabQuotation` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_quo_ids})""".format(modified= now(), modified_by= modified_by, updated_quo_ids=updated_record_ids_quo))
+                #disabled on request as mentioned on Gitlab on issue 110
+                # if updated_record_ids_po:
+                #     frappe.db.sql("""update `tabPurchase Order` set `modified` = '{modified}', `modified_by` = '{modified_by}' where name in ({updated_po_ids}) """.format(modified= now(), modified_by= modified_by, updated_po_ids=updated_record_ids_po))
             frappe.db.commit()
             return {"message":"""<h3>The script has run and had updated all Item Name and Item Descriptions in Software Maintenance, Sales Order, Quotation and Purchase Order:</h3>
                     <ul>

@@ -19,6 +19,7 @@ def validate(doc, handler=None):
 		if doc.sales_order_type == "First Sale" and frappe.db.exists("Sales Order", {"sales_order_type": "First Sale", "software_maintenance": doc.software_maintenance}):
 			frappe.throw("First Sales for {0} Exist<br>Select Follow-up Sales or Follow-up Maintenance".format(frappe.get_desk_link("Software Maintenance", doc.software_maintenance)))
 	validate_duplicate_linked_internal_clearance(doc)
+	validate_maintenance_amount(doc)
 
 
 @frappe.whitelist()
@@ -118,10 +119,7 @@ def update_software_maintenance(doc, method=None):
 			item_start_date = item.start_date
 			item_end_date = item.end_date
 
-			if doc.sales_order_type == "Reoccuring Maintenance":
-				item_start_date = software_maintenance.performance_period_start
-				item_end_date = software_maintenance.performance_period_end
-
+			
 			if item.item_type == "Maintenance Item":
 				item_rate = item.reoccurring_maintenance_amount
 			else:
@@ -134,7 +132,11 @@ def update_software_maintenance(doc, method=None):
 				item_end_date = datetime.strptime(item_end_date, "%Y-%m-%d").date()
 			item_start_date = item_start_date + timedelta(days=365)
 			item_end_date = item_end_date + timedelta(days=365)
-			if doc.sales_order_type == "Follow-Up Sale":
+
+			if doc.sales_order_type == "Reoccuring Maintenance":
+				item_start_date = software_maintenance.performance_period_start
+				item_end_date = software_maintenance.performance_period_end
+			elif doc.sales_order_type == "Follow-Up Sale":
 				item_end_date = software_maintenance.performance_period_end + timedelta(days=365)
 				
 				# Initialize a counter for months
@@ -481,3 +483,16 @@ def set_delivery_date(items, sales_order):
 	for item in items:
 		if item.product_bundle:
 			item.schedule_date = delivery_by_item[item.product_bundle]
+
+
+@frappe.whitelist()
+def validate_maintenance_amount(doc):
+	if doc.docstatus == 0:
+		row = []
+		for item in doc.items:
+			if item.reoccurring_maintenance_amount <= 0 and item.item_type == "Maintenance Item":
+				row.append(_(f"<li>{_('Row')} {item.idx}</li>"))
+		if len(row) > 0:
+			row = "".join(row)
+			msg = f"{_('One or more maintenance items in the Sales Order Item table have an amount that is less than or equal to 0.00. Please review these items to ensure this is correct.')} <ul >{row}</ul>"
+			frappe.msgprint(msg, title=_("Warning: Invalid Maintenance Amount"))
