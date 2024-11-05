@@ -157,6 +157,13 @@ def update_software_maintenance(doc, method=None):
 				# calculating total rate of calculated months
 				total_remaining_item_rate = remaining_months * per_month_rate
 				item_rate = total_remaining_item_rate
+			# Convert start and end dates to date objects if they're strings
+			item_start_date = item_start_date
+			item_end_date = item_end_date
+			if isinstance(item_start_date, str):
+				item_start_date = datetime.strptime(item_start_date, "%Y-%m-%d").date()
+			if isinstance(item_end_date, str):
+				item_end_date = datetime.strptime(item_end_date, "%Y-%m-%d").date()
 
 			days_diff = item_end_date - item_start_date
 			if days_diff == 365:
